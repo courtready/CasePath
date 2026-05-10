@@ -1,0 +1,157 @@
+<nav class="nav-wrapper">
+  <div class="nav-top-row header-inner">
+    <div class="logo-wrap" onclick="showPage('home')">
+      <span class="logo-name">CasePath</span>
+    </div>
+    <div class="nav-site-links" aria-label="Main menu">
+      <a onclick="showPage('glossary')" id="nav-legislation" style="display:none;" data-page="legislation">Legislation</a>
+      <div class="nav-grid">
+        <a onclick="showPage('mission')" id="nav-mission" class="nav-mission-pulse" data-row="1" data-page="mission" data-i18n="mission">Our Mission</a>
+        <a onclick="showPage('glossary')" id="nav-glossary" data-row="1" data-page="glossary">Glossary</a>
+        <a onclick="showPage('mental-health')" id="nav-mental-health" data-row="1" data-page="mental-health">Mental Health</a>
+        <a onclick="showPage('parenting-orders')" id="nav-parenting-orders" class="parenting-orders nav-parenting-centre" style="color:var(--sage);font-weight:700;" data-row="1" data-page="parenting-orders">Parenting Orders</a>
+        <a onclick="showPage('doc-helper')" id="nav-doc-helper" data-row="1" data-page="doc-helper">Document Helper</a>
+        <a onclick="showPage('ai-assistant')" id="nav-ai-assistant" data-row="1" data-page="ai-assistant">AI Assistant</a>
+        <a onclick="cdBuildDashboard();showPage('vault')" id="nav-your-case-pulse" class="nav-mission-pulse" data-row="1" data-page="case">Your Case</a>
+        <a onclick="showPage('kids')" id="nav-kids" data-row="2" data-page="kids">About the Kids</a>
+        <a onclick="showPage('your-team')" id="nav-your-team" data-row="2" data-page="your-team">Your Family Team</a>
+        <a href="support-tools.html" id="nav-new-item" class="nav-item" data-row="2" data-page="support-tools">Support Tools</a>
+        <a onclick="showPage('avo')" id="nav-avo" class="nav-avo-centre" data-row="2" data-page="avo">AVO Centre</a>
+        <a onclick="showPage('pricing')" id="nav-pricing" data-row="2" data-page="pricing" data-i18n="pricing">Pricing</a>
+        <a onclick="showPage('referrals')" id="nav-referrals" data-row="2" data-page="referrals">Referrals</a>
+        <a onclick="showPage('lawyer-portal')" id="nav-lawyer-portal" style="color:#c8a96e;font-weight:700;" data-row="2" data-page="lawyer-portal">Lawyer Portal</a>
+      </div>
+    </div>
+    <div class="nav-trailing" style="display:flex;align-items:center;gap:0.44rem;flex-shrink:0;">
+      <div class="header-actions" style="display:flex;align-items:center;gap:0.44rem;">
+        <div id="lang-selector-wrap" class="lang-switch" style="display:none !important;">
+          <select id="lang-switch" aria-label="Language switcher">
+            <option value="en">EN</option>
+            <option value="ar">AR</option>
+            <option value="zh">中文</option>
+          </select>
+        </div>
+        <div id="auth-area" class="header-actions" style="display:flex;align-items:center;gap:0.44rem;"></div>
+      </div>
+    </div>
+  </div>
+</nav>
+<script>
+(() => {
+const navGrid = document.querySelector('.nav-grid');
+const links = document.querySelectorAll('.nav-grid a');
+const authArea = document.getElementById('auth-area');
+const langSwitch = document.getElementById('lang-switch');
+const path = window.location.pathname.toLowerCase();
+if (!window.translations) {
+  window.translations = {
+    en: { mission: 'Our Mission', pricing: 'Pricing' },
+    ar: { mission: 'مهمتنا', pricing: 'التسعير' },
+    zh: { mission: '我们的使命', pricing: '价格' }
+  };
+}
+
+if (navGrid && links.length) {
+  const underline = document.createElement('div');
+  underline.classList.add('nav-underline');
+  navGrid.appendChild(underline);
+
+  function moveUnderline(el) {
+    const rect = el.getBoundingClientRect();
+    const navRect = navGrid.getBoundingClientRect();
+    underline.style.width = rect.width + 'px';
+    underline.style.left = (rect.left - navRect.left) + 'px';
+    underline.style.top = (rect.bottom - navRect.top) + 'px';
+  }
+
+  links.forEach((link) => {
+    const pageKey = (link.getAttribute('data-page') || '').toLowerCase();
+    const hrefValue = (link.getAttribute('href') || '').toLowerCase();
+    if (
+      (hrefValue && hrefValue !== '#' && path.indexOf(hrefValue.replace(/^\.\//, '/')) !== -1) ||
+      (pageKey && (path.indexOf('/' + pageKey) !== -1 || path.indexOf(pageKey + '.shtml') !== -1 || path.indexOf(pageKey + '.html') !== -1))
+    ) {
+      link.classList.add('active');
+      moveUnderline(link);
+    }
+    link.addEventListener('mouseenter', () => moveUnderline(link));
+  });
+
+  navGrid.addEventListener('mouseleave', () => {
+    const active = document.querySelector('.nav-grid a.active');
+    if (active) moveUnderline(active);
+  });
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 10) {
+      navGrid.classList.add('scrolled');
+      navGrid.classList.add('shrink');
+    } else {
+      navGrid.classList.remove('scrolled');
+      navGrid.classList.remove('shrink');
+    }
+  });
+}
+
+function renderAuthArea() {
+  if (!authArea) return;
+  let user = null;
+  try {
+    user = JSON.parse(localStorage.getItem('cr_user') || localStorage.getItem('courtready_user') || 'null');
+  } catch (e) {
+    user = null;
+  }
+  if (!user || user.source !== 'supabase') {
+    authArea.innerHTML = `
+      <a href="/signin.shtml" onclick="if (typeof openAuth === 'function') { event.preventDefault(); openAuth('signin'); }">Sign in</a>
+      <a href="/signup.shtml" class="nav-cta cta-primary" onclick="if (typeof openAuth === 'function') { event.preventDefault(); openAuth('signup'); }">Create free account</a>
+    `;
+    return;
+  }
+  const plan = user.plan || 'free';
+  const credits = Number.isFinite(Number(user.docCredits)) ? Number(user.docCredits) : 0;
+  authArea.innerHTML = `
+    <span class="nav-plan">${plan === 'pro' ? 'Pro Plan' : `Credits: ${credits}`}</span>
+    <a href="/your-case.shtml" onclick="if (typeof showPage === 'function') { event.preventDefault(); showPage('vault'); }">Your Case</a>
+    <a href="#" id="navSignOutBtn">Logout</a>
+  `;
+  const logout = document.getElementById('navSignOutBtn');
+  if (logout) {
+    logout.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      void (async function () {
+        if (typeof window.signOutFromSupabaseAndSync === 'function') {
+          await window.signOutFromSupabaseAndSync();
+          return;
+        }
+        localStorage.removeItem('cr_user');
+        localStorage.removeItem('courtready_user');
+        location.reload();
+      })();
+    });
+  }
+}
+
+function applyLanguage(lang) {
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    const key = el.getAttribute('data-i18n');
+    if (window.translations && window.translations[lang] && window.translations[lang][key]) {
+      el.textContent = window.translations[lang][key];
+    }
+  });
+}
+
+if (langSwitch) {
+  const savedLang = localStorage.getItem('lang') || 'en';
+  langSwitch.value = savedLang;
+  langSwitch.addEventListener('change', function () {
+    localStorage.setItem('lang', this.value);
+    applyLanguage(this.value);
+  });
+  applyLanguage(savedLang);
+}
+
+renderAuthArea();
+})();
+</script>

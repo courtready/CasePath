@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shared item — CasePath</title>
+  <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/public-static-pages.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    .share-blurb {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+      font-size: 1rem;
+      line-height: 1.65;
+      color: var(--charcoal);
+    }
+    .share-blurb p { margin: 0 0 1rem; }
+    .share-blurb a { color: var(--sage); font-weight: 600; }
+  </style>
+</head>
+<body class="page-satellite">
+<div class="disclaimer-banner">
+  <strong>Important:</strong> This site provides legal <em>information</em> only — not legal advice. For advice about your situation, contact a family lawyer or <a href="https://www.legalaid.nsw.gov.au" target="_blank" style="color:#6b4c10;font-weight:600;">Legal Aid Australia</a>.
+</div>
+<header class="header">
+  <nav class="nav-wrapper">
+  <div class="nav-top-row header-inner">
+    <a class="logo-wrap" href="/index.html">
+      <span class="logo-name">CasePath</span>
+    </a>
+    <div class="nav-site-links" aria-label="Main menu">
+      <button type="button" class="nav-mobile-toggle" id="nav-mobile-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="nav-main-grid">
+        Menu <span class="nav-mobile-chevron" aria-hidden="true">▼</span>
+      </button>
+      <a href="/index.html" id="nav-legislation" style="display:none;">Legislation</a>
+      <div class="nav-grid" id="nav-main-grid">
+        <a href="/index.html" id="nav-mission" class="nav-mission-pulse" data-row="1">Our Mission</a>
+        <a href="/index.html" id="nav-glossary" data-row="1">Glossary</a>
+        <a href="/index.html" id="nav-mental-health" data-row="1">Mental Health</a>
+        <a href="/index.html" id="nav-parenting-orders" class="parenting-orders nav-parenting-centre nav-featured" style="color:var(--sage);font-weight:700;" data-row="1">Parenting Orders</a>
+        <a href="/index.html" id="nav-doc-helper" data-row="1">Document Helper</a>
+        <a href="/index.html" id="nav-ai-assistant" data-row="1">AI Assistant</a>
+        <a href="/index.html" id="nav-your-case-pulse" class="nav-mission-pulse" data-row="1">Your Case</a>
+        <a href="/index.html" id="nav-kids" data-row="2">About the Kids</a>
+        <a href="/index.html" id="nav-your-team" data-row="2">Your Family Team</a>
+        <a href="/index.html" id="nav-new-item" class="nav-item" data-row="2">Support Tools</a>
+        <a href="/index.html" id="nav-avo" class="nav-avo-centre" data-row="2">AVO Centre</a>
+        <a href="/index.html" id="nav-pricing" data-row="2">Pricing</a>
+        <a href="/index.html" id="nav-referrals" data-row="2">Referrals</a>
+        <a href="/index.html" id="nav-lawyer-portal" style="color:#c8a96e;font-weight:700;" data-row="2">Lawyer Portal</a>
+      </div>
+    </div>
+    <div class="nav-trailing" style="display:flex;align-items:center;gap:0.44rem;flex-shrink:0;">
+      <div class="header-actions" style="display:flex;align-items:center;gap:0.44rem;">
+        <div id="lang-selector-wrap" class="lang-switch">
+          <button id="lang-btn" onclick="toggleLangDropdown(event)"><span id="lang-current-flag">🇦🇺</span><span id="lang-current-label">EN</span><span style="font-size:0.6rem;opacity:0.6;">▼</span></button>
+          <div id="lang-dropdown">
+          <div class="lang-divider">Select language</div>
+          <button class="lang-option active" onclick="setLang('en','🇦🇺','EN')"><span class="lang-flag">🇦🇺</span> English</button>
+          <button class="lang-option" onclick="setLang('zh-CN','🇨🇳','中文')"><span class="lang-flag">🇨🇳</span> Mandarin 中文</button>
+          <button class="lang-option" onclick="setLang('ar','🇸🇦','عربي')"><span class="lang-flag">🇸🇦</span> Arabic عربي</button>
+          <button class="lang-option" onclick="setLang('vi','🇻🇳','Việt')"><span class="lang-flag">🇻🇳</span> Vietnamese</button>
+          <button class="lang-option" onclick="setLang('zh-TW','🇭🇰','廣東')"><span class="lang-flag">🇭🇰</span> Cantonese 廣東話</button>
+          <button class="lang-option" onclick="setLang('pa','🇮🇳','ਪੰਜਾਬੀ')"><span class="lang-flag">🇮🇳</span> Punjabi</button>
+          <button class="lang-option" onclick="setLang('el','🇬🇷','Ελληνικά')"><span class="lang-flag">🇬🇷</span> Greek</button>
+          <button class="lang-option" onclick="setLang('it','🇮🇹','Italiano')"><span class="lang-flag">🇮🇹</span> Italian</button>
+          <button class="lang-option" onclick="setLang('de','🇩🇪','Deutsch')"><span class="lang-flag">🇩🇪</span> German</button>
+          <button class="lang-option" onclick="setLang('fr','🇫🇷','Français')"><span class="lang-flag">🇫🇷</span> French</button>
+          <button class="lang-option" onclick="setLang('hi','🇮🇳','हिन्दी')"><span class="lang-flag">🇮🇳</span> Hindi</button>
+          <button class="lang-option" onclick="setLang('es','🇪🇸','Español')"><span class="lang-flag">🇪🇸</span> Spanish</button>
+          <button class="lang-option" onclick="setLang('tl','🇵🇭','Filipino')"><span class="lang-flag">🇵🇭</span> Filipino</button>
+          <button class="lang-option" onclick="setLang('tr','🇹🇷','Türkçe')"><span class="lang-flag">🇹🇷</span> Turkish</button>
+          <button class="lang-option" onclick="setLang('ko','🇰🇷','한국어')"><span class="lang-flag">🇰🇷</span> Korean</button>
+          <button class="lang-option" onclick="setLang('ja','🇯🇵','日本語')"><span class="lang-flag">🇯🇵</span> Japanese 日本語</button>
+            <button class="lang-option" onclick="setLang('so','🇸🇴','Soomaali')"><span class="lang-flag">🇸🇴</span> Somali</button>
+          </div>
+        </div>
+      </div>
+      <div id="nav-auth-area" class="header-actions" style="display:flex;align-items:center;gap:0.44rem;">
+        <div id="nav-guest-actions" style="display:flex;align-items:center;gap:0.44rem;">
+          <a id="nav-signin-btn" onclick="openAuth('signin')" style="font-size:0.92rem;color:var(--mid);cursor:pointer;padding:0.42rem 0.78rem;border-radius:100px;transition:all 0.18s;text-decoration:none;">Sign in</a>
+          <a id="nav-signup-btn" onclick="openAuth('signup')" class="nav-cta cta-primary" style="font-size:0.92rem;cursor:pointer;text-decoration:none;">Create free account</a>
+        </div>
+        <a href="#" id="navSignOutBtn" role="button" style="display:none;font-size:0.92rem;cursor:pointer;text-decoration:none;">Sign out</a>
+      </div>
+    </div>
+  </div>
+  </nav>
+  <div class="nav-green-bar">
+    Family law, parenting disputes, AVOs &amp; protection orders — all in one place
+  </div>
+</header>
+
+<main class="satellite-main share-blurb">
+  <p>This link refers to an encrypted item stored in CasePath. Decryption is only possible in your browser when you are signed in with the same account that created the vault key.</p>
+  <p>Open the <a href="/index.html">main app</a> from the same site, sign in, and use Your Case → CasePath Vault to manage items.</p>
+</main>
+
+<script src="/assets/js/public-static-nav.js"></script>
+<script src="/assets/js/nav-link-fallback.js" defer></script>
+<script src="/assets/js/translations.js" defer></script>
+<script>
+  (function () {
+    var p = new URLSearchParams(window.location.search);
+    var t = p.get("token");
+    if (t) document.title = "Shared item — token set";
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!-- Home: process + situation (loaded on http/https; file:// uses index fallback) -->
+<div style="background:white;padding:0.9rem 0 0.35rem;">
+  <div class="section-wrap" style="padding-top:0;padding-bottom:0;">
+    <div class="home-process-situation">
+      <section class="section">
+        <div class="columns">
+
+          <div class="process-column">
+            <p class="eyebrow">How it works</p>
+            <h2 class="heading">The process</h2>
+            <p class="subheading">Simple steps through a complex system</p>
+
+            <div class="phase">
+              <p class="phase-label">Understand</p>
+              <div class="steps">
+                <div class="step">
+                  <div class="step-number">01</div>
+                  <p class="step-title">Tell us your situation</p>
+                  <p class="step-desc">Plain-English questions about children, property, separation date. No jargon.</p>
+                </div>
+                <div class="step">
+                  <div class="step-number">02</div>
+                  <p class="step-title">Get your roadmap</p>
+                  <p class="step-desc">The exact forms you need, filing order, and what each stage expects.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="phase">
+              <p class="phase-label">Prepare</p>
+              <div class="steps">
+                <div class="step">
+                  <div class="step-number">03</div>
+                  <p class="step-title">Store everything safely</p>
+                  <p class="step-desc">Encrypted private vault. Documents leave your device protected.</p>
+                </div>
+                <div class="step">
+                  <div class="step-number">04</div>
+                  <p class="step-title">Build your documents</p>
+                  <p class="step-desc">Notes become court-ready affidavits, timelines, and summaries.</p>
+                </div>
+                <div class="step">
+                  <div class="step-number">05</div>
+                  <p class="step-title">Refine your case</p>
+                  <p class="step-desc">Identify risks, reduce conflict, align with what courts look for.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="phase">
+              <p class="phase-label">Act</p>
+              <div class="steps">
+                <div class="step">
+                  <div class="step-number">06</div>
+                  <p class="step-title">Export and take action</p>
+                  <p class="step-desc">Clean, formatted documents ready for filing, mediation, or review.</p>
+                </div>
+                <div class="step">
+                  <div class="step-number">07</div>
+                  <p class="step-title">Stay supported throughout</p>
+                  <p class="step-desc">AI assistant, glossary, and guidance — before, during, and after court.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="situation-column">
+            <p class="eyebrow">Where do I start</p>
+            <h2 class="heading">What's your <em>situation?</em></h2>
+            <p class="subheading">Choose the path that matches your circumstances</p>
+
+            <button type="button" class="urgent-callout" onclick="if(typeof showPage==='function'){showPage('avo');return false;}">
+              <div class="urgent-icon" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#72243E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 9v4"/>
+                  <path d="M12 17h.01"/>
+                  <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                </svg>
+              </div>
+              <div class="urgent-content">
+                <div class="urgent-header">
+                  <span class="urgent-title">I've been served an AVO / I need one</span>
+                  <span class="urgent-pill">Urgent</span>
+                </div>
+                <p class="urgent-desc">Apply for or respond to an Apprehended Violence Order.</p>
+              </div>
+            </button>
+
+            <div class="situation-grid">
+
+              <button type="button" class="situation-card" data-route="parenting" onclick="if(typeof showPage==='function'){showPage('parenting-orders');return false;}">
+                <div class="situation-icon teal" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/>
+                    <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+                    <circle cx="17" cy="8" r="3"/>
+                  </svg>
+                </div>
+                <p class="situation-title">I want parenting orders</p>
+                <p class="situation-desc">Where children live, time with each parent, responsibility.</p>
+              </button>
+
+              <button type="button" class="situation-card" data-route="divorce" onclick="if(typeof showPage==='function'){showPage('forms');return false;}">
+                <div class="situation-icon blue" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="9" y1="15" x2="15" y2="15"/>
+                  </svg>
+                </div>
+                <p class="situation-title">I want a divorce</p>
+                <p class="situation-desc">How to apply, requirements, timeline, forms to file.</p>
+              </button>
+
+              <button type="button" class="situation-card" data-route="property" onclick="if(typeof showPage==='function'){showPage('forms');return false;}">
+                <div class="situation-icon coral" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#993C1D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                  </svg>
+                </div>
+                <p class="situation-title">We need to divide property</p>
+                <p class="situation-desc">Property settlement, super splitting, financial disclosure.</p>
+              </button>
+
+              <button type="button" class="situation-card" data-route="breach" onclick="if(typeof showPage==='function'){showPage('forms');return false;}">
+                <div class="situation-icon amber" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#854F0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                </div>
+                <p class="situation-title">Orders have been breached</p>
+                <p class="situation-desc">Contravention applications when the other party isn't complying.</p>
+              </button>
+
+              <button type="button" class="situation-card" data-route="respond" onclick="if(typeof showPage==='function'){showPage('doc-helper');return false;}">
+                <div class="situation-icon purple" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#534AB7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </div>
+                <p class="situation-title">I need to respond to an application</p>
+                <p class="situation-desc">You've been served. Here's what to do and when.</p>
+              </button>
+
+              <button type="button" class="situation-card" data-route="urgent" onclick="if(typeof showPage==='function'){showPage('forms');return false;}">
+                <div class="situation-icon gray" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#444441" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                </div>
+                <p class="situation-title">I need urgent orders</p>
+                <p class="situation-desc">Interim and urgent applications, including family violence injunctions.</p>
+              </button>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

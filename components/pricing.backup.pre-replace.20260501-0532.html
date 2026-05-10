@@ -1,0 +1,94 @@
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-eyebrow">Plans & Pricing</div>
+    <h1>Simple, honest <em>pricing</em></h1>
+    <p>Start free. Included when you need the full toolkit. No lock-in, no surprises.</p>
+  </div>
+</div>
+<p style="margin-top:10px;">Or go straight to → <a onclick="cdBuildDashboard();showPage('vault')" style="cursor:pointer;color:var(--sage);font-weight:600;">Your Case</a></p>
+<div class="section-wrap" style="max-width:1100px;margin:0 auto;">
+  <div style="display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:2.5rem;">
+    <span id="billing-monthly-label" style="font-size:0.9rem;font-weight:600;color:var(--charcoal);">Monthly</span>
+    <button id="billing-toggle" onclick="toggleBilling()" style="width:52px;height:28px;border-radius:100px;border:none;background:var(--sage);cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0;">
+      <span id="billing-knob" style="position:absolute;top:4px;left:4px;width:20px;height:20px;border-radius:50%;background:white;transition:transform 0.2s;display:block;"></span>
+    </button>
+    <span id="billing-annual-label" style="font-size:0.9rem;color:var(--soft);">Annual <span style="background:var(--sage-pale);color:var(--sage);font-size:0.72rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:100px;margin-left:0.25rem;">Save 20%</span></span>
+  </div>
+
+  <p style="text-align:center;font-weight:600;">Most people choose Full Access to complete their case without restarting.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.35rem;margin-bottom:3rem;align-items:stretch;">
+    <div class="pricing-plan-card" data-plan="starter" style="height:100%;display:flex;flex-direction:column;border:1px solid rgba(74,124,89,0.16);box-shadow:0 10px 24px rgba(14,20,35,0.05);padding-top:1.65rem;">
+      <div class="ppc-badge" style="background:#dfeae3;color:#5f7f67;text-transform:uppercase;letter-spacing:0.05em;font-size:0.72rem;">FREE FOREVER</div>
+      <div class="ppc-icon" style="margin-top:0.45rem;">🌱</div>
+      <h3 class="ppc-name">Starter</h3>
+      <p class="ppc-desc">Everything you need to understand the system — no account required for most features.</p>
+      <div class="ppc-price-wrap"><span class="ppc-amount">$0</span><span class="ppc-period">forever</span></div>
+      <ul class="ppc-features" style="line-height:1.34;margin-top:0.25rem;margin-bottom:0.7rem;">
+        <li>✓ Legislation Library</li><li>✓ Forms Centre</li><li>✓ Glossary (first 10 terms)</li><li>✓ About the Kids</li><li>✓ Mental Health resources</li><li>✓ AVO Centre</li><li>✓ Ask a Question bot (5 questions)</li>
+        <li class="ppc-dim">✗ Document Helper</li><li class="ppc-dim">✗ AI Legal Assistant</li><li class="ppc-dim">✗ Your Case</li>
+      </ul>
+      <button class="ppc-btn ppc-btn-secondary" onclick="openAuth('signup')" style="margin-top:auto;">Get started free →</button>
+    </div>
+
+    <div class="pricing-plan-card" data-plan="essential" style="height:100%;display:flex;flex-direction:column;border:1px solid rgba(21,101,160,0.2);box-shadow:0 10px 24px rgba(14,20,35,0.05);">
+      <div class="ppc-badge" style="background:#e8f0fe;color:#1565a0;">Account required</div>
+      <div class="ppc-icon">📋</div>
+      <h3 class="ppc-name">Essential</h3>
+      <p class="ppc-desc">Create an account and unlock the full glossary, your family team, and unlimited bot questions at an accessible monthly rate.</p>
+      <div class="ppc-price-wrap"><span class="ppc-amount" id="plan-essential-price">$14.99</span><span class="ppc-period" id="plan-essential-period">/ month</span></div>
+      <p id="plan-essential-annual-note" style="font-size:0.72rem;color:var(--soft);margin:-0.5rem 0 0.75rem;display:none;">Billed as <strong id="plan-essential-annual-total">$143.90</strong> / year</p>
+      <ul class="ppc-features">
+        <li>✓ Everything in Starter</li><li>✓ Full Glossary (500+ terms)</li><li>✓ Your Family Team</li><li>✓ Unlimited bot questions</li>
+        <li class="ppc-dim">✗ Document Helper</li><li class="ppc-dim">✗ AI Legal Assistant</li><li class="ppc-dim">✗ Your Case &amp; Vault</li>
+      </ul>
+      <button class="ppc-btn ppc-btn-secondary" onclick="openPricingCheckout('essential')" style="margin-top:auto;">Get Essential →</button>
+      <p style="font-size:0.72rem;color:var(--soft);text-align:center;margin-top:0.6rem;">Cancel any time · No lock-in</p>
+    </div>
+
+    <div class="pricing-plan-card" data-plan="pro" style="height:100%;display:flex;flex-direction:column;border:1px solid rgba(74,124,89,0.16);box-shadow:0 10px 24px rgba(14,20,35,0.05);">
+      <div class="ppc-badge" style="background:var(--sage-pale);color:var(--sage);">Most popular</div>
+      <div class="ppc-icon">⚖️</div>
+      <h3 class="ppc-name">Full Access</h3>
+      <p class="ppc-desc">Everything unlocked. The complete CasePath toolkit for your entire case — month by month, cancel any time.</p>
+      <div class="ppc-price-wrap"><span class="ppc-amount" id="plan-full-price">$29.99</span><span class="ppc-period" id="plan-full-period">/ month</span></div>
+      <p id="plan-full-annual-note" style="font-size:0.72rem;color:var(--soft);margin:-0.5rem 0 0.75rem;display:none;">Billed as <strong id="plan-full-annual-total">$287.88</strong> / year</p>
+      <ul class="ppc-features">
+        <li>✓ Everything in Essential</li><li>✓ Document Helper</li><li>✓ AI Legal Assistant (unlimited)</li><li>✓ Your Case</li><li>✓ Evidence Vault (AES-256)</li><li>✓ Litigation phase tracker</li><li>✓ Document drafting &amp; export</li><li>✓ Invite your lawyer (read-only sharing)</li><li>✓ Priority support</li>
+      </ul>
+      <button class="ppc-btn ppc-btn-secondary" onclick="openPricingCheckout('pro_monthly')" style="margin-top:auto;">Get Full Access →</button>
+      <p style="font-size:0.72rem;color:var(--soft);text-align:center;margin-top:0.6rem;">Cancel any time · No lock-in</p>
+    </div>
+
+    <div class="pricing-plan-card" data-onetime="credits_1" style="height:100%;display:flex;flex-direction:column;border:1px solid rgba(74,124,89,0.16);box-shadow:0 10px 24px rgba(14,20,35,0.05);">
+      <div class="ppc-badge" style="background:#e8f0fe;color:#1565a0;">One-off · No subscription</div>
+      <div class="ppc-icon">📄</div>
+      <h3 class="ppc-name">Document Helper — One Document</h3>
+      <p class="ppc-desc">Pay once and draft one document with unlimited edits until you're happy with it. No subscription, no ongoing commitment. Your document stays accessible for 90 days.</p>
+      <div class="ppc-price-wrap"><span class="ppc-amount">$69.99</span><span class="ppc-period">one-off payment</span></div>
+      <ul class="ppc-features">
+        <li>✓ Any document type</li><li>✓ Unlimited edits</li><li>✓ Download as .docx</li><li>✓ Print / Save PDF</li><li>✓ Quality checker included</li><li>✓ 90-day document access</li>
+      </ul>
+      <button class="ppc-btn ppc-btn-secondary" onclick="openPricingCheckout('credits_1')" style="margin-top:auto;">Buy one document →</button>
+    </div>
+  </div>
+
+  <div style="max-width:680px;margin:0 auto 3rem;">
+    <h2 style="font-family:'Lora',serif;text-align:center;margin-bottom:1.5rem;">Common questions</h2>
+    <div class="pricing-faq">
+      <div class="pfaq-item"><button class="pfaq-q" onclick="toggleFaq(this)">Can I really cancel any time? <span class="pfaq-icon">+</span></button><div class="pfaq-a">Yes. Monthly plans can be cancelled at any time — your access continues until the end of your billing period. There are no cancellation fees and no minimum terms.</div></div>
+      <div class="pfaq-item"><button class="pfaq-q" onclick="toggleFaq(this)">What happens to my data if I cancel? <span class="pfaq-icon">+</span></button><div class="pfaq-a">Your account and all data remain intact for 30 days after cancellation. You can export or download your documents during this window. After 30 days, vault data is securely deleted.</div></div>
+      <div class="pfaq-item"><button class="pfaq-q" onclick="toggleFaq(this)">Is this legal advice? <span class="pfaq-icon">+</span></button><div class="pfaq-a">No. CasePath provides legal <em>information</em> — plain-English explanations of Australian family law, the court system, and your procedural options. It is not a substitute for a lawyer. For complex matters or where your safety is at risk, please consult a qualified family lawyer.</div></div>
+      <div class="pfaq-item"><button class="pfaq-q" onclick="toggleFaq(this)">How does the AI Legal Assistant differ from the free bot? <span class="pfaq-icon">+</span></button><div class="pfaq-a">The free Ask a Question bot gives general family law information. The AI Legal Assistant (Full Access) is connected to your case profile — it knows your case type, key facts, and history, and gives you more tailored, case-aware responses. It also has access to the full CasePath knowledge base including your uploaded documents.</div></div>
+      <div class="pfaq-item"><button class="pfaq-q" onclick="toggleFaq(this)">Can my lawyer access my account? <span class="pfaq-icon">+</span></button><div class="pfaq-a">Only if you invite them. When you connect your lawyer, they get read-only access to the vault and case timeline details you choose to share. You can disconnect them at any time. Lawyers cannot access your account without your explicit invitation.</div></div>
+      <div class="pfaq-item"><button class="pfaq-q" onclick="toggleFaq(this)">Is my data secure? <span class="pfaq-icon">+</span></button><div class="pfaq-a">All vault documents are encrypted with AES-256. CasePath does not share your data with third parties, does not sell your information, and does not use your case data to train AI models. Your data is yours.</div></div>
+    </div>
+  </div>
+
+  <div style="text-align:center;background:linear-gradient(135deg,var(--sage-pale),#f0faf0);border:1px solid rgba(74,124,89,0.2);border-radius:20px;padding:2.5rem 2rem;margin-bottom:3rem;">
+    <div style="font-size:2rem;margin-bottom:0.75rem;">⚖️</div>
+    <h2 style="font-family:'Lora',serif;margin:0 0 0.5rem;text-align:center;width:100%;"><span style="display:block;">Family court shouldn't only be for people</span><span style="display:block;">who can afford a lawyer.</span></h2>
+    <p style="color:var(--mid);max-width:520px;margin:0 auto 1.25rem;font-size:0.9rem;line-height:1.7;">CasePath is built for every Australian going through separation. Start free, upgrade only if you need the full toolkit.</p>
+    <button class="btn-primary" onclick="showPage('doc-helper')">Start your case</button>
+  </div>
+</div>

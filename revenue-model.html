@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Revenue Model | CasePath</title>
+  <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/public-static-pages.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sage: #4a7c59;
+      --sage-pale: #e8f0eb;
+      --charcoal: #1e2420;
+      --cream: #faf7f2;
+      --border: #d9d6cf;
+    }
+    .rev-inner {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.25rem 4rem;
+    }
+    .hero-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 0.7rem;
+    }
+    h1, h2, h3 {
+      font-family: "Lora", Georgia, serif;
+      margin: 0 0 0.65rem;
+      line-height: 1.25;
+    }
+    h1 { font-size: clamp(2rem, 4vw, 3rem); }
+    h1 em { color: var(--sage); font-style: italic; }
+    .hero-sub {
+      font-size: 1.02rem;
+      color: #4d5a52;
+      max-width: 650px;
+      margin: 0.7rem auto 0;
+    }
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+      margin: 1.75rem 0 2rem;
+    }
+    .section {
+      padding: 0.2rem 0 1.25rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 2px 14px rgba(20, 30, 24, 0.06);
+    }
+    .card h3 {
+      font-size: 1.6rem;
+      color: var(--sage);
+      margin-bottom: 0.35rem;
+    }
+    .card p {
+      margin: 0;
+      color: #4b5650;
+      font-size: 0.95rem;
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .included-section {
+      background: #1c2420;
+      border-radius: 18px;
+      margin-top: 0.8rem;
+    }
+    .btn-primary {
+      display: inline-block;
+      margin-top: 1.1rem;
+      background: var(--sage);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 0.75rem 1.35rem;
+      border: 1px solid rgba(74, 124, 89, 0.35);
+    }
+    .btn-primary:hover { filter: brightness(1.06); }
+  </style>
+</head>
+<body class="page-satellite">
+<div class="disclaimer-banner">
+  <strong>Important:</strong> This site provides legal <em>information</em> only — not legal advice. For advice about your situation, contact a family lawyer or <a href="https://www.legalaid.nsw.gov.au" target="_blank" style="color:#6b4c10;font-weight:600;">Legal Aid Australia</a>.
+</div>
+<header class="header">
+  <nav class="nav-wrapper">
+  <div class="nav-top-row header-inner">
+    <a class="logo-wrap" href="/index.html">
+      <span class="logo-name">CasePath</span>
+    </a>
+    <div class="nav-site-links" aria-label="Main menu">
+      <button type="button" class="nav-mobile-toggle" id="nav-mobile-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="nav-main-grid">
+        Menu <span class="nav-mobile-chevron" aria-hidden="true">▼</span>
+      </button>
+      <a href="/index.html" id="nav-legislation" style="display:none;">Legislation</a>
+      <div class="nav-grid" id="nav-main-grid">
+        <a href="/index.html" id="nav-mission" class="nav-mission-pulse" data-row="1">Our Mission</a>
+        <a href="/index.html" id="nav-glossary" data-row="1">Glossary</a>
+        <a href="/index.html" id="nav-mental-health" data-row="1">Mental Health</a>
+        <a href="/index.html" id="nav-parenting-orders" class="parenting-orders nav-parenting-centre nav-featured" style="color:var(--sage);font-weight:700;" data-row="1">Parenting Orders</a>
+        <a href="/index.html" id="nav-doc-helper" data-row="1">Document Helper</a>
+        <a href="/index.html" id="nav-ai-assistant" data-row="1">AI Assistant</a>
+        <a href="/index.html" id="nav-your-case-pulse" class="nav-mission-pulse" data-row="1">Your Case</a>
+        <a href="/index.html" id="nav-kids" data-row="2">About the Kids</a>
+        <a href="/index.html" id="nav-your-team" data-row="2">Your Family Team</a>
+        <a href="/index.html" id="nav-new-item" class="nav-item" data-row="2">Support Tools</a>
+        <a href="/index.html" id="nav-avo" class="nav-avo-centre" data-row="2">AVO Centre</a>
+        <a href="/index.html" id="nav-pricing" data-row="2">Pricing</a>
+        <a href="/index.html" id="nav-referrals" data-row="2">Referrals</a>
+        <a href="/index.html" id="nav-lawyer-portal" style="color:#c8a96e;font-weight:700;" data-row="2">Lawyer Portal</a>
+      </div>
+    </div>
+    <div class="nav-trailing" style="display:flex;align-items:center;gap:0.44rem;flex-shrink:0;">
+      <div class="header-actions" style="display:flex;align-items:center;gap:0.44rem;">
+        <div id="lang-selector-wrap" class="lang-switch">
+          <button id="lang-btn" onclick="toggleLangDropdown(event)"><span id="lang-current-flag">🇦🇺</span><span id="lang-current-label">EN</span><span style="font-size:0.6rem;opacity:0.6;">▼</span></button>
+          <div id="lang-dropdown">
+          <div class="lang-divider">Select language</div>
+          <button class="lang-option active" onclick="setLang('en','🇦🇺','EN')"><span class="lang-flag">🇦🇺</span> English</button>
+          <button class="lang-option" onclick="setLang('zh-CN','🇨🇳','中文')"><span class="lang-flag">🇨🇳</span> Mandarin 中文</button>
+          <button class="lang-option" onclick="setLang('ar','🇸🇦','عربي')"><span class="lang-flag">🇸🇦</span> Arabic عربي</button>
+          <button class="lang-option" onclick="setLang('vi','🇻🇳','Việt')"><span class="lang-flag">🇻🇳</span> Vietnamese</button>
+          <button class="lang-option" onclick="setLang('zh-TW','🇭🇰','廣東')"><span class="lang-flag">🇭🇰</span> Cantonese 廣東話</button>
+          <button class="lang-option" onclick="setLang('pa','🇮🇳','ਪੰਜਾਬੀ')"><span class="lang-flag">🇮🇳</span> Punjabi</button>
+          <button class="lang-option" onclick="setLang('el','🇬🇷','Ελληνικά')"><span class="lang-flag">🇬🇷</span> Greek</button>
+          <button class="lang-option" onclick="setLang('it','🇮🇹','Italiano')"><span class="lang-flag">🇮🇹</span> Italian</button>
+          <button class="lang-option" onclick="setLang('de','🇩🇪','Deutsch')"><span class="lang-flag">🇩🇪</span> German</button>
+          <button class="lang-option" onclick="setLang('fr','🇫🇷','Français')"><span class="lang-flag">🇫🇷</span> French</button>
+          <button class="lang-option" onclick="setLang('hi','🇮🇳','हिन्दी')"><span class="lang-flag">🇮🇳</span> Hindi</button>
+          <button class="lang-option" onclick="setLang('es','🇪🇸','Español')"><span class="lang-flag">🇪🇸</span> Spanish</button>
+          <button class="lang-option" onclick="setLang('tl','🇵🇭','Filipino')"><span class="lang-flag">🇵🇭</span> Filipino</button>
+          <button class="lang-option" onclick="setLang('tr','🇹🇷','Türkçe')"><span class="lang-flag">🇹🇷</span> Turkish</button>
+          <button class="lang-option" onclick="setLang('ko','🇰🇷','한국어')"><span class="lang-flag">🇰🇷</span> Korean</button>
+          <button class="lang-option" onclick="setLang('ja','🇯🇵','日本語')"><span class="lang-flag">🇯🇵</span> Japanese 日本語</button>
+            <button class="lang-option" onclick="setLang('so','🇸🇴','Soomaali')"><span class="lang-flag">🇸🇴</span> Somali</button>
+          </div>
+        </div>
+      </div>
+      <div id="nav-auth-area" class="header-actions" style="display:flex;align-items:center;gap:0.44rem;">
+        <div id="nav-guest-actions" style="display:flex;align-items:center;gap:0.44rem;">
+          <a id="nav-signin-btn" onclick="openAuth('signin')" style="font-size:0.92rem;color:var(--mid);cursor:pointer;padding:0.42rem 0.78rem;border-radius:100px;transition:all 0.18s;text-decoration:none;">Sign in</a>
+          <a id="nav-signup-btn" onclick="openAuth('signup')" class="nav-cta cta-primary" style="font-size:0.92rem;cursor:pointer;text-decoration:none;">Create free account</a>
+        </div>
+        <a href="#" id="navSignOutBtn" role="button" style="display:none;font-size:0.92rem;cursor:pointer;text-decoration:none;">Sign out</a>
+      </div>
+    </div>
+  </div>
+  </nav>
+  <div class="nav-green-bar">
+    Family law, parenting disputes, AVOs &amp; protection orders — all in one place
+  </div>
+</header>
+
+<main class="satellite-main rev-inner">
+
+  <div class="hero" style="padding:30px 20px;text-align:center;">
+    <div class="hero-label">Evidence & Transparency</div>
+    <h1>Revenue Model<br><em>Built on Real Data</em></h1>
+    <p class="hero-sub">
+      Derived from NSW Treasury data using conservative assumptions.
+    </p>
+  </div>
+
+  <div class="divider"></div>
+  <section class="section">
+    <h2 style="text-align:center;">Core Assumptions</h2>
+    <p style="max-width:650px;margin-left:auto;margin-right:auto;">
+      This model uses publicly available NSW Treasury and ABS references, conservative land-value assumptions,
+      and standard taxation settings to estimate likely annual revenue under a fair and transparent framework.
+    </p>
+  </section>
+
+  <div class="divider"></div>
+  <section class="section">
+    <h2 style="text-align:center;">Estimated Revenue Range</h2>
+    <div class="grid" style="gap:30px;margin-top:2rem;">
+      <div class="card" style="padding:2rem;text-align:center;transition:0.2s;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 10px 30px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <h3>$3B–$5B+</h3>
+        <p style="max-width:650px;margin-left:auto;margin-right:auto;">Total annual tax concessions (NSW)</p>
+      </div>
+      <div class="card" style="padding:2rem;text-align:center;transition:0.2s;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 10px 30px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <h3>$800M–$2.5B</h3>
+        <p style="max-width:650px;margin-left:auto;margin-right:auto;">Estimated annual revenue (conservative range)</p>
+      </div>
+      <div class="card" style="padding:2rem;text-align:center;transition:0.2s;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 10px 30px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <h3>20%–40%</h3>
+        <p style="max-width:650px;margin-left:auto;margin-right:auto;">Estimated share from large institutional holdings</p>
+      </div>
+      <div class="card" style="padding:2rem;text-align:center;transition:0.2s;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 10px 30px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <h3>Public Data</h3>
+        <p style="max-width:650px;margin-left:auto;margin-right:auto;">NSW Treasury • ABS • ACNC</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+  <section class="section included-section" style="padding:30px 20px;text-align:center;">
+    <h2 style="color:white;">$800M – $2.5B</h2>
+    <p style="color:#ccc;max-width:600px;margin:0 auto;">
+      Conservative annual estimate based on publicly available data and standard tax settings.
+    </p>
+  </section>
+
+  <div class="divider"></div>
+  <section class="section" style="text-align:center;">
+    <h2>See How This Translates Into Policy</h2>
+    <a href="/index.html" class="btn-primary">
+      Back to Policy →
+    </a>
+  </section>
+
+</main>
+
+<script src="/assets/js/public-static-nav.js"></script>
+<script src="/assets/js/nav-link-fallback.js" defer></script>
+<script src="/assets/js/translations.js" defer></script>
+</body>
+</html>

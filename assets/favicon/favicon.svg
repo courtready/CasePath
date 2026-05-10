@@ -1,0 +1,18 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="96" fill="#0F172A"/>
+  
+  <!-- Document -->
+  <path d="M160 120 H280 L352 192 V360 Q352 392 320 392 H160 Q128 392 128 360 V152 Q128 120 160 120 Z" 
+        fill="none" stroke="#E5E7EB" stroke-width="20" stroke-linejoin="round"/>
+  
+  <!-- Fold -->
+  <path d="M280 120 V192 H352" fill="none" stroke="#E5E7EB" stroke-width="20" stroke-linejoin="round"/>
+  
+  <!-- Text lines -->
+  <line x1="180" y1="240" x2="300" y2="240" stroke="#94A3B8" stroke-width="16" stroke-linecap="round"/>
+  <line x1="180" y1="280" x2="280" y2="280" stroke="#94A3B8" stroke-width="16" stroke-linecap="round"/>
+  
+  <!-- Spark -->
+  <path d="M360 300 L380 340 L420 360 L380 380 L360 420 L340 380 L300 360 L340 340 Z"
+        fill="#22C55E"/>
+</svg>

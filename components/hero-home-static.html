@@ -1,0 +1,49 @@
+<section style="background:var(--cream);padding-top:0;overflow:visible;padding-bottom:1.2rem;">
+  <div class="hero">
+    <div class="hero-content">
+      <!-- Button row - hidden once case is started -->
+      <div id="hero-btn-row" style="text-align:left;margin-bottom:1.5rem;display:flex;flex-direction:column;gap:0.65rem;justify-content:flex-start;flex-wrap:nowrap;align-items:flex-start;">
+        <button id="hero-mission-btn" onclick="heroMissionClick(this)" class="hero-mission-btn" style="font-size:clamp(1.68rem,3.6vw,2.4rem);white-space:nowrap;">Read Our Mission →</button>
+        <button id="hero-start-btn" onclick="if(!currentUser){openAuth('signup');}else{showPage('start-case');}" class="hero-mission-btn" style="font-size:clamp(1.68rem,3.6vw,2.4rem);white-space:nowrap;">Start Your Case ⚖</button>
+        <button id="hero-dash-btn" style="display:none;"></button>
+      </div>
+
+      <!-- Upcoming events panel - replaces button row after case is started -->
+      <div id="hero-upcoming-panel" style="display:none;margin-bottom:1.5rem;width:100%;max-width:780px;margin-left:auto;margin-right:auto;">
+        <div style="background:white;border-radius:24px;box-shadow:0 4px 24px rgba(30,36,32,0.10);overflow:hidden;border:1.5px solid var(--sage-pale);">
+          <div style="background:var(--charcoal);padding:1.125rem 1.65rem;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:0.825rem;">
+              <span style="font-size:1.5rem;">📅</span>
+              <span style="font-family:'Lora',serif;font-size:1.32rem;font-weight:700;color:white;">Your Case - Upcoming Events</span>
+            </div>
+            <button onclick="cdBuildDashboard();showPage('vault')" style="font-size:1.125rem;font-weight:600;color:var(--sage-light);background:rgba(106,171,124,0.18);border:1px solid rgba(106,171,124,0.3);border-radius:20px;padding:0.33rem 1.05rem;cursor:pointer;white-space:nowrap;transition:background 0.15s;" onmouseover="this.style.background='rgba(106,171,124,0.32)'" onmouseout="this.style.background='rgba(106,171,124,0.18)'">Full Dashboard →</button>
+          </div>
+          <div id="hero-upcoming-list" style="padding:0.9rem 1.35rem;display:flex;flex-direction:column;gap:0.6rem;min-height:72px;"></div>
+          <div style="padding:0.75rem 1.35rem 0.975rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:0.75rem;">
+            <span style="font-size:1.11rem;color:var(--soft);">Add dates to track deadlines &amp; hearings</span>
+            <button onclick="cdBuildDashboard();showPage('vault');setTimeout(function(){var el=document.getElementById('cal-new-title');if(el)el.focus();},350);" style="font-size:1.11rem;font-weight:600;color:var(--sage);background:var(--sage-pale);border:1px solid rgba(74,124,89,0.25);border-radius:20px;padding:0.33rem 1.125rem;cursor:pointer;white-space:nowrap;transition:background 0.15s;" onmouseover="this.style.background='#d4e8da'" onmouseout="this.style.background='var(--sage-pale)'">+ Add Event</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-eyebrow">⚖ Free · Secure · Australian</div>
+      <h1>Family law, parenting disputes,<br><em style="display:block;">AVOs &amp; protection orders,<br>all in one place</em></h1>
+      <p class="hero-sub">CasePath gives you plain-English guidance through Australia's family law system - every form, every step, and Your Case to track deadlines and organise your evidence.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="showPage('glossary')">Ask a question →</button>
+        <button class="btn-secondary" onclick="showPage('forms')">Find a form</button>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-avatars">
+          <div class="trust-avatar">SK</div>
+          <div class="trust-avatar">MT</div>
+          <div class="trust-avatar">JL</div>
+          <div class="trust-avatar">+</div>
+        </div>
+        <p>Australians navigating the FCFCOA<br><strong>without expensive legal fees</strong></p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0;align-self:start;width:100%;padding-right:0.25rem;">
+    </div>
+  </div>
+</section>

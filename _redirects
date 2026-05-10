@@ -1,0 +1,9 @@
+# Toggle maintenance (Netlify): comment the two "Live" lines and uncomment "Maintenance".
+# Restore: uncomment Live lines and comment or remove the Maintenance line.
+
+# --- Live (SPA) ---
+/casepath/* /index.html 200
+/* /index.html 200
+
+# --- Maintenance (site down) ---
+# /* /maintenance.html 200

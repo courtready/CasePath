@@ -1,0 +1,103 @@
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuth()">×</button>
+
+    <!-- Sign In Panel -->
+    <div id="auth-signin">
+      <h2>Welcome back</h2>
+      <p class="modal-sub">Sign in to access CasePath.</p>
+      <div class="field"><label>Email address</label><input type="email" id="signin-email" placeholder="you@email.com"></div>
+      <div class="field"><label>Password</label><input type="password" id="signin-pass" placeholder="••••••••"></div>
+      <div id="signin-error" style="display:none;background:#fef2f2;border:1px solid #fca5a5;color:#b91c1c;font-size:0.8rem;padding:0.6rem 0.9rem;border-radius:8px;margin-bottom:0.75rem;"></div>
+      <button class="btn-full" onclick="doSignIn()">Sign In</button>
+      <p style="text-align:center;margin-top:1rem;font-size:0.8rem;color:var(--soft)">Don't have an account? <a onclick="switchAuth('signup')" style="color:var(--sage);font-weight:500;cursor:pointer;">Create one free</a></p>
+    </div>
+
+    <!-- Sign Up Panel -->
+    <div id="auth-signup" style="display:none;">
+      <h2>Create your account</h2>
+      <p class="modal-sub">Free forever. No credit card required.</p>
+      <div class="field"><label>Full name</label><input type="text" id="signup-name" placeholder="Jane Smith"></div>
+      <div class="field"><label>Email address</label><input type="email" id="signup-email" placeholder="you@email.com"></div>
+      <div class="field"><label>Password</label><input type="password" id="signup-pass" placeholder="Strong password"></div>
+      <p id="signup-pass-hint" style="margin:-0.35rem 0 0.65rem;font-size:0.72rem;color:var(--soft);line-height:1.45;">Must contain a lowercase letter, an uppercase letter, a number, and a symbol, and be at least 8 characters.</p>
+      <div class="field"><label>Confirm password</label><input type="password" id="confirm-password" placeholder="Re-enter your password"></div>
+      <div class="field"><label>Postcode</label><input type="text" id="postcode" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4-digit postcode"><small style="display:block;margin-top:0.3rem;color:var(--soft);font-size:0.72rem;">Australian postcode (4 digits)</small></div>
+
+      <!-- Terms of Use - mandatory scroll-to-enable -->
+      <div style="margin-bottom:0.85rem;">
+        <label style="font-size:0.78rem;font-weight:600;color:var(--mid);display:block;margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.04em;">Terms of Use and Legal Disclaimer - please read in full</label>
+        <div id="signup-terms-box" style="height:200px;overflow-y:scroll;border:1px solid #ccc;border-radius:8px;padding:0.85rem 1rem;background:#fafafa;font-size:0.78rem;color:var(--mid);line-height:1.65;">
+          <h3 style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--charcoal);">1. Acceptance of Terms</h3>
+          <p style="margin:0 0 0.75rem;">By creating an account or using this website you agree to these Terms of Use. If you do not agree to these terms you must not use this website.</p>
+          <h3 style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--charcoal);">2. Information and Assistance Only - Not Legal Advice</h3>
+          <p style="margin:0 0 0.5rem;">This website provides general information, tools, templates, document generators, and automated assistance designed to help users understand court processes and prepare documents.</p>
+          <p style="margin:0 0 0.5rem;">Nothing on this website constitutes legal advice, legal representation, legal services, or legal opinion.</p>
+          <p style="margin:0 0 0.75rem;">The website is not a law firm and does not provide legal advice. You should obtain independent legal advice from a qualified lawyer before relying on any information or documents generated through this platform.</p>
+          <h3 style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--charcoal);">3. No Lawyer-Client Relationship</h3>
+          <p style="margin:0 0 0.75rem;">Use of this website does not create a lawyer-client relationship between you and the website operators, developers, or contributors.</p>
+          <h3 style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--charcoal);">4. Artificial Intelligence Disclaimer</h3>
+          <p style="margin:0 0 0.5rem;">Some assistance or document generation on this platform may be produced using automated systems or artificial intelligence.</p>
+          <p style="margin:0 0 0.5rem;">Automated systems may produce inaccurate, incomplete, outdated, or inappropriate information.</p>
+          <p style="margin:0 0 0.75rem;">You must review and verify all information and documents generated before using or submitting them.</p>
+          <h3 style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--charcoal);">5. Jurisdiction Disclaimer</h3>
+          <p style="margin:0 0 0.5rem;">Legal procedures and court rules vary between jurisdictions. This platform provides information relating primarily to legal processes in Australia, however laws and court procedures may change or vary.</p>
+          <p style="margin:0 0 0.75rem;">You are responsible for ensuring that any documents comply with the rules of the relevant court.</p>
+          <h3 style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--charcoal);">6. Court Document Disclaimer</h3>
+          <p style="margin:0 0 0.5rem;">Documents generated by this platform are templates or draft documents only.</p>
+          <p style="margin:0 0 0.5rem;">The platform does not guarantee that any document generated will be accepted by a court or tribunal.</p>
+          <p style="margin:0 0 0.75rem;">You are solely responsible for reviewing and verifying any document before filing it with a court.</p>
+          <h3 style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--charcoal);">7. User Responsibility</h3>
+          <p style="margin:0 0 0.4rem;">You are responsible for ensuring that:</p>
+          <ul style="margin:0 0 0.75rem;padding-left:1.25rem;">
+            <li>all information entered into the platform is accurate</li>
+            <li>generated documents are reviewed before use</li>
+            <li>documents comply with court rules</li>
+            <li>documents are appropriate for your circumstances</li>
+          </ul>
+          <h3 style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--charcoal);">8. User Content Responsibility</h3>
+          <p style="margin:0 0 0.5rem;">Users may enter text, upload documents, or generate content using the tools provided by this platform.</p>
+          <p style="margin:0 0 0.5rem;">You are solely responsible for all content you enter or generate.</p>
+          <p style="margin:0 0 0.4rem;">You agree not to create or upload content that:</p>
+          <ul style="margin:0 0 0.5rem;padding-left:1.25rem;">
+            <li>is false or misleading</li>
+            <li>is defamatory</li>
+            <li>is abusive or threatening</li>
+            <li>violates court orders or suppression orders</li>
+            <li>violates privacy laws</li>
+            <li>infringes the rights of another person</li>
+          </ul>
+          <p style="margin:0 0 0.75rem;">The platform does not verify the accuracy of user-generated content.</p>
+          <h3 style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--charcoal);">9. Platform Moderation</h3>
+          <p style="margin:0 0 0.75rem;">The platform reserves the right to remove content or suspend accounts if content appears unlawful, abusive, or in breach of these terms.</p>
+          <h3 style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--charcoal);">10. Limitation of Liability</h3>
+          <p style="margin:0 0 0.4rem;">To the maximum extent permitted by law, the website and its operators accept no liability for any loss, damage, or legal consequence arising from:</p>
+          <ul style="margin:0 0 0.75rem;padding-left:1.25rem;">
+            <li>use of the platform</li>
+            <li>reliance on information provided</li>
+            <li>errors in generated documents</li>
+            <li>court rejection of documents</li>
+            <li>legal outcomes resulting from use of the platform</li>
+          </ul>
+          <h3 style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--charcoal);">11. Indemnity</h3>
+          <p style="margin:0 0 0.75rem;">You agree to indemnify and hold harmless the website, its operators, developers, and contributors from any claim, liability, loss, or damage arising from your use of the platform.</p>
+          <h3 style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--charcoal);">12. Australian Consumer Law</h3>
+          <p style="margin:0 0 0.75rem;">Nothing in these terms excludes, restricts, or modifies any rights you may have under the Australian Consumer Law or other applicable legislation that cannot be lawfully excluded.</p>
+          <h3 style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--charcoal);">13. Changes to Terms</h3>
+          <p style="margin:0 0 0.75rem;">These terms may be updated from time to time. Continued use of the website constitutes acceptance of updated terms.</p>
+          <h3 style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--charcoal);">14. Final Acknowledgement</h3>
+          <p style="margin:0;">By creating an account you confirm that you understand that this platform provides general information and document assistance only and does not provide legal advice.</p>
+          <div id="signup-terms-bottom-sentinel" aria-hidden="true" style="height:1px;width:100%;margin-top:0.5rem;flex-shrink:0;"></div>
+        </div>
+        <p id="signup-terms-scroll-hint" style="font-size:0.72rem;color:#b45309;margin:0.35rem 0 0;text-align:center;">↓ Scroll to the bottom to accept</p>
+        <label style="display:flex;align-items:flex-start;gap:0.5rem;margin-top:0.75rem;font-size:0.8rem;color:var(--charcoal);line-height:1.5;">
+          <input type="checkbox" id="signup-terms-check" disabled onchange="crTermsCheck()" style="margin-top:0.2rem;flex-shrink:0;">
+          I confirm that I have read and accept these Terms of Use and understand that this website provides general information only and does not provide legal advice.
+        </label>
+      </div>
+      <div id="signup-error" style="display:none;background:#fef2f2;border:1px solid #fca5a5;color:#b91c1c;font-size:0.8rem;padding:0.6rem 0.9rem;border-radius:8px;margin-bottom:0.75rem;"></div>
+      <button class="btn-full" id="signup-submit-btn" onclick="doSignUp()" disabled>Create Free Account</button>
+      <p style="text-align:center;margin-top:1rem;font-size:0.8rem;color:var(--soft)">Already have an account? <a onclick="switchAuth('signin')" style="color:var(--sage);font-weight:500;cursor:pointer;">Sign in</a></p>
+    </div>
+  </div>
+</div>

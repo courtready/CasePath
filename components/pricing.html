@@ -1,0 +1,354 @@
+<style>
+  :root {
+    --sage: #4a7c59;
+    --sage-light: #6aab7c;
+    --sage-pale: #e8f0eb;
+    --cream: #faf7f2;
+    --warm-white: #fffef9;
+    --charcoal: #1e2420;
+    --mid: #4a5548;
+    --soft: #8a9a87;
+    --gold: #c8a96e;
+    --gold-light: #e8c98e;
+    --blue-pale: #e8f0fe;
+    --blue: #1565a0;
+    --border: rgba(74, 124, 89, 0.15);
+  }
+  .pricing-root *, .pricing-root *::before, .pricing-root *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  .pricing-root { font-family: "DM Sans", sans-serif; background: var(--cream); color: var(--charcoal); font-size: 16px; line-height: 1.5; }
+  .page-hero { background: var(--charcoal); padding: 22px 40px 20px; }
+  .page-hero-inner { max-width: 1100px; margin: 0 auto; }
+  .page-eyebrow { display: block; font-size: 34.5px; font-weight: 500; letter-spacing: 1.4px; text-transform: uppercase; color: var(--sage-light); margin-bottom: 10px; }
+  .page-hero h1 { font-size: 88px; font-weight: 700; color: #fff; margin-bottom: 8px; line-height: 1.15; }
+  .page-hero h1 em { font-style: italic; color: var(--sage-light); font-size: 1.5em; }
+  .page-hero p { font-size: 30px; color: rgba(255, 255, 255, 0.6); max-width: min(56rem, 92vw); }
+  .section-wrap { max-width: 1100px; margin: 0 auto; padding: 32px 32px 64px; }
+  .billing-toggle-row { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 40px; }
+  .billing-label { font-size: 14.5px; font-weight: 600; color: var(--charcoal); }
+  .billing-label.muted { font-weight: 400; color: var(--soft); }
+  .billing-label .save-badge { display: inline-block; background: var(--sage-pale); color: var(--sage); font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 100px; margin-left: 6px; }
+  .toggle-switch { position: relative; width: 52px; height: 28px; background: var(--sage); border: none; border-radius: 100px; cursor: pointer; padding: 0; transition: background 0.2s; }
+  .toggle-switch .knob { position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: left 0.2s; }
+  .toggle-switch.annual .knob { left: 28px; }
+  .plans-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-bottom: 48px; align-items: stretch; }
+  .pricing-plan-card { background: transparent; border: 1px solid var(--gold); border-radius: 20px; padding: 28px 24px; display: flex; flex-direction: column; min-height: 0; height: 100%; box-shadow: 0 8px 40px rgba(200, 169, 110, 0.18); }
+  .pricing-plan-card.highlight-plan { outline: 3px solid var(--gold); box-shadow: 0 0 0 4px rgba(200, 169, 110, 0.22); transform: scale(1.015); transition: box-shadow 0.2s ease, transform 0.2s ease; }
+  .pricing-plan-card.ppc-featured { background: transparent; border: 1px solid var(--gold); box-shadow: 0 8px 40px rgba(200, 169, 110, 0.18); }
+  .ppc-badge { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.65px; text-transform: uppercase; border-radius: 100px; padding: 3px 10px; margin-bottom: 16px; width: fit-content; }
+  .ppc-badge.free { background: var(--gold); color: #fff; }
+  .ppc-badge.account { background: var(--gold); color: #fff; }
+  .ppc-badge.popular { background: var(--gold); color: #fff; }
+  .ppc-icon { font-size: 32px; margin-bottom: 10px; }
+  .ppc-name { font-size: 20px; font-weight: 700; color: var(--charcoal); margin-bottom: 6px; }
+  .ppc-desc { font-size: 13.5px; color: var(--mid); line-height: 1.6; margin-bottom: 18px; }
+  .ppc-price-wrap { display: flex; align-items: baseline; gap: 6px; margin-bottom: 18px; }
+  .ppc-price-wrap + .ppc-price-wrap { margin-top: -8px; }
+  .ppc-amount { font-size: 38px; font-weight: 700; color: var(--charcoal); line-height: 1; }
+  .ppc-period { font-size: 13px; color: var(--soft); }
+  .ppc-features { list-style: none; display: flex; flex-direction: column; gap: 7px; margin-bottom: 24px; flex: 1; }
+  .ppc-features li { font-size: 13.5px; color: var(--charcoal); }
+  .ppc-features li.ppc-dim { color: var(--soft); }
+  .ppc-btn { display: block; width: 100%; padding: 12px 16px; border: none; border-radius: 10px; font-family: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer; text-align: center; transition: opacity 0.15s; }
+  .ppc-btn:hover { opacity: 0.85; }
+  .ppc-btn-secondary { background: var(--sage); color: #fff; }
+  .ppc-btn-primary { background: var(--sage); color: #fff; }
+  .ppc-btn-outline { background: transparent !important; border: 2px solid var(--sage) !important; color: var(--sage) !important; }
+  .ppc-cancel-note { text-align: center; font-size: 11px; color: var(--soft); margin-top: 10px; }
+  .ppc-actions { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+  .one-off-wrap { margin-bottom: 48px; }
+  .one-off-card { border: 2px solid var(--gold); border-radius: 20px; padding: 28px 24px; display: flex; gap: 24px; align-items: flex-start; }
+  .one-off-badge { display: inline-block; background: var(--gold); color: #fff; font-size: 10.5px; font-weight: 700; letter-spacing: 0.65px; text-transform: uppercase; border-radius: 100px; padding: 3px 10px; margin-bottom: 16px; width: fit-content; }
+  .one-off-icon { font-size: 40px; flex-shrink: 0; margin-top: 4px; }
+  .one-off-content { flex: 1; }
+  .one-off-content .ppc-name { font-size: 20px; }
+  .one-off-features { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; margin-bottom: 24px; }
+  .one-off-features li { font-size: 13.5px; color: var(--charcoal); }
+  .one-off-btn { display: inline-block; padding: 12px 24px; background: var(--gold); color: #fff; border: none; border-radius: 10px; font-family: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+  .one-off-btn:hover { opacity: 0.85; }
+  .faq-header { font-size: 28px; font-weight: 700; text-align: center; margin-bottom: 24px; }
+  .faq-wrap { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 48px; }
+  .pfaq-item + .pfaq-item { border-top: 1px solid var(--border); }
+  .pfaq-q { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 20px; background: #fff; font-size: 14px; font-weight: 600; color: var(--charcoal); cursor: pointer; border: none; width: 100%; text-align: left; font-family: inherit; }
+  .pfaq-q:hover { background: #fafafa; }
+  .pfaq-icon { font-size: 18px; font-weight: 600; color: var(--sage); flex-shrink: 0; transition: transform 0.2s; }
+  .pfaq-item.open .pfaq-icon { transform: rotate(45deg); }
+  .pfaq-a { display: none; padding: 0 20px 16px; font-size: 13.5px; color: var(--mid); line-height: 1.7; background: #fafafa; }
+  .pfaq-item.open .pfaq-a { display: block; }
+  .pricing-cta { border: 1px solid rgba(74, 124, 89, 0.2); border-radius: 20px; padding: 40px 32px; text-align: center; }
+  .pricing-cta .cta-icon { font-size: 32px; margin-bottom: 12px; }
+  .pricing-cta h2 { font-size: 28px; font-weight: 700; color: var(--charcoal); margin-bottom: 8px; max-width: 560px; margin-left: auto; margin-right: auto; }
+  .pricing-cta p { font-size: 14.5px; color: var(--mid); margin-bottom: 20px; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .btn-primary { display: inline-block; background: var(--sage); color: #fff; border: none; border-radius: 100px; padding: 14px 29px; font-family: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+  .btn-primary:hover { opacity: 0.85; }
+  .legal-disclaimer-bar { background: #f5f5f3; border-top: 1px solid var(--border); text-align: center; font-size: 12.5px; color: var(--soft); padding: 16px 32px; }
+  .ppc-parenting-lead { font-size: 17px; font-weight: 600; color: var(--charcoal); line-height: 1.35; margin-bottom: 14px; }
+  .ppc-parenting-lead-strong { font-weight: 700; display: block; margin-top: 2px; }
+  .ppc-parenting-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(76px, auto); gap: 12px; margin-bottom: 22px; }
+  .ppc-parenting-stat { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; min-height: 76px; display: flex; flex-direction: column; justify-content: center; }
+  .ppc-parenting-stat-k { font-size: 13px; font-weight: 700; color: var(--charcoal); display: block; margin-bottom: 2px; }
+  .ppc-parenting-stat-v { font-size: 12px; color: var(--soft); line-height: 1.35; }
+  .ppc-parenting-section-title { font-size: 13px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: var(--sage); margin-bottom: 12px; }
+  .ppc-parenting-inside { list-style-position: outside; padding-left: 1.35em; margin-bottom: 22px; display: flex; flex-direction: column; gap: 12px; }
+  .ppc-parenting-inside li { font-size: 13.5px; color: var(--charcoal); line-height: 1.55; }
+  .ppc-parenting-inside strong { display: block; font-weight: 700; margin-bottom: 2px; }
+  .ppc-parenting-inside-desc { display: block; font-weight: 400; color: var(--mid); }
+  .ppc-pack-faq-heading { margin-top: 1.35rem; margin-bottom: 0.5rem; text-align: left; font-size: 15px; font-weight: 700; color: var(--charcoal); }
+  /* One continuous accordion: common FAQ + pack details (no gap / no double radius) */
+  .pricing-plan-card .parenting-pack-common-faq.faq-wrap {
+    margin-bottom: 0;
+    border-radius: 16px 16px 0 0;
+    border-bottom: none;
+    text-align: left;
+  }
+  .pricing-plan-card .parenting-pack-details.faq-wrap {
+    margin-top: 0;
+    margin-bottom: 0;
+    border-radius: 0 0 16px 16px;
+    border-top: none;
+    text-align: left;
+  }
+  .pricing-plan-card .parenting-pack-details > .pfaq-item:first-child {
+    border-top: 1px solid var(--border);
+  }
+  .parenting-pack-details .pfaq-a { font-size: 13px; max-height: min(70vh, 520px); overflow-y: auto; }
+  .pp-agreement-body p { margin-bottom: 10px; }
+  .pp-agreement-body p strong { color: var(--charcoal); }
+  .pp-agreement-body ol.pp-clauses { padding-left: 1.25em; margin: 8px 0 14px; }
+  .pp-agreement-body ol.pp-clauses > li { margin-bottom: 10px; }
+  .pp-agreement-body .pp-agreement-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 12px 0 16px; }
+  .pp-agreement-body .pp-agreement-table th,
+  .pp-agreement-body .pp-agreement-table td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+  .pp-agreement-body .pp-agreement-table th { background: var(--sage-pale); font-weight: 600; width: 28%; }
+  .pp-agreement-body .pp-timeline { border-left: 3px solid var(--gold); padding-left: 14px; margin: 12px 0; }
+  .pp-agreement-body .pp-timeline p { margin-bottom: 8px; }
+  .pp-agreement-body ul.pp-agreement-list { margin: 0 0 12px 1.25em; line-height: 1.55; font-size: 13px; }
+
+  @media (max-width: 900px) {
+    .pricing-root { font-size: 15px; overflow-x: clip; }
+    .page-hero { padding: 16px 18px 14px; }
+    .page-eyebrow { font-size: clamp(22px, 6vw, 30px); }
+    .page-hero h1 { font-size: clamp(2.2rem, 10vw, 3.4rem); }
+    .page-hero h1 em { font-size: 1.5em; }
+    .page-hero p { font-size: clamp(16px, 3.8vw, 22px); }
+    .section-wrap { padding: 20px 16px 48px; }
+    .plans-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 10px; }
+    .billing-toggle-row { flex-wrap: wrap; margin-bottom: 28px; gap: 12px; }
+    .ppc-btn { min-height: 48px; font-size: 15px; }
+    .pfaq-q { min-height: 48px; padding: 14px 16px; font-size: 15px; }
+    .pricing-cta { padding: 28px 18px; }
+    .pricing-cta h2 { font-size: 22px; }
+    .faq-header { font-size: 22px; }
+    .parenting-pack-details .pfaq-a { max-height: min(65vh, 480px); }
+  }
+</style>
+<div class="pricing-root">
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <span class="page-eyebrow">Plans &amp; Pricing</span>
+    <h1>Simple, honest <em>pricing</em></h1>
+    <p>Start free. Upgrade when you need the full toolkit. No lock-in, no surprises.</p>
+  </div>
+</div>
+<div class="section-wrap">
+  <div class="billing-toggle-row">
+    <span class="billing-label" id="label-monthly">Monthly</span>
+    <button class="toggle-switch" id="billing-toggle" aria-label="Toggle billing period" onclick="const root=this.closest('.pricing-root');const annual=!this.classList.contains('annual');this.classList.toggle('annual',annual);const lm=root.querySelector('#label-monthly');const la=root.querySelector('#label-annual');lm.style.fontWeight=annual?'400':'600';lm.style.color=annual?'var(--soft)':'var(--charcoal)';la.style.fontWeight=annual?'600':'400';la.style.color=annual?'var(--charcoal)':'var(--soft)';root.querySelectorAll('[data-monthly]').forEach(el=>el.textContent=annual?el.dataset.annual:el.dataset.monthly);">
+      <span class="knob"></span>
+    </button>
+    <span class="billing-label muted" id="label-annual">Annual <span class="save-badge">Save 20%</span></span>
+  </div>
+  <div class="plans-grid">
+    <div class="pricing-plan-card">
+      <div class="ppc-badge free">Free forever</div>
+      <div class="ppc-icon">🌱</div>
+      <h3 class="ppc-name">Starter</h3>
+      <p class="ppc-desc">Everything you need to understand the system - no account required for most features.</p>
+      <div class="ppc-price-wrap"><span class="ppc-amount">$0</span><span class="ppc-period">forever</span></div>
+      <ul class="ppc-features">
+        <li>✓ Forms Centre</li><li>✓ Glossary (10 terms per day)</li><li>✓ About the Kids</li><li>✓ Mental Health resources</li><li>✓ AVO Centre</li><li>✓ Ask a Question bot.</li><li>✓ Your Family Team</li>
+        <li class="ppc-dim">✗ Document Helper</li><li class="ppc-dim">✗ AI Assistant</li><li class="ppc-dim">✗ Your Case Assistant</li>
+      </ul>
+      <div class="ppc-actions">
+        <button class="ppc-btn ppc-btn-secondary" onclick="if(typeof openAuth==='function')openAuth('signup')">Get started free →</button>
+      </div>
+    </div>
+    <div class="pricing-plan-card">
+      <div class="ppc-badge account">Account required</div>
+      <div class="ppc-icon">📋</div>
+      <h3 class="ppc-name">Essential</h3>
+      <p class="ppc-desc">Create an account and unlock the full glossary, your family team, and unlimited bot questions at an accessible monthly rate.</p>
+      <div class="ppc-price-wrap"><span class="ppc-amount" data-monthly="$14.99" data-annual="$11.99">$14.99</span><span class="ppc-period">/ month</span></div>
+      <ul class="ppc-features">
+        <li>✓ Everything in Starter</li><li>✓ Glossary</li><li>✓ Unlimited bot questions</li><li>✓ Litigation phase tracker</li>
+        <li>✓ Document Helper</li><li class="ppc-dim">✗ AI Assistant</li><li class="ppc-dim">✗ Your Case Assistant &amp; Vault</li>
+      </ul>
+      <div class="ppc-actions">
+        <button class="ppc-btn ppc-btn-secondary" onclick="if(typeof openPricingCheckout==='function')openPricingCheckout('essential')">Get Essential →</button>
+        <p class="ppc-cancel-note">Cancel any time · No lock-in</p>
+      </div>
+    </div>
+    <div class="pricing-plan-card ppc-featured">
+      <div class="ppc-badge popular">Most popular</div>
+      <div class="ppc-icon">⚖️</div>
+      <h3 class="ppc-name">Full Access</h3>
+      <p class="ppc-desc">Everything unlocked. The complete CasePath toolkit for your entire case - month by month, cancel any time.</p>
+      <div class="ppc-price-wrap"><span class="ppc-amount" data-monthly="$29.99" data-annual="$23.99">$29.99</span><span class="ppc-period">/ month</span></div>
+      <ul class="ppc-features">
+        <li>✓ Everything in Essential</li><li>✓ Document Helper</li><li>✓ AI Assistant (unlimited)</li><li>✓ Your Case Assistant</li><li>✓ Evidence Vault (AES-256)</li><li>✓ Litigation phase tracker</li><li>✓ Document drafting &amp; export</li><li>✓ Parenting Pack</li><li>✓ Priority support</li>
+      </ul>
+      <div class="ppc-actions">
+        <button class="ppc-btn ppc-btn-primary" onclick="if(typeof openPricingCheckout==='function')openPricingCheckout('pro_monthly')">Get Full Access →</button>
+        <p class="ppc-cancel-note">Cancel any time · No lock-in</p>
+      </div>
+    </div>
+    <div class="pricing-plan-card" data-onetime="doc_single">
+      <div class="ppc-badge popular">One-off · No subscription</div>
+      <div class="ppc-icon">📄</div>
+      <h3 class="ppc-name">Document Helper — one document</h3>
+      <p class="ppc-desc">Pay once for one document or buy a five-document pack. No subscription, no ongoing commitment. Your documents stay accessible for 1 calendar year.</p>
+      <div class="ppc-price-wrap"><span class="ppc-amount">$9.99</span><span class="ppc-period">1 document</span></div>
+      <div class="ppc-price-wrap"><span class="ppc-amount" style="font-size:30px;">$39.99</span><span class="ppc-period">5 documents</span></div>
+      <ul class="ppc-features">
+        <li>✓ Any document type</li><li>✓ Unlimited edits</li><li>✓ Download as .docx</li><li>✓ Print / Save PDF</li>
+        <li>✓ Quality checker included</li><li>✓ 1 calendar year document access</li><li class="ppc-dim">✗ Parenting Pack</li>
+      </ul>
+      <div class="ppc-actions">
+        <button class="ppc-btn ppc-btn-secondary" type="button" onclick="if(typeof openPricingCheckout==='function')openPricingCheckout('credits_1')">Buy one document →</button>
+        <button class="ppc-btn ppc-btn-secondary" type="button" onclick="if(typeof openPricingCheckout==='function')openPricingCheckout('credits_5')">Buy 5 documents →</button>
+      </div>
+    </div>
+  </div>
+  <div class="one-off-wrap">
+    <div class="pricing-plan-card" id="pricing-parenting-pack" data-onetime="parenting_pack">
+      <div class="ppc-badge popular">12-month engagement</div>
+      <div class="ppc-icon">⭐</div>
+      <h3 class="ppc-name">Parenting pack</h3>
+      <p class="ppc-parenting-lead">A steady hand,<span class="ppc-parenting-lead-strong">for the year that matters most.</span></p>
+      <p class="ppc-desc">A twelve-month family law engagement built around the four things separating parents actually need: orders that hold, documents that work, a workspace that keeps it all in one place, and a vault that protects what's most sensitive. Convert to monthly when the term ends — or wind down at your own pace.</p>
+      <div class="ppc-parenting-stats">
+        <div class="ppc-parenting-stat"><span class="ppc-parenting-stat-k">12 months</span><span class="ppc-parenting-stat-v">Fixed-fee term</span></div>
+        <div class="ppc-parenting-stat"><span class="ppc-parenting-stat-k">Monthly</span><span class="ppc-parenting-stat-v">Optional rollover</span></div>
+        <div class="ppc-parenting-stat"><span class="ppc-parenting-stat-k">AES-256</span><span class="ppc-parenting-stat-v">Evidence Vault</span></div>
+        <div class="ppc-parenting-stat"><span class="ppc-parenting-stat-k">+12 months</span><span class="ppc-parenting-stat-v">Data retention</span></div>
+      </div>
+      <h4 class="ppc-parenting-section-title">What's inside</h4>
+      <ol class="ppc-parenting-inside" type="i">
+        <li><strong>Parenting Orders</strong><span class="ppc-parenting-inside-desc">Advice, drafting and filing</span></li>
+        <li><strong>Document Helper</strong><span class="ppc-parenting-inside-desc">Guided document support</span></li>
+        <li><strong>Your Case</strong><span class="ppc-parenting-inside-desc">Live matter workspace</span></li>
+        <li><strong>Evidence Vault AES-256</strong><span class="ppc-parenting-inside-desc">Encrypted evidence store</span></li>
+      </ol>
+      <div class="ppc-price-wrap"><span class="ppc-amount">$249</span><span class="ppc-period">fixed fee · representative pricing — confirm at checkout</span></div>
+      <div class="ppc-actions">
+        <button class="ppc-btn ppc-btn-secondary" onclick="if(typeof openPricingCheckout==='function')openPricingCheckout('casepack')">Get Parenting Pack →</button>
+        <button type="button" class="ppc-btn ppc-btn-outline" onclick="if(typeof showPage==='function')showPage('parenting-orders')">Open Parenting Orders Generator →</button>
+      </div>
+      <h4 class="ppc-parenting-section-title ppc-pack-faq-heading">Common questions</h4>
+      <div class="faq-wrap parenting-pack-common-faq">
+        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">Can I really cancel any time?<span class="pfaq-icon">+</span></button><div class="pfaq-a">Yes. Monthly plans can be cancelled at any time - your access continues until the end of your billing period. There are no cancellation fees and no minimum terms.</div></div>
+        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">What happens to my data if I cancel?<span class="pfaq-icon">+</span></button><div class="pfaq-a">Your account and all data remain intact for 30 days after cancellation. You can export or download your documents during this window. After 30 days, vault data is securely deleted.</div></div>
+        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">Is this legal advice?<span class="pfaq-icon">+</span></button><div class="pfaq-a">No. CasePath provides legal information - plain-English explanations of Australian family law, the court system, and your procedural options. It is not a substitute for a lawyer. For complex matters or where your safety is at risk, please consult a qualified family lawyer.</div></div>
+        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">How does the AI Assistant differ from the free bot?<span class="pfaq-icon">+</span></button><div class="pfaq-a">The free Ask a Question bot gives general family law information. The AI Assistant (Full Access) is connected to your case profile - it knows your case type, key facts, and history, and gives you more tailored, case-aware responses. It also has access to the full CasePath knowledge base including your uploaded documents.</div></div>
+        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">Can my lawyer access my account?<span class="pfaq-icon">+</span></button><div class="pfaq-a">Only if you invite them. When you connect your lawyer, they get read-only access to the vault and case timeline details you choose to share. You can disconnect them at any time. Lawyers cannot access your account without your explicit invitation.</div></div>
+        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">Is my data secure?<span class="pfaq-icon">+</span></button><div class="pfaq-a">All vault documents are encrypted with AES-256. CasePath does not share your data with third parties, does not sell your information, and does not use your case data to train AI models. Your data is yours.</div></div>
+      </div>
+      <div class="faq-wrap parenting-pack-details">
+        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">How it works<span class="pfaq-icon">+</span></button><div class="pfaq-a">
+          <div class="pp-agreement-body">
+            <div class="pp-timeline">
+              <p><strong>Day 0 → Month 12 — Initial Term.</strong> Full access under the fixed-fee Parenting Pack.</p>
+              <p><strong>Month 12 — Choose your path.</strong> Convert to Monthly, renew for another 12 months, or end the engagement.</p>
+              <p><strong>Month 12+ — Monthly Plan.</strong> Full read/write access continues. Cancel any time on 30 days' notice.</p>
+            </div>
+          </div>
+        </div></div>
+        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">What's included<span class="pfaq-icon">+</span></button><div class="pfaq-a">
+          <div class="pp-agreement-body">
+            <p><strong>2.1 Parenting Orders.</strong> Advice, drafting and filing assistance in relation to parenting arrangements under the Family Law Act 1975 (Cth), including initial consultation, drafting of proposed parenting orders or parenting plans, preparation and filing of an Application for Consent Orders (or related court documents) in the Federal Circuit and Family Court of Australia, correspondence with the other party, and one review of any orders made during the term.</p>
+            <p><strong>2.2 Document Helper.</strong> A guided document service for supporting materials: preparation of affidavits, parenting plans and supporting statements; review and editing of documents you prepare; standard correspondence templates; and document checks before filing or service. Excludes contested litigation, court appearances, or matters outside parenting unless added by separate written scope.</p>
+            <p><strong>2.3 Your Case.</strong> A secure online workspace where you can access and manage your matter for the duration of the Term: a real-time view of case status, key dates and next steps; access to your documents, court filings and correspondence; secure messaging with your legal team; a task list; and the ability to upload material directly into your file.</p>
+            <p><strong>2.4 Evidence Vault.</strong> AES-256 — A dedicated, encrypted storage area within Your Case for sensitive evidentiary material. Encryption at rest using AES-256; encryption in transit using TLS 1.2+; access restricted to you and authorised members of your legal team; tamper-evident audit trail for every upload, view and download; original-file preservation; and mandatory two-factor authentication. Encryption protects your data against unauthorised access; it does not guarantee admissibility, which depends on the rules of evidence and the court's discretion.</p>
+          </div>
+        </div></div>
+        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">The agreement (full text)<span class="pfaq-icon">+</span></button><div class="pfaq-a">
+          <div class="pp-agreement-body">
+            <p>The legal services agreement, in full. The same document you'll sign on day one.</p>
+            <table class="pp-agreement-table">
+              <tbody>
+                <tr><th scope="row">Client</th><td>[Client name]</td></tr>
+                <tr><th scope="row">Provider</th><td>[Provider name]</td></tr>
+                <tr><th scope="row">Effective date</th><td>[DD Month YYYY]</td></tr>
+                <tr><th scope="row">Initial Term</th><td>12 months</td></tr>
+              </tbody>
+            </table>
+            <p><strong>1. Parties and engagement</strong></p>
+            <p>This Parenting Pack agreement (the Agreement) is entered into between [Provider name] (we, us, our) and [Client name] (you, your) on the effective date above. By signing, you engage us to provide the Parenting Pack services described below.</p>
+            <p><strong>2. Services included</strong></p>
+            <p>The Parenting Pack consists of four components:</p>
+            <p><strong>2.1 Parenting Orders</strong><br />Advice, drafting and filing assistance in relation to parenting arrangements under the Family Law Act 1975 (Cth), including initial consultation, drafting of proposed parenting orders or parenting plans, preparation and filing of an Application for Consent Orders (or related court documents) in the Federal Circuit and Family Court of Australia, correspondence with the other party, and one review of any orders made during the term.</p>
+            <p><strong>2.2 Document Helper</strong><br />A guided document service for supporting materials: preparation of affidavits, parenting plans and supporting statements; review and editing of documents you prepare; standard correspondence templates; and document checks before filing or service. Excludes contested litigation, court appearances, or matters outside parenting unless added by separate written scope.</p>
+            <p><strong>2.3 Your Case</strong><br />A secure online workspace where you can access and manage your matter for the duration of the Term: a real-time view of case status, key dates and next steps; access to your documents, court filings and correspondence; secure messaging with your legal team; a task list; and the ability to upload material directly into your file.</p>
+            <p><strong>2.4 Evidence Vault</strong><br />AES-256 — A dedicated, encrypted storage area within Your Case for sensitive evidentiary material. Encryption at rest using AES-256; encryption in transit using TLS 1.2+; access restricted to you and authorised members of your legal team; tamper-evident audit trail for every upload, view and download; original-file preservation; and mandatory two-factor authentication. Encryption protects your data against unauthorised access; it does not guarantee admissibility, which depends on the rules of evidence and the court's discretion.</p>
+            <p><strong>3. Term</strong></p>
+            <p>This Agreement commences on the effective date and continues for twelve (12) months (the Initial Term), unless terminated earlier in accordance with clause 8 or rolled over to a Monthly Plan in accordance with clause 4.</p>
+            <p><strong>4. Monthly Plan rollover</strong></p>
+            <p>At the end of the Initial Term you may elect to convert to a Monthly Plan that continues full access to all four components on a month-to-month basis.</p>
+            <div class="pp-timeline">
+              <p><strong>Day 0 → Month 12 — Initial Term.</strong> Full access under the fixed-fee Parenting Pack.</p>
+              <p><strong>Month 12 — Choose your path.</strong> Convert to Monthly, renew for another 12 months, or end the engagement.</p>
+              <p><strong>Month 12 + — Monthly Plan.</strong> Full read/write access continues. Cancel any time on 30 days' notice.</p>
+            </div>
+            <p><strong>4.1 What's included</strong></p>
+            <p>The Monthly Plan provides full read/write access to Your Case and the Evidence Vault, ongoing Document Helper at a [reduced/standard] rate or fair-use cap of [N] tasks per month, and ad-hoc Parenting Orders advice at the hourly rate per the current fee schedule.</p>
+            <p><strong>4.2 Fee and billing</strong></p>
+            <p>The Monthly Plan fee is [$ amount] per month (incl. GST), billed monthly in advance by direct debit or card on file. The fee may be adjusted on 30 days' written notice; you may cancel without penalty if you do not accept the change.</p>
+            <p><strong>4.3 How to elect</strong></p>
+            <p>We will contact you 45 days before the end of the Initial Term with a Monthly Plan election notice. To convert, you must confirm your election in writing (or via Your Case) before the Initial Term ends. The Monthly Plan does not start automatically — if we do not receive your election, your engagement will move to the Retention Period under clause 7.</p>
+            <p><strong>4.4 Cancellation and pause</strong></p>
+            <p>You may cancel the Monthly Plan at any time on 30 days' written notice; fees for the notice period remain payable. You may request a pause of up to [X] months once per 12-month period; access becomes read-only during a pause and a reduced [$ amount] per month archive fee applies.</p>
+            <p><strong>4.5 Reverting to retention</strong></p>
+            <p>If the Monthly Plan ends — by cancellation, non-payment, or our termination — the Retention Period under clause 7 begins from the date access ends. The 12-month retention clock starts fresh from that date.</p>
+            <p><strong>5. Fees and payment</strong></p>
+            <p>Fees for the Initial Term are [$ amount] (incl. GST), payable as set out in Schedule A. Monthly Plan fees are as set out in clause 4.2. Disbursements (court filing fees, expert reports, etc.) are charged at cost in either model.</p>
+            <p><strong>6. Your responsibilities</strong></p>
+            <ul class="pp-agreement-list">
+              <li>Provide accurate and complete information, including any safety concerns</li>
+              <li>Provide documents and instructions in a timely manner</li>
+              <li>Notify us promptly of changes in circumstances</li>
+              <li>Keep your Your Case and Evidence Vault credentials secure, enable two-factor authentication, and not share them with third parties</li>
+              <li>Only upload material you are lawfully entitled to hold</li>
+              <li>Keep your billing details current if on the Monthly Plan</li>
+              <li>Not use the services to pursue any unlawful or harassing conduct</li>
+            </ul>
+            <p><strong>7. Confidentiality, privacy and data retention</strong></p>
+            <p>We handle your personal information in accordance with the Privacy Act 1988 (Cth) and our Privacy Policy. Communications, including those made through Your Case and material held in the Evidence Vault, are subject to legal professional privilege where applicable. Evidence Vault data is encrypted at rest using AES-256 and in transit using TLS 1.2+.</p>
+            <p>We will retain your file and personal information — including data and documents stored within Your Case and the Evidence Vault — for a period of twelve (12) months after your engagement ends (the Retention Period). Your engagement ends at the conclusion of the Initial Term or, if you have rolled over to a Monthly Plan, at the end of the final paid month.</p>
+            <p>During the Retention Period: Your Case becomes read-only; the Vault remains encrypted and accessible for download only; you may request copies of your file at any time, free of charge for the first request. At the end of the Retention Period we will securely destroy or de-identify your personal information, including any data held within the Vault, except where required by law to retain specific records (for example, trust account records under the relevant Legal Profession Uniform Law). Vault destruction is performed via cryptographic key erasure and verified deletion. We will let you know in writing 30 days before destruction so you can request a final copy.</p>
+            <p><strong>8. Termination</strong></p>
+            <p>Either party may terminate this Agreement on 14 days' written notice during the Initial Term, or 30 days' written notice on the Monthly Plan. We may terminate immediately if you fail to pay fees, instruct us to act unethically, or where a conflict of interest arises. On termination, fees are payable for work completed up to the date of termination, your access to Your Case and the Evidence Vault will move to read-only mode, and the data retention obligations in clause 7 still apply.</p>
+            <p><strong>9. Limitation of liability and dispute resolution</strong></p>
+            <p>Our liability for any loss arising under this Agreement is limited to the fees paid by you in the 12 months preceding the claim, except where liability cannot be limited by law (including under the Australian Consumer Law). If a dispute arises, the parties will first attempt resolution by good-faith discussion; if unresolved within 21 days, the dispute will be referred to mediation before any litigation. This Agreement is governed by the laws of New South Wales.</p>
+            <p><strong>Schedule A — Fees.</strong> Initial Term (12 months): Parenting Orders [$ amount] · Document Helper [$ amount] · Your Case [included / $ amount] · Evidence Vault [included / $ amount] · Total [$ amount] inc. GST. Monthly Plan: [$ amount] / month inc. GST, cancel any time on 30 days' notice. Disbursements at cost in both models.</p>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+  <div class="pricing-cta">
+    <div class="cta-icon">⚖️</div>
+    <h2>Family court shouldn't only be for people who can afford a lawyer</h2>
+    <p>CasePath is built for every Australian going through separation. Start free, upgrade only if you need the full toolkit.</p>
+    <button class="btn-primary" onclick="if(typeof openAuth==='function')openAuth('signup')">Create free account →</button>
+  </div>
+</div>
+<div class="legal-disclaimer-bar">This tool provides document assistance only and does not provide legal advice.</div>
+</div>
+<script>
+  function togglePricingFaq(button) {
+    const item = button.closest(".pfaq-item");
+    const wrap = button.closest(".faq-wrap");
+    const wasOpen = item.classList.contains("open");
+    wrap.querySelectorAll(".pfaq-item.open").forEach((el) => el.classList.remove("open"));
+    if (!wasOpen) item.classList.add("open");
+  }
+</script>
