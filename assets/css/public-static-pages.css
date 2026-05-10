@@ -110,8 +110,40 @@ body.public-static-shell::before {
     font-size: 1.05rem !important;
   }
 
-  .nav-grid a:last-child {
+  #nav-main-grid .nav-platform-tray a:last-child {
     border-bottom: none;
+  }
+
+  .nav-site-links.nav-mobile-open #nav-main-grid .nav-row-platform {
+    border-top: 1px solid rgba(74, 124, 89, 0.14);
+    margin-top: 0.15rem;
+    padding-top: 0.2rem;
+    width: 100%;
+  }
+
+  .nav-site-links.nav-mobile-open #nav-main-grid .nav-platform-eyebrow {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.55rem 1.15rem 0.2rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: rgba(74, 90, 78, 0.62);
+    box-sizing: border-box;
+  }
+
+  .nav-site-links.nav-mobile-open #nav-main-grid .nav-platform-tray {
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .nav-site-links.nav-mobile-open #nav-main-grid .nav-row-primary {
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+    gap: 0;
   }
 
   #nav-parenting-orders,

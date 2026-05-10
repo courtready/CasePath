@@ -297,6 +297,16 @@ header,
   transition: padding 0.2s ease;
 }
 
+#nav-main-grid.nav-grid {
+  display: flex;
+  flex-direction: column;
+  grid-template-columns: unset;
+  grid-template-rows: unset;
+  column-gap: unset;
+  row-gap: unset;
+  gap: 0.24rem;
+}
+
 .nav-grid a {
   display: flex;
   align-items: center;
@@ -389,22 +399,6 @@ main {
   pointer-events: none;
 }
 
-#nav-mission { grid-row: 1; grid-column: 1; }
-#nav-glossary { grid-row: 1; grid-column: 2; }
-#nav-mental-health { grid-row: 1; grid-column: 3; }
-#nav-parenting-orders { grid-row: 1; grid-column: 4; }
-#nav-doc-helper { grid-row: 1; grid-column: 5; }
-#nav-ai-assistant { grid-row: 1; grid-column: 6; }
-#nav-your-case-pulse,
-#nav-vault { grid-row: 1; grid-column: 7; }
-#nav-kids { grid-row: 2; grid-column: 1; }
-#nav-your-team { grid-row: 2; grid-column: 2; }
-#nav-new-item { grid-row: 2; grid-column: 3; }
-#nav-avo { grid-row: 2; grid-column: 4; }
-#nav-pricing { grid-row: 2; grid-column: 5; }
-#nav-referrals { grid-row: 2; grid-column: 6; }
-#nav-lawyer-portal { grid-row: 2; grid-column: 7; }
-
 .logo-wrap {
   display: flex;
   align-items: center;
@@ -457,7 +451,7 @@ nav .nav-site-links ul a.active { color: var(--sage); font-weight: 500; }
 nav .nav-site-links ul #nav-vault,
 nav .nav-site-links ul #nav-your-case-pulse { font-size: 1.22rem; font-weight: 600; }
 .nav-grid #nav-vault,
-.nav-grid #nav-your-case-pulse { font-size: 1.22rem; font-weight: 600; }
+#nav-main-grid .nav-platform-tray #nav-your-case-pulse.nav-mission-pulse { font-size: 1.22rem; font-weight: 600; }
 
 .read-this-hint {
   display: inline;
@@ -601,8 +595,40 @@ nav .nav-site-links ul #nav-your-case-pulse { font-size: 1.22rem; font-weight: 6
     font-size: 1.05rem !important;
   }
 
-  .nav-grid a:last-child {
+  #nav-main-grid .nav-platform-tray a:last-child {
     border-bottom: none;
+  }
+
+  .nav-site-links.nav-mobile-open #nav-main-grid .nav-row-platform {
+    border-top: 1px solid rgba(74, 124, 89, 0.14);
+    margin-top: 0.12rem;
+    padding-top: 0.18rem;
+    width: 100%;
+  }
+
+  .nav-site-links.nav-mobile-open #nav-main-grid .nav-platform-eyebrow {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem 1.15rem 0.15rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: rgba(74, 90, 78, 0.62);
+    box-sizing: border-box;
+  }
+
+  .nav-site-links.nav-mobile-open #nav-main-grid .nav-platform-tray {
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .nav-site-links.nav-mobile-open #nav-main-grid .nav-row-primary {
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+    gap: 0;
   }
 
   .nav-grid a:hover {
@@ -3529,20 +3555,27 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
       </button>
       <a href="/glossary.html" id="nav-legislation" style="display:none;">Legislation</a>
       <div class="nav-grid" id="nav-main-grid">
+        <div class="nav-row-primary">
         <a href="/index.html?goto=mission" id="nav-mission" class="nav-mission-pulse" data-row="1">Our Mission</a>
         <a href="/index.html?goto=glossary" id="nav-glossary" data-row="1">Glossary</a>
         <a href="/index.html?goto=mental-health" id="nav-mental-health" data-row="1">Mental Health</a>
-        <a href="/parenting-orders.html" onclick="if(typeof showPage==='function'){showPage('parenting-orders');return false;}" id="nav-parenting-orders" class="parenting-orders nav-parenting-centre nav-featured" style="color:var(--sage);font-weight:700;" data-row="1">Parenting Orders</a>
-        <a href="/document-helper.html" onclick="if(typeof showPage==='function'){showPage('doc-helper');return false;}" id="nav-doc-helper" data-row="1">Document Helper</a>
-        <a href="/ai-assistant.html" onclick="if(typeof showPage==='function'){showPage('ai-assistant');return false;}" id="nav-ai-assistant" data-row="1">AI Assistant</a>
-        <a href="/kids.html" id="nav-kids" data-row="2">About the Kids</a>
-        <a href="/your-team.html" id="nav-your-team" data-row="2">Your Family Team</a>
-        <a href="/support-tools.html" id="nav-new-item" class="nav-item" data-row="2">Support Tools</a>
+        <a href="/kids.html" id="nav-kids" data-row="1">About the Kids</a>
+        <a href="/your-team.html" id="nav-your-team" data-row="1">Your Family Team</a>
+        <a href="/support-tools.html" id="nav-new-item" class="nav-item" data-row="1">Support Tools</a>
+        </div>
+        <div class="nav-row-platform">
+        <span class="nav-platform-eyebrow">Coming Soon</span>
+        <div class="nav-platform-tray">
+        <a href="/parenting-orders.html" onclick="if(typeof showPage==='function'){showPage('parenting-orders');return false;}" id="nav-parenting-orders" class="parenting-orders nav-parenting-centre" data-row="2">Parenting Orders</a>
+        <a href="/document-helper.html" onclick="if(typeof showPage==='function'){showPage('doc-helper');return false;}" id="nav-doc-helper" data-row="2">Document Helper</a>
+        <a href="/ai-assistant.html" onclick="if(typeof showPage==='function'){showPage('ai-assistant');return false;}" id="nav-ai-assistant" data-row="2">AI Assistant</a>
         <a href="/avo.html" onclick="if(typeof showPage==='function'){showPage('avo');return false;}" id="nav-avo" class="nav-avo-centre" data-row="2">AVO Centre</a>
         <a href="/pricing.html" onclick="if(typeof showPage==='function'){showPage('pricing');return false;}" id="nav-pricing" data-row="2">Pricing</a>
         <a href="/referrals.html" onclick="if(typeof showPage==='function'){showPage('referrals');return false;}" id="nav-referrals" data-row="2">Referrals</a>
-        <a href="/your-case.html" onclick="if(typeof cdBuildDashboard==='function'){cdBuildDashboard();} if(typeof showPage==='function'){showPage('vault');return false;}" id="nav-your-case-pulse" class="nav-mission-pulse" data-row="1">Your Case</a>
-        <a href="/lawyer-portal.html" onclick="if(typeof showPage==='function'){showPage('lawyer-portal');return false;}" id="nav-lawyer-portal" style="color:#c8a96e;font-weight:700;" data-row="2">Lawyer Portal</a>
+        <a href="/your-case.html" onclick="if(typeof cdBuildDashboard==='function'){cdBuildDashboard();} if(typeof showPage==='function'){showPage('vault');return false;}" id="nav-your-case-pulse" data-row="2">Your Case</a>
+        <a href="/lawyer-portal.html" onclick="if(typeof showPage==='function'){showPage('lawyer-portal');return false;}" id="nav-lawyer-portal" data-row="2">Lawyer Portal</a>
+        </div>
+        </div>
       </div>
     </div>
     <div class="nav-trailing" style="display:flex;align-items:center;gap:0.44rem;flex-shrink:0;">

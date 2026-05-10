@@ -289,6 +289,7 @@ header,
   }
 }
 
+/* Component / legacy fragments without #nav-main-grid */
 .nav-grid {
   display: grid;
   grid-template-columns: repeat(7, auto);
@@ -339,6 +340,138 @@ header,
 }
 
 .nav-grid a[href*="your-case"] { font-weight: 700; }
+
+/* Main app + static shells: two-row nav (available now · coming soon platform) */
+#nav-main-grid.nav-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.28rem;
+  padding: 0.14rem 0 0.22rem;
+  column-gap: unset;
+  row-gap: unset;
+  grid-template-columns: unset;
+  grid-template-rows: unset;
+}
+
+#nav-main-grid .nav-row-primary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  column-gap: clamp(0.55rem, 1.35vw, 1.1rem);
+  row-gap: 0.22rem;
+}
+
+#nav-main-grid .nav-row-primary > a {
+  flex: 0 1 auto;
+}
+
+#nav-main-grid .nav-row-platform {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem 0.75rem;
+  padding-top: 0.26rem;
+  margin-top: 0.06rem;
+  border-top: 1px solid rgba(74, 124, 89, 0.16);
+}
+
+#nav-main-grid .nav-platform-eyebrow {
+  flex: 0 0 auto;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: rgba(74, 90, 78, 0.58);
+  white-space: nowrap;
+  user-select: none;
+  font-family: inherit;
+}
+
+#nav-main-grid .nav-platform-tray {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.32rem, 0.95vw, 0.72rem);
+  row-gap: 0.18rem;
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+#nav-main-grid .nav-platform-tray > a {
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  opacity: 0.86;
+  color: rgba(74, 85, 72, 0.9) !important;
+  transition: opacity 0.15s ease, color 0.15s ease, transform 0.12s ease;
+}
+
+#nav-main-grid .nav-platform-tray > a:hover {
+  opacity: 0.96;
+  color: var(--mid) !important;
+  transform: translateY(-1px);
+}
+
+#nav-main-grid .nav-platform-tray .parenting-orders,
+#nav-main-grid .nav-platform-tray .nav-featured {
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+#nav-main-grid .nav-platform-tray .parenting-orders {
+  color: rgba(74, 85, 72, 0.9) !important;
+}
+
+#nav-main-grid .nav-platform-tray #nav-lawyer-portal {
+  color: rgba(90, 75, 55, 0.82) !important;
+}
+
+/* Subtle account hint (primary row only) — no text pills */
+#nav-main-grid .nav-row-primary > a[data-cr-nav-badge="account"] {
+  position: relative;
+}
+
+#nav-main-grid .nav-row-primary > a[data-cr-nav-badge="account"]::after {
+  content: "";
+  position: absolute;
+  bottom: 0.04rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(74, 124, 89, 0.48);
+  pointer-events: none;
+}
+
+#nav-main-grid .nav-platform-tray a#nav-your-case-pulse[data-cr-nav-badge="account"]::after {
+  content: "";
+  position: absolute;
+  bottom: 0.04rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(74, 124, 89, 0.48);
+  pointer-events: none;
+}
+
+#nav-main-grid .nav-platform-tray a#nav-your-case-pulse[data-cr-nav-badge="upgrade"]::after {
+  content: "";
+  position: absolute;
+  bottom: 0.04rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(200, 169, 110, 0.72);
+  pointer-events: none;
+}
 
 .top-banner {
   position: relative;
@@ -482,140 +615,28 @@ header,
   color: inherit;
 }
 
-#nav-mission { grid-row: 1; grid-column: 1; }
-#nav-glossary { grid-row: 1; grid-column: 2; font-weight: 700 !important; }
-#nav-mental-health { grid-row: 1; grid-column: 3; }
-#nav-parenting-orders { grid-row: 1; grid-column: 4; }
-#nav-doc-helper { grid-row: 1; grid-column: 5; }
-#nav-ai-assistant { grid-row: 1; grid-column: 6; }
-#nav-glossary,
-#nav-mental-health,
-#nav-parenting-orders,
-#nav-doc-helper,
-#nav-ai-assistant {
+#nav-main-grid .nav-row-primary #nav-glossary,
+#nav-main-grid .nav-row-primary #nav-mental-health {
   font-size: 0.94rem !important;
   font-weight: 700 !important;
 }
-#nav-your-case-pulse,
-#nav-vault { grid-row: 1; grid-column: 7; }
-#nav-kids { grid-row: 2; grid-column: 1; }
-#nav-your-team { grid-row: 2; grid-column: 2; }
-#nav-new-item { grid-row: 2; grid-column: 3; }
-#nav-avo { grid-row: 2; grid-column: 4; }
-#nav-pricing { grid-row: 2; grid-column: 5; font-weight: 700 !important; }
-#nav-referrals { grid-row: 2; grid-column: 6; }
-#nav-lawyer-portal { grid-row: 2; grid-column: 7; }
 
-/* Nav rollout: separate “available + account” from staged features (desktop grid only) */
-@media (min-width: 901px) {
-  #nav-parenting-orders {
-    border-left: 1px solid rgba(74, 124, 89, 0.22);
-    padding-left: clamp(0.35rem, 1vw, 0.75rem);
-    margin-left: clamp(0.12rem, 0.5vw, 0.38rem);
-  }
-  #nav-avo {
-    border-left: 1px solid rgba(74, 124, 89, 0.22);
-    padding-left: clamp(0.35rem, 1vw, 0.75rem);
-    margin-left: clamp(0.12rem, 0.5vw, 0.38rem);
-  }
-}
-
-.nav-grid a[data-cr-nav-badge="soon"]:hover {
-  opacity: 0.9;
-  color: var(--mid);
-  transform: translateY(-1px);
-}
-
-.nav-grid a[data-cr-nav-badge="account"]:hover {
-  opacity: 1;
-  color: var(--charcoal);
-}
-
-.nav-grid a[data-cr-nav-badge="upgrade"]:hover {
-  opacity: 0.96;
-  color: var(--charcoal);
-}
-
-/* Nav rollout pills (available / account / coming soon) — stylesheet so static shells match index */
-#nav-main-grid [data-cr-nav-badge="soon"] {
-  position: relative;
-  opacity: 0.86;
-  text-decoration: none;
+#nav-main-grid .nav-platform-tray > a[data-cr-nav-badge="soon"],
+#nav-main-grid .nav-platform-tray > a[data-cr-nav-badge="account"],
+#nav-main-grid .nav-platform-tray > a[data-cr-nav-badge="upgrade"] {
   cursor: pointer;
-}
-#nav-main-grid [data-cr-nav-badge="soon"]::after {
-  content: "Coming Soon";
-  display: inline-block;
-  margin-left: 6px;
-  padding: 1px 7px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  background: rgba(15, 23, 42, 0.055);
-  color: rgba(55, 65, 55, 0.68);
-  border: 1px solid rgba(15, 23, 42, 0.09);
-  vertical-align: middle;
-}
-#nav-main-grid a[data-cr-nav-badge="soon"].parenting-orders {
-  color: rgba(55, 65, 55, 0.78) !important;
-}
-#nav-main-grid a#nav-lawyer-portal[data-cr-nav-badge="soon"] {
-  color: rgba(90, 75, 55, 0.78) !important;
-}
-@media (max-width: 900px) {
-  #nav-main-grid [data-cr-nav-badge="soon"]::after,
-  #nav-main-grid [data-cr-nav-badge="account"]::after,
-  #nav-main-grid [data-cr-nav-badge="upgrade"]::after {
-    font-size: 9px;
-    margin-left: 4px;
-    padding: 1px 5px;
-  }
-}
-#nav-main-grid [data-cr-nav-badge="account"] {
-  position: relative;
-  text-decoration: none;
-  cursor: pointer;
-}
-#nav-main-grid [data-cr-nav-badge="account"]::after {
-  content: "Account";
-  display: inline-block;
-  margin-left: 6px;
-  padding: 1px 7px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  background: rgba(74, 124, 89, 0.09);
-  color: rgba(55, 90, 62, 0.88);
-  border: 1px solid rgba(74, 124, 89, 0.24);
-  vertical-align: middle;
-}
-#nav-main-grid [data-cr-nav-badge="upgrade"] {
-  position: relative;
-  opacity: 0.9;
-  text-decoration: none;
-  cursor: pointer;
-}
-#nav-main-grid [data-cr-nav-badge="upgrade"]::after {
-  content: "Plans";
-  display: inline-block;
-  margin-left: 6px;
-  padding: 1px 7px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  background: rgba(200, 169, 110, 0.14);
-  color: rgba(90, 70, 30, 0.88);
-  border: 1px solid rgba(200, 169, 110, 0.38);
-  vertical-align: middle;
 }
 
 @media (max-width: 1320px) {
-  .nav-grid {
+  .nav-grid:not(#nav-main-grid) {
     column-gap: clamp(0.55rem, 1.1vw, 1rem);
     row-gap: 0.38rem;
+  }
+  #nav-main-grid .nav-row-primary {
+    column-gap: clamp(0.45rem, 1vw, 0.95rem);
+  }
+  #nav-main-grid .nav-platform-tray {
+    gap: clamp(0.28rem, 0.85vw, 0.62rem);
   }
 }
 
@@ -667,7 +688,8 @@ header,
   padding: 0.14rem 0.44rem !important;
 }
 
-#nav-your-case-pulse {
+#nav-main-grid .nav-platform-tray #nav-your-case-pulse.nav-mission-pulse {
+  opacity: 1 !important;
   font-size: 1.03rem !important;
 }
 
@@ -896,8 +918,7 @@ body:not(.page-satellite) #navSignOutBtn:hover {
 }
 
 .nav-links a.highlight,
-.nav-grid a.parenting-orders,
-.nav-grid a#nav-your-case-pulse {
+.nav-grid a.parenting-orders {
   font-weight: 600;
   color: #2e7d32;
 }
