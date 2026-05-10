@@ -1,0 +1,34 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.cursor/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Archives
+*.zip
+
+# Logs
+*.log
+
+# Backups
+*backup*
+*baseline*
+*archive*
+
+# Temp
+tmp/
+temp/
+
+# cPanel
+.cpanel.yml.bak
