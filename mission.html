@@ -46,8 +46,28 @@
     </div>
     <div class="nav-trailing" style="display:flex;align-items:center;gap:0.44rem;flex-shrink:0;">
       <div class="header-actions" style="display:flex;align-items:center;gap:0.44rem;">
-        <div id="lang-selector-wrap" class="lang-switch" style="display:none !important;">
-          <button type="button" id="lang-btn" disabled style="opacity:0.5;cursor:not-allowed;"><span id="lang-current-flag">🇦🇺</span><span id="lang-current-label">EN</span></button>
+        <div id="lang-selector-wrap" class="lang-switch">
+          <button type="button" id="lang-btn" onclick="toggleLangDropdown(event)"><span id="lang-current-flag">🇦🇺</span><span id="lang-current-label">EN</span><span style="font-size:0.6rem;opacity:0.6;">▼</span></button>
+          <div id="lang-dropdown">
+          <div class="lang-divider">Select language</div>
+          <button type="button" class="lang-option active" onclick="setLang('en','🇦🇺','EN')"><span class="lang-flag">🇦🇺</span> English</button>
+          <button type="button" class="lang-option" onclick="setLang('zh-CN','🇨🇳','中文')"><span class="lang-flag">🇨🇳</span> Mandarin 中文</button>
+          <button type="button" class="lang-option" onclick="setLang('ar','🇸🇦','عربي')"><span class="lang-flag">🇸🇦</span> Arabic عربي</button>
+          <button type="button" class="lang-option" onclick="setLang('vi','🇻🇳','Việt')"><span class="lang-flag">🇻🇳</span> Vietnamese</button>
+          <button type="button" class="lang-option" onclick="setLang('zh-TW','🇭🇰','廣東')"><span class="lang-flag">🇭🇰</span> Cantonese 廣東話</button>
+          <button type="button" class="lang-option" onclick="setLang('pa','🇮🇳','ਪੰਜਾਬੀ')"><span class="lang-flag">🇮🇳</span> Punjabi</button>
+          <button type="button" class="lang-option" onclick="setLang('el','🇬🇷','Ελληνικά')"><span class="lang-flag">🇬🇷</span> Greek</button>
+          <button type="button" class="lang-option" onclick="setLang('it','🇮🇹','Italiano')"><span class="lang-flag">🇮🇹</span> Italian</button>
+          <button type="button" class="lang-option" onclick="setLang('de','🇩🇪','Deutsch')"><span class="lang-flag">🇩🇪</span> German</button>
+          <button type="button" class="lang-option" onclick="setLang('fr','🇫🇷','Français')"><span class="lang-flag">🇫🇷</span> French</button>
+          <button type="button" class="lang-option" onclick="setLang('hi','🇮🇳','हिन्दी')"><span class="lang-flag">🇮🇳</span> Hindi</button>
+          <button type="button" class="lang-option" onclick="setLang('es','🇪🇸','Español')"><span class="lang-flag">🇪🇸</span> Spanish</button>
+          <button type="button" class="lang-option" onclick="setLang('tl','🇵🇭','Filipino')"><span class="lang-flag">🇵🇭</span> Filipino</button>
+          <button type="button" class="lang-option" onclick="setLang('tr','🇹🇷','Türkçe')"><span class="lang-flag">🇹🇷</span> Turkish</button>
+          <button type="button" class="lang-option" onclick="setLang('ko','🇰🇷','한국어')"><span class="lang-flag">🇰🇷</span> Korean</button>
+          <button type="button" class="lang-option" onclick="setLang('ja','🇯🇵','日本語')"><span class="lang-flag">🇯🇵</span> Japanese 日本語</button>
+          <button type="button" class="lang-option" onclick="setLang('so','🇸🇴','Soomaali')"><span class="lang-flag">🇸🇴</span> Somali</button>
+          </div>
         </div>
       </div>
       <div id="nav-auth-area" class="header-actions" style="display:flex;align-items:center;gap:0.44rem;">
@@ -162,6 +182,7 @@ window.openAuth = function (mode) {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/assets/js/supabase.js"></script>
+<script src="/assets/js/casepath-lang-switch.js?v=20260511g"></script>
 <script src="/assets/js/casepath-nav-access.js?v=20260511f"></script>
 <script src="/assets/js/public-static-nav.js"></script>
 </body>

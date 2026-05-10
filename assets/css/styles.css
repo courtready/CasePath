@@ -283,6 +283,12 @@ header,
   padding-left: 0;
 }
 
+@media (max-width: 900px) {
+  .nav-trailing {
+    z-index: 10080;
+  }
+}
+
 .nav-grid {
   display: grid;
   grid-template-columns: repeat(7, auto);
@@ -753,7 +759,12 @@ body:not(.page-satellite) #navSignOutBtn:hover {
 .disclaimer-banner strong { color: var(--sage); }
 .disclaimer-banner a { color: var(--sage); text-decoration: underline; }
 
-#lang-selector-wrap { position: relative; display: flex; align-items: center; }
+#lang-selector-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
 
 #lang-btn {
   display: flex;
@@ -783,7 +794,7 @@ body:not(.page-satellite) #navSignOutBtn:hover {
   border: 1px solid var(--border);
   border-radius: 14px;
   box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-  z-index: 1000;
+  z-index: 10050;
   min-width: 220px;
   overflow: hidden;
 }

@@ -3125,7 +3125,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
 #lang-selector-wrap{position:relative;display:flex;align-items:center}
 #lang-btn{display:flex;align-items:center;gap:0.38rem;padding:0.38rem 0.72rem;border-radius:100px;border:1px solid var(--border);background:white;font-size:0.86rem;font-weight:600;cursor:pointer;font-family:inherit;color:var(--mid);transition:all 0.18s;white-space:nowrap}
 #lang-btn:hover{border-color:var(--sage);color:var(--sage)}
-#lang-dropdown{display:none;position:absolute;top:calc(100% + 8px);right:0;background:white;border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,0.12);z-index:1000;min-width:220px;overflow:hidden}
+#lang-dropdown{display:none;position:absolute;top:calc(100% + 8px);right:0;background:white;border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,0.12);z-index:10050;min-width:220px;overflow:hidden}
 #lang-dropdown.open{display:block}
 .lang-option{display:flex;align-items:center;gap:0.6rem;padding:0.3rem 1rem;font-size:0.85rem;cursor:pointer;transition:background 0.12s;border:none;background:none;width:100%;text-align:left;font-family:inherit;color:var(--charcoal)}
 .lang-option:hover{background:var(--sage-pale)}
@@ -3547,8 +3547,8 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
     </div>
     <div class="nav-trailing" style="display:flex;align-items:center;gap:0.44rem;flex-shrink:0;">
       <div class="header-actions" style="display:flex;align-items:center;gap:0.44rem;">
-        <div id="lang-selector-wrap" class="lang-switch" style="display:none !important;">
-          <button id="lang-btn" onclick="toggleLangDropdown(event)"><span id="lang-current-flag">🇦🇺</span><span id="lang-current-label">EN</span><span style="font-size:0.6rem;opacity:0.6;">▼</span></button>
+        <div id="lang-selector-wrap" class="lang-switch">
+          <button type="button" id="lang-btn" onclick="toggleLangDropdown(event)"><span id="lang-current-flag">🇦🇺</span><span id="lang-current-label">EN</span><span style="font-size:0.6rem;opacity:0.6;">▼</span></button>
           <div id="lang-dropdown">
           <div class="lang-divider">Select language</div>
           <button class="lang-option active" onclick="setLang('en','🇦🇺','EN')"><span class="lang-flag">🇦🇺</span> English</button>
@@ -17254,7 +17254,7 @@ function renderLawyerConnection() {
 renderLawyerConnection();
 
 
-var LANGUAGE_SWITCH_ENABLED = false;
+var LANGUAGE_SWITCH_ENABLED = true;
 var _translationCache={}, _originalTexts={}, _currentLang='en';
 function toggleLangDropdown(e) { if (!LANGUAGE_SWITCH_ENABLED) return; e.stopPropagation(); document.getElementById('lang-dropdown').classList.toggle('open'); }
 document.addEventListener('click', function() { var dd=document.getElementById('lang-dropdown'); if(dd) dd.classList.remove('open'); });
@@ -22646,12 +22646,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
 function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    pageLanguage: 'en',
-    autoDisplay: false
-  }, 'google_translate_element');
+  if (window.__casepathTranslateMounted) return;
+  if (!window.google || !google.translate) return;
+  var host = document.getElementById("google_translate_element");
+  if (!host) return;
+  window.__casepathTranslateMounted = true;
+  try {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      autoDisplay: false
+    }, 'google_translate_element');
+  } catch (e) {}
 }
 </script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
