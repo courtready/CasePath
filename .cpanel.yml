@@ -1,0 +1,9 @@
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/casepath/public_html/
+    - /bin/cp -R assets $DEPLOYPATH
+    - /bin/cp -R components $DEPLOYPATH
+    - /bin/cp -R public $DEPLOYPATH
+    - /bin/cp *.html $DEPLOYPATH
+    - /bin/cp _headers $DEPLOYPATH
+    - /bin/cp _redirects $DEPLOYPATH
