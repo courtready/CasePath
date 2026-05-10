@@ -602,3 +602,82 @@ body.public-static-shell::before {
   display: block !important;
   margin-top: 1.5rem;
 }
+
+/* CasePath shell modals (account required / coming soon) on static pages */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 36, 28, 0.7);
+  z-index: 100050;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+}
+.modal-overlay.show {
+  display: flex;
+}
+.modal-overlay .modal {
+  background: var(--warm-white, #faf9f6);
+  border-radius: 24px;
+  padding: 2rem 2.25rem;
+  width: 100%;
+  max-width: 400px;
+  margin: 1.5rem;
+  box-shadow: 0 32px 80px rgba(20, 36, 28, 0.25);
+  position: relative;
+}
+.modal-overlay .modal h2 {
+  font-family: "Lora", serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--charcoal);
+  margin: 0 0 0.35rem;
+}
+.modal-overlay .modal-sub {
+  font-size: 0.85rem;
+  color: var(--soft);
+  margin: 0 0 1rem;
+  line-height: 1.45;
+}
+.modal-overlay .modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 30px;
+  height: 30px;
+  background: var(--cream);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--soft);
+}
+.modal-overlay .btn-full {
+  width: 100%;
+  background: var(--sage);
+  color: #fff;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+.modal-overlay .btn-full:hover {
+  background: var(--sage-light);
+}
+@media (max-width: 700px) {
+  .modal-overlay {
+    align-items: stretch;
+    padding: 0;
+  }
+  .modal-overlay .modal {
+    margin: 0;
+    max-width: none;
+    border-radius: 0;
+    min-height: 100dvh;
+    box-shadow: none;
+  }
+}

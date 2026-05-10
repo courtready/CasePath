@@ -908,71 +908,179 @@ window.hasAccess = hasAccess;
 
 function ensureGateBadgeStyles() {
   if (typeof document === "undefined") return;
-  if (document.getElementById("cr-gate-badge-styles")) return;
+  var prev = document.getElementById("cr-gate-badge-styles");
+  if (prev && prev.getAttribute("data-cr-nav-badges") === "v2") return;
+  if (prev) prev.remove();
   const style = document.createElement("style");
   style.id = "cr-gate-badge-styles";
+  style.setAttribute("data-cr-nav-badges", "v2");
   style.textContent = `
-    [data-cr-locked="1"]{
+    [data-cr-nav-badge="soon"]{
       position:relative;
-      opacity:0.85;
+      opacity:0.88;
       text-decoration:none;
     }
-    [data-cr-locked="1"]::after{
-      content:"LOCKED";
+    [data-cr-nav-badge="soon"]::after{
+      content:"Coming Soon";
       display:inline-block;
       margin-left:6px;
-      padding:1px 6px;
+      padding:1px 7px;
       border-radius:999px;
       font-size:10px;
-      font-weight:700;
-      letter-spacing:.03em;
-      background:#fff7ed;
-      color:#9a3412;
-      border:1px solid #fdba74;
+      font-weight:600;
+      letter-spacing:0.02em;
+      background:rgba(15,23,42,0.06);
+      color:rgba(55,65,55,0.72);
+      border:1px solid rgba(15,23,42,0.1);
+      vertical-align:middle;
+    }
+    [data-cr-nav-badge="account"]{
+      position:relative;
+      text-decoration:none;
+    }
+    [data-cr-nav-badge="account"]::after{
+      content:"Account";
+      display:inline-block;
+      margin-left:6px;
+      padding:1px 7px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:600;
+      letter-spacing:0.02em;
+      background:rgba(74,124,89,0.1);
+      color:rgba(55,90,62,0.92);
+      border:1px solid rgba(74,124,89,0.28);
+      vertical-align:middle;
+    }
+    [data-cr-nav-badge="upgrade"]{
+      position:relative;
+      opacity:0.92;
+      text-decoration:none;
+    }
+    [data-cr-nav-badge="upgrade"]::after{
+      content:"Upgrade";
+      display:inline-block;
+      margin-left:6px;
+      padding:1px 7px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:600;
+      letter-spacing:0.02em;
+      background:rgba(200,169,110,0.16);
+      color:rgba(90,70,30,0.92);
+      border:1px solid rgba(200,169,110,0.42);
       vertical-align:middle;
     }
   `;
   document.head.appendChild(style);
 }
 
-function gateTargetConfig() {
+function clearNavStripeAttrs(el) {
+  el.removeAttribute("data-cr-locked");
+  el.removeAttribute("data-cr-nav-badge");
+  el.removeAttribute("data-gate-feature");
+  el.removeAttribute("title");
+}
+
+function navStripeSignedIn() {
+  if (typeof window.crSupabaseAuthed === "function" && window.crSupabaseAuthed()) return true;
+  try {
+    var raw = localStorage.getItem("cr_user") || localStorage.getItem("courtready_user");
+    if (!raw) return false;
+    var u = JSON.parse(raw);
+    return !!(u && u.source === "supabase" && u.id && u.loggedIn !== false);
+  } catch (e) {
+    return false;
+  }
+}
+
+function navStripeTargets() {
   return [
-    { selector: "#nav-doc-helper", feature: "document_builder", unlock: "Buy document credits or upgrade to Full Access" },
-    { selector: "#nav-ai-assistant", feature: "ai_assistant", unlock: "Upgrade to Full Access" },
-    { selector: "#nav-parenting-orders", feature: "parenting_orders", unlock: "Get the Parenting Pack" },
-    { selector: "#nav-lawyer-portal", feature: "lawyer_portal", unlock: "Add Lawyer Portal Access" },
-    { selector: "#nav-your-case-pulse", feature: "vault", unlock: "Upgrade to Full Access" },
+    { selector: "#nav-parenting-orders", kind: "soon" },
+    { selector: "#nav-doc-helper", kind: "soon" },
+    { selector: "#nav-ai-assistant", kind: "soon" },
+    { selector: "#nav-avo", kind: "soon" },
+    { selector: "#nav-pricing", kind: "soon" },
+    { selector: "#nav-referrals", kind: "soon" },
+    { selector: "#nav-lawyer-portal", kind: "soon" },
+    { selector: "#nav-mental-health", kind: "account" },
+    { selector: "#nav-kids", kind: "account" },
+    { selector: "#nav-your-team", kind: "account" },
+    { selector: "#nav-new-item", kind: "account" },
+    { selector: "#nav-your-case-pulse", kind: "stripe", feature: "vault", unlock: "Upgrade to Full Access for Your Case and the document vault." },
   ];
 }
 
 function updateGates() {
   if (DEV_MODE || typeof document === "undefined") return;
   ensureGateBadgeStyles();
-  gateTargetConfig().forEach(function (cfg) {
+  var signedIn = navStripeSignedIn();
+  navStripeTargets().forEach(function (cfg) {
     const el = document.querySelector(cfg.selector);
     if (!el) return;
-    const allowed = hasAccess(cfg.feature);
-    if (allowed) {
-      el.removeAttribute("data-cr-locked");
-      el.removeAttribute("data-gate-feature");
-      el.removeAttribute("title");
+    clearNavStripeAttrs(el);
+    if (cfg.kind === "soon") {
+      el.setAttribute("data-cr-nav-badge", "soon");
+      el.setAttribute("title", "Coming soon — this section is under development.");
       return;
     }
-    el.setAttribute("data-cr-locked", "1");
-    el.setAttribute("data-gate-feature", cfg.feature);
-    el.setAttribute("title", "Locked: " + cfg.unlock);
+    if (cfg.kind === "account") {
+      if (signedIn) return;
+      el.setAttribute("data-cr-nav-badge", "account");
+      el.setAttribute(
+        "title",
+        "Please create a free account to access this section."
+      );
+      return;
+    }
+    if (cfg.kind === "stripe") {
+      const allowed = hasAccess(cfg.feature);
+      if (allowed) return;
+      el.setAttribute("data-cr-nav-badge", "upgrade");
+      el.setAttribute("data-gate-feature", cfg.feature);
+      el.setAttribute("title", cfg.unlock);
+    }
   });
 }
 window.updateGates = updateGates;
 
-document.addEventListener("click", function (e) {
-  const locked = e.target && e.target.closest ? e.target.closest("[data-cr-locked='1'][data-gate-feature]") : null;
-  if (!locked) return;
-  e.preventDefault();
-  e.stopPropagation();
-  const feature = locked.getAttribute("data-gate-feature");
-  if (feature && typeof requireAuth === "function") requireAuth(feature);
-});
+document.addEventListener(
+  "click",
+  function (e) {
+    const soon =
+      e.target && e.target.closest ? e.target.closest("[data-cr-nav-badge='soon']") : null;
+    if (soon) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof window.casepathShowComingSoonModal === "function") {
+        window.casepathShowComingSoonModal();
+      }
+      return;
+    }
+    const account =
+      e.target && e.target.closest ? e.target.closest("[data-cr-nav-badge='account']") : null;
+    if (account) {
+      if (!navStripeSignedIn()) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof window.casepathShowAccountRequiredModal === "function") {
+          window.casepathShowAccountRequiredModal();
+        }
+      }
+      return;
+    }
+    const upgrade =
+      e.target && e.target.closest
+        ? e.target.closest("[data-cr-nav-badge='upgrade'][data-gate-feature]")
+        : null;
+    if (!upgrade) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const feature = upgrade.getAttribute("data-gate-feature");
+    if (feature && typeof requireAuth === "function") requireAuth(feature);
+  },
+  true
+);
 
 function isConfiguredStripePriceId(priceId) {
   const id = String(priceId || "").trim();

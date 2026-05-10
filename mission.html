@@ -34,13 +34,13 @@
         <a href="/parenting-orders.html" id="nav-parenting-orders" class="parenting-orders nav-parenting-centre nav-featured" style="color:var(--sage);font-weight:700;" data-row="1">Parenting Orders</a>
         <a href="/document-helper.html" id="nav-doc-helper" data-row="1">Document Helper</a>
         <a href="/ai-assistant.html" id="nav-ai-assistant" data-row="1">AI Assistant</a>
-        <a href="/your-case.html" id="nav-your-case-pulse" class="nav-mission-pulse" data-row="1">Your Case</a>
-        <a href="/about-kids.html" id="nav-kids" data-row="2">About the Kids</a>
-        <a href="/your-family-team.html" id="nav-your-team" data-row="2">Your Family Team</a>
+        <a href="/kids.html" id="nav-kids" data-row="2">About the Kids</a>
+        <a href="/your-team.html" id="nav-your-team" data-row="2">Your Family Team</a>
         <a href="/support-tools.html" id="nav-new-item" class="nav-item" data-row="2">Support Tools</a>
         <a href="/avo.html" id="nav-avo" class="nav-avo-centre" data-row="2">AVO Centre</a>
         <a href="/pricing.html" id="nav-pricing" data-row="2">Pricing</a>
         <a href="/referrals.html" id="nav-referrals" data-row="2">Referrals</a>
+        <a href="/your-case.html" id="nav-your-case-pulse" class="nav-mission-pulse" data-row="1">Your Case</a>
         <a href="/lawyer-portal.html" id="nav-lawyer-portal" style="color:#c8a96e;font-weight:700;" data-row="2">Lawyer Portal</a>
       </div>
     </div>
@@ -104,7 +104,7 @@
 
     <div class="info-card-wide" style="margin-bottom:2rem;border-left:4px solid var(--sage);">
       <h2>Protecting the children</h2>
-      <p style="font-size:0.78rem;color:var(--soft);margin:-0.5rem 0 1rem;">The full <a href="/index.html?goto=kids" style="color:var(--sage);font-weight:600;">About the Kids</a> guide lives in the main CasePath experience.</p>
+      <p style="font-size:0.78rem;color:var(--soft);margin:-0.5rem 0 1rem;">The full <a href="/kids.html" style="color:var(--sage);font-weight:600;">About the Kids</a> guide lives in the main CasePath experience.</p>
       <p style="font-size:0.95rem;color:var(--mid);line-height:1.8;margin-bottom:1.25rem;">Children did not choose this. They did not file the application. They did not create the conflict. But they absorb its consequences — every overheard argument, every late changeover, every month the proceedings drag on. The longer a case takes, and the more adversarial it becomes, the more damage is done to the people who matter most.</p>
       <p style="font-size:0.95rem;color:var(--mid);line-height:1.8;margin-bottom:1.25rem;">The research is clear: where it is safe, children do best when they can have a meaningful relationship with both parents. Australian law centres each decision on the child's best interests, with protection from harm as the paramount consideration, then a structured list of factors the court must weigh (Family Law Act 1975 (Cth) s 60CC). That framework is not a slogan — it is the standard every parenting decision must meet.</p>
       <p style="font-size:0.95rem;color:var(--mid);line-height:1.8;margin-bottom:1.25rem;">Yet too often, the family court process itself becomes the source of harm. Children are caught between warring parents for months or years. They lose time with a parent not because of any finding of risk, but because proceedings are slow, expensive, and adversarial by design. By the time a final order is made, the damage to the parent-child relationship may already be done.</p>
@@ -155,10 +155,14 @@
 </div>
 </main>
 <script>
-window.openAuth = function () { window.location.href = "/index.html"; };
+window.openAuth = function (mode) {
+  var m = mode === "signin" ? "signin" : "signup";
+  window.location.href = "/index.html?auth=" + m;
+};
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/assets/js/supabase.js"></script>
+<script src="/assets/js/casepath-nav-access.js?v=20260511a"></script>
 <script src="/assets/js/public-static-nav.js"></script>
 </body>
 </html>

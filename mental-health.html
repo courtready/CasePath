@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
-<body class="public-static-shell">
+<body class="public-static-shell" data-casepath-account-gate="mental-health">
 <div class="disclaimer-banner">
   <strong>Important:</strong> This site provides legal <em>information</em> only — not legal advice. For advice about your situation, contact a family lawyer or <a href="https://www.legalaid.nsw.gov.au" target="_blank" style="color:#6b4c10;font-weight:600;">Legal Aid Australia</a>.
 </div>
@@ -34,13 +34,13 @@
         <a href="/parenting-orders.html" id="nav-parenting-orders" class="parenting-orders nav-parenting-centre nav-featured" style="color:var(--sage);font-weight:700;" data-row="1">Parenting Orders</a>
         <a href="/document-helper.html" id="nav-doc-helper" data-row="1">Document Helper</a>
         <a href="/ai-assistant.html" id="nav-ai-assistant" data-row="1">AI Assistant</a>
-        <a href="/your-case.html" id="nav-your-case-pulse" class="nav-mission-pulse" data-row="1">Your Case</a>
-        <a href="/about-kids.html" id="nav-kids" data-row="2">About the Kids</a>
-        <a href="/your-family-team.html" id="nav-your-team" data-row="2">Your Family Team</a>
+        <a href="/kids.html" id="nav-kids" data-row="2">About the Kids</a>
+        <a href="/your-team.html" id="nav-your-team" data-row="2">Your Family Team</a>
         <a href="/support-tools.html" id="nav-new-item" class="nav-item" data-row="2">Support Tools</a>
         <a href="/avo.html" id="nav-avo" class="nav-avo-centre" data-row="2">AVO Centre</a>
         <a href="/pricing.html" id="nav-pricing" data-row="2">Pricing</a>
         <a href="/referrals.html" id="nav-referrals" data-row="2">Referrals</a>
+        <a href="/your-case.html" id="nav-your-case-pulse" class="nav-mission-pulse" data-row="1">Your Case</a>
         <a href="/lawyer-portal.html" id="nav-lawyer-portal" style="color:#c8a96e;font-weight:700;" data-row="2">Lawyer Portal</a>
       </div>
     </div>
@@ -585,10 +585,14 @@
 </div>
 </main>
 <script>
-window.openAuth = function () { window.location.href = "/index.html"; };
+window.openAuth = function (mode) {
+  var m = mode === "signin" ? "signin" : "signup";
+  window.location.href = "/index.html?auth=" + m;
+};
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/assets/js/supabase.js"></script>
+<script src="/assets/js/casepath-nav-access.js?v=20260511a"></script>
 <script src="/assets/js/public-static-nav.js"></script>
 </body>
 </html>

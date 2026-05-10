@@ -16,7 +16,7 @@
     .public-panel p { margin: 0.45rem 0; color: var(--mid); line-height: 1.45; }
   </style>
 </head>
-<body class="page-satellite">
+<body class="page-satellite" data-casepath-account-gate="kids">
 <div class="disclaimer-banner">
   <strong>Important:</strong> This site provides legal <em>information</em> only — not legal advice.
 </div>
@@ -36,13 +36,13 @@
           <a href="/index.html" id="nav-parenting-orders" data-row="1">Parenting Orders</a>
           <a href="/index.html" id="nav-doc-helper" data-row="1">Document Helper</a>
           <a href="/index.html" id="nav-ai-assistant" data-row="1">AI Assistant</a>
-          <a href="/index.html" id="nav-your-case-pulse" data-row="1">Your Case</a>
-          <a href="/kids" id="nav-kids" class="nav-mission-pulse" data-row="2">About the Kids</a>
-          <a href="/your-team" id="nav-your-team" data-row="2">Your Family Team</a>
+          <a href="/kids.html" id="nav-kids" class="nav-mission-pulse" data-row="2">About the Kids</a>
+          <a href="/your-team.html" id="nav-your-team" data-row="2">Your Family Team</a>
           <a href="/support-tools.html" id="nav-new-item" data-row="2">Support Tools</a>
           <a href="/index.html" id="nav-avo" data-row="2">AVO Centre</a>
           <a href="/index.html" id="nav-pricing" data-row="2">Pricing</a>
           <a href="/index.html" id="nav-referrals" data-row="2">Referrals</a>
+          <a href="/index.html" id="nav-your-case-pulse" data-row="1">Your Case</a>
           <a href="/index.html" id="nav-lawyer-portal" data-row="2">Lawyer Portal</a>
         </div>
       </div>
@@ -58,13 +58,22 @@
       <p>They should not carry messages between parents, pick sides, or worry that loving one parent will hurt the other. Simple, repeated reassurance that it is okay to love both parents reduces loyalty conflict and protects their wellbeing.</p>
     </section>
     <section class="public-panel">
-      <p><strong>Full guide in CasePath</strong> — age-by-age notes, what children need during court, and plain-English context on the Family Law Act are in the main site: <a href="/index.html?goto=kids">Open About the Kids in CasePath</a>.</p>
+      <p><strong>Full guide in CasePath</strong> — age-by-age notes, what children need during court, and plain-English context on the Family Law Act are in the main site: <a href="/kids.html">Open About the Kids in CasePath</a>.</p>
     </section>
     <section class="public-panel">
       <p>Looking for practical help right now? Visit <a href="/support-tools.html">Support Tools</a> or <a href="/mental-health.html">Mental Health</a>.</p>
     </section>
   </div>
 </main>
+<script>
+window.openAuth = function (mode) {
+  var m = mode === "signin" ? "signin" : "signup";
+  window.location.href = "/index.html?auth=" + m;
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/js/supabase.js"></script>
+<script src="/assets/js/casepath-nav-access.js?v=20260511a"></script>
 <script src="/assets/js/public-static-nav.js"></script>
 </body>
 </html>

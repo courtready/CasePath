@@ -2252,6 +2252,10 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
   backdrop-filter: blur(6px);
 }
 .modal-overlay.show { display: flex; }
+#casepath-access-modal.modal-overlay,
+#casepath-coming-soon-modal.modal-overlay {
+  z-index: 3100;
+}
 .modal {
   background: var(--warm-white); border-radius: 24px; padding: 2.5rem;
   width: 100%; max-width: 400px; margin: 1.5rem;
@@ -3531,13 +3535,13 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
         <a href="/parenting-orders.html" onclick="if(typeof showPage==='function'){showPage('parenting-orders');return false;}" id="nav-parenting-orders" class="parenting-orders nav-parenting-centre nav-featured" style="color:var(--sage);font-weight:700;" data-row="1">Parenting Orders</a>
         <a href="/document-helper.html" onclick="if(typeof showPage==='function'){showPage('doc-helper');return false;}" id="nav-doc-helper" data-row="1">Document Helper</a>
         <a href="/ai-assistant.html" onclick="if(typeof showPage==='function'){showPage('ai-assistant');return false;}" id="nav-ai-assistant" data-row="1">AI Assistant</a>
-        <a href="/your-case.html" onclick="if(typeof cdBuildDashboard==='function'){cdBuildDashboard();} if(typeof showPage==='function'){showPage('vault');return false;}" id="nav-your-case-pulse" class="nav-mission-pulse" data-row="1">Your Case</a>
         <a href="/kids.html" id="nav-kids" data-row="2">About the Kids</a>
         <a href="/your-team.html" id="nav-your-team" data-row="2">Your Family Team</a>
-        <a href="/index.html?goto=support-tools" id="nav-new-item" class="nav-item" data-row="2">Support Tools</a>
+        <a href="/support-tools.html" id="nav-new-item" class="nav-item" data-row="2">Support Tools</a>
         <a href="/avo.html" onclick="if(typeof showPage==='function'){showPage('avo');return false;}" id="nav-avo" class="nav-avo-centre" data-row="2">AVO Centre</a>
         <a href="/pricing.html" onclick="if(typeof showPage==='function'){showPage('pricing');return false;}" id="nav-pricing" data-row="2">Pricing</a>
         <a href="/referrals.html" onclick="if(typeof showPage==='function'){showPage('referrals');return false;}" id="nav-referrals" data-row="2">Referrals</a>
+        <a href="/your-case.html" onclick="if(typeof cdBuildDashboard==='function'){cdBuildDashboard();} if(typeof showPage==='function'){showPage('vault');return false;}" id="nav-your-case-pulse" class="nav-mission-pulse" data-row="1">Your Case</a>
         <a href="/lawyer-portal.html" onclick="if(typeof showPage==='function'){showPage('lawyer-portal');return false;}" id="nav-lawyer-portal" style="color:#c8a96e;font-weight:700;" data-row="2">Lawyer Portal</a>
       </div>
     </div>
@@ -15074,6 +15078,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
 })();
 </script>
 <script src="/assets/js/auth.js?v=20260427d"></script>
+<script src="/assets/js/casepath-nav-access.js?v=20260511a"></script>
 <script src="/assets/js/vaultCrypto.js?v=20260427d"></script>
 <script>
 // ── Auth state ──
@@ -15186,11 +15191,13 @@ let pricingContext = null; // which page triggered pricing
 const PAID_FEATURES = ['qa'];
 const GATED = ['legislation', 'forms', 'qa', 'vault'];
 
-/** Core marketing and plain-information sections are browsable without an account; account-gated tools require sign-in. */
-var PUBLIC_PAGES = ['home', 'pricing', 'kids', 'mental-health', 'mission', 'glossary', 'avo'];
+/** SPA sections browsable without signing in (aligned with public mission + glossary pages). */
+function crPublicShellPage(pageId) {
+  return ['home', 'mission', 'glossary'].indexOf(pageId) !== -1;
+}
 
-function crPageRequiresSignIn(pageId) {
-  return PUBLIC_PAGES.indexOf(pageId) === -1;
+function casepathIsComingSoonPage(pageId) {
+  return ['parenting-orders', 'doc-helper', 'ai-assistant', 'avo', 'pricing', 'referrals', 'lawyer-portal'].indexOf(pageId) !== -1;
 }
 
 function crFlushPendingPageAfterAuth() {
@@ -15198,6 +15205,7 @@ function crFlushPendingPageAfterAuth() {
     var p = sessionStorage.getItem('cr_pending_page');
     if (!p) return;
     sessionStorage.removeItem('cr_pending_page');
+    if (typeof casepathIsComingSoonPage === 'function' && casepathIsComingSoonPage(p)) return;
     if (typeof showPage !== 'function') return;
     if (!document.getElementById('page-' + p)) return;
     showPage(p, true);
@@ -15658,16 +15666,32 @@ function applyPageTopLayout(id) {
 
 function showPage(id, shouldSyncUrl) {
   if (typeof shouldSyncUrl === 'undefined') shouldSyncUrl = true;
-  if (typeof crPageRequiresSignIn === 'function' && crPageRequiresSignIn(id)) {
+  if (!id || typeof id !== 'string') return;
+  if (typeof casepathIsComingSoonPage === 'function' && casepathIsComingSoonPage(id)) {
+    if (typeof casepathShowComingSoonModal === 'function') casepathShowComingSoonModal();
+    if (typeof casepathStripGotoFromUrl === 'function') casepathStripGotoFromUrl();
+    return;
+  }
+  if (!DEV_ACCESS_BYPASS && typeof crPublicShellPage === 'function' && !crPublicShellPage(id)) {
     if (!(typeof crSupabaseAuthed === 'function' && crSupabaseAuthed())) {
-      try { sessionStorage.setItem('cr_pending_page', id); } catch (e) {}
-      if (typeof syncUrlForPage === 'function') syncUrlForPage('home', true);
-      if (typeof openAuth === 'function') openAuth('signup');
+      try {
+        if (document.getElementById('page-' + id) && !(typeof casepathIsComingSoonPage === 'function' && casepathIsComingSoonPage(id))) {
+          sessionStorage.setItem('cr_pending_page', id);
+        }
+      } catch (e) {}
+      if (typeof casepathShowAccountRequiredModal === 'function') casepathShowAccountRequiredModal();
+      else if (typeof openAuth === 'function') openAuth('signup');
+      if (typeof casepathStripGotoFromUrl === 'function') casepathStripGotoFromUrl();
       return;
     }
   }
+  var pageEl = document.getElementById('page-' + id);
+  if (!pageEl) {
+    console.warn('CasePath: unknown page id', id);
+    return;
+  }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
+  pageEl.classList.add('active');
   document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
   var nl = document.getElementById('nav-' + id);
   if (!nl && id === 'vault') nl = document.getElementById('nav-your-case-pulse');
@@ -17538,6 +17562,7 @@ function initCasepathRoutesFromUrl() {
     showPage(initialPageFromUrl, false);
   }
 }
+window.initCasepathRoutesFromUrl = initCasepathRoutesFromUrl;
 window.addEventListener('popstate', function() {
   var pageFromUrl = resolvePageFromPathname(window.location.pathname);
   showPage(pageFromUrl, false);
@@ -22453,7 +22478,7 @@ if (navGrid && links.length) {
 
 <script src="/assets/js/translations.js"></script>
 <script src="/assets/js/nav-link-fallback.js"></script>
-<script src="/assets/js/app.js?v=20260502"></script>
+<script src="/assets/js/app.js?v=20260511d"></script>
 <script>
 function cpIsAuthed() {
   try {
@@ -22514,22 +22539,26 @@ async function cpHandleRouting() {
       try {
         sessionStorage.setItem("cr_after_auth_url", "/support-tools.html");
       } catch (e) {}
-      if (typeof openAuth === "function") openAuth("signup");
-      window.history.replaceState({}, "", "/index.html");
+      if (typeof window.casepathShowAccountRequiredModal === "function") {
+        window.casepathShowAccountRequiredModal();
+      } else if (typeof openAuth === "function") openAuth("signup");
+      stripGotoQuery();
       return;
     }
     window.location.href = "/support-tools.html";
     return;
   }
 
-  if (goto === "your-team") {
+  if (goto === "your-team" || goto === "kids") {
     const isAuthed = await cpRequireAuth();
     if (!isAuthed) {
       try {
         sessionStorage.setItem("cr_pending_page", goto);
       } catch (e) {}
-      if (typeof openAuth === "function") openAuth("signup");
-      window.history.replaceState({}, "", "/index.html");
+      if (typeof window.casepathShowAccountRequiredModal === "function") {
+        window.casepathShowAccountRequiredModal();
+      } else if (typeof openAuth === "function") openAuth("signup");
+      stripGotoQuery();
       return;
     }
   }
@@ -22583,6 +22612,9 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       if (typeof cpHandleRouting === "function") await cpHandleRouting();
+      if (typeof window.initCasepathRoutesFromUrl === "function") {
+        window.initCasepathRoutesFromUrl();
+      }
     } catch (e) {
       console.warn("billing bootstrap", e);
     }
