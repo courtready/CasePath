@@ -14,6 +14,52 @@
   ];
   var ACCOUNT_NAV_IDS = ["nav-mental-health", "nav-kids", "nav-your-team", "nav-new-item"];
 
+  function clearNavRolloutAttrs(el) {
+    if (!el || !el.removeAttribute) return;
+    el.removeAttribute("data-cr-locked");
+    el.removeAttribute("data-cr-nav-badge");
+    el.removeAttribute("data-gate-feature");
+    el.removeAttribute("data-cr-nav-tier");
+    el.removeAttribute("title");
+  }
+
+  /** Static HTML shells: mirror index nav badges (stylesheet lives in styles.css). */
+  function applyStaticNavRolloutBadges() {
+    if (document.getElementById("page-home")) return;
+    var grid = document.getElementById("nav-main-grid");
+    if (!grid) return;
+    COMING_NAV_IDS.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      clearNavRolloutAttrs(el);
+      el.setAttribute("data-cr-nav-badge", "soon");
+      el.setAttribute("title", "Coming soon — this section is under development.");
+    });
+    var signedIn = authedFromLocalStorage();
+    ACCOUNT_NAV_IDS.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      clearNavRolloutAttrs(el);
+      if (!signedIn) {
+        el.setAttribute("data-cr-nav-badge", "account");
+        el.setAttribute("title", "Please create a free account to access this section.");
+      }
+    });
+    var yc = document.getElementById("nav-your-case-pulse");
+    if (yc) {
+      clearNavRolloutAttrs(yc);
+      if (!signedIn) {
+        yc.setAttribute("data-cr-nav-badge", "account");
+        yc.setAttribute("title", "Please create a free account to access this section.");
+        yc.classList.remove("nav-mission-pulse");
+      } else {
+        yc.classList.add("nav-mission-pulse");
+      }
+    }
+  }
+
+  window.casepathApplyStaticNavRolloutBadges = applyStaticNavRolloutBadges;
+
   function readLocalUser() {
     try {
       var raw = localStorage.getItem("cr_user") || localStorage.getItem("courtready_user");
@@ -195,6 +241,14 @@
       var grid = a.closest(".nav-grid");
       if (!grid || grid.id !== "nav-main-grid") return;
       var id = a.id || "";
+      if (id === "nav-your-case-pulse") {
+        if (!authedFromLocalStorage()) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          window.casepathShowAccountRequiredModal();
+        }
+        return;
+      }
       if (COMING_NAV_IDS.indexOf(id) !== -1) {
         ev.preventDefault();
         ev.stopPropagation();
@@ -239,6 +293,7 @@
 
   function boot() {
     ensureModals();
+    applyStaticNavRolloutBadges();
     runAccountPageGate();
   }
 

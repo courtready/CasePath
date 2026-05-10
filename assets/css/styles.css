@@ -500,6 +500,128 @@ header,
 #nav-referrals { grid-row: 2; grid-column: 6; }
 #nav-lawyer-portal { grid-row: 2; grid-column: 7; }
 
+/* Nav rollout: separate “available + account” from staged features (desktop grid only) */
+@media (min-width: 901px) {
+  #nav-parenting-orders {
+    border-left: 1px solid rgba(74, 124, 89, 0.22);
+    padding-left: clamp(0.35rem, 1vw, 0.75rem);
+    margin-left: clamp(0.12rem, 0.5vw, 0.38rem);
+  }
+  #nav-avo {
+    border-left: 1px solid rgba(74, 124, 89, 0.22);
+    padding-left: clamp(0.35rem, 1vw, 0.75rem);
+    margin-left: clamp(0.12rem, 0.5vw, 0.38rem);
+  }
+}
+
+.nav-grid a[data-cr-nav-badge="soon"]:hover {
+  opacity: 0.9;
+  color: var(--mid);
+  transform: translateY(-1px);
+}
+
+.nav-grid a[data-cr-nav-badge="account"]:hover {
+  opacity: 1;
+  color: var(--charcoal);
+}
+
+.nav-grid a[data-cr-nav-badge="upgrade"]:hover {
+  opacity: 0.96;
+  color: var(--charcoal);
+}
+
+/* Nav rollout pills (available / account / coming soon) — stylesheet so static shells match index */
+#nav-main-grid [data-cr-nav-badge="soon"] {
+  position: relative;
+  opacity: 0.86;
+  text-decoration: none;
+  cursor: pointer;
+}
+#nav-main-grid [data-cr-nav-badge="soon"]::after {
+  content: "Coming Soon";
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: rgba(15, 23, 42, 0.055);
+  color: rgba(55, 65, 55, 0.68);
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  vertical-align: middle;
+}
+#nav-main-grid a[data-cr-nav-badge="soon"].parenting-orders {
+  color: rgba(55, 65, 55, 0.78) !important;
+}
+#nav-main-grid a#nav-lawyer-portal[data-cr-nav-badge="soon"] {
+  color: rgba(90, 75, 55, 0.78) !important;
+}
+@media (max-width: 900px) {
+  #nav-main-grid [data-cr-nav-badge="soon"]::after,
+  #nav-main-grid [data-cr-nav-badge="account"]::after,
+  #nav-main-grid [data-cr-nav-badge="upgrade"]::after {
+    font-size: 9px;
+    margin-left: 4px;
+    padding: 1px 5px;
+  }
+}
+#nav-main-grid [data-cr-nav-badge="account"] {
+  position: relative;
+  text-decoration: none;
+  cursor: pointer;
+}
+#nav-main-grid [data-cr-nav-badge="account"]::after {
+  content: "Account";
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: rgba(74, 124, 89, 0.09);
+  color: rgba(55, 90, 62, 0.88);
+  border: 1px solid rgba(74, 124, 89, 0.24);
+  vertical-align: middle;
+}
+#nav-main-grid [data-cr-nav-badge="upgrade"] {
+  position: relative;
+  opacity: 0.9;
+  text-decoration: none;
+  cursor: pointer;
+}
+#nav-main-grid [data-cr-nav-badge="upgrade"]::after {
+  content: "Plans";
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: rgba(200, 169, 110, 0.14);
+  color: rgba(90, 70, 30, 0.88);
+  border: 1px solid rgba(200, 169, 110, 0.38);
+  vertical-align: middle;
+}
+
+@media (max-width: 1320px) {
+  .nav-grid {
+    column-gap: clamp(0.55rem, 1.1vw, 1rem);
+    row-gap: 0.38rem;
+  }
+}
+
+@media (max-width: 1180px) {
+  .nav-grid a {
+    padding: 0.12rem 0.32rem;
+  }
+  .nav-grid a[data-row="2"] {
+    font-size: 0.8rem !important;
+  }
+}
+
 .logo-wrap {
   display: flex;
   align-items: center;

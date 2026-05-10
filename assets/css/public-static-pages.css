@@ -114,6 +114,13 @@ body.public-static-shell::before {
     border-bottom: none;
   }
 
+  #nav-parenting-orders,
+  #nav-avo {
+    border-left: none !important;
+    margin-left: 0 !important;
+    padding-left: 1.15rem !important;
+  }
+
   .nav-grid a:hover {
     transform: none;
     opacity: 1;

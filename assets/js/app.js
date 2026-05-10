@@ -909,70 +909,7 @@ window.hasAccess = hasAccess;
 function ensureGateBadgeStyles() {
   if (typeof document === "undefined") return;
   var prev = document.getElementById("cr-gate-badge-styles");
-  if (prev && prev.getAttribute("data-cr-nav-badges") === "v2") return;
   if (prev) prev.remove();
-  const style = document.createElement("style");
-  style.id = "cr-gate-badge-styles";
-  style.setAttribute("data-cr-nav-badges", "v2");
-  style.textContent = `
-    [data-cr-nav-badge="soon"]{
-      position:relative;
-      opacity:0.88;
-      text-decoration:none;
-    }
-    [data-cr-nav-badge="soon"]::after{
-      content:"Coming Soon";
-      display:inline-block;
-      margin-left:6px;
-      padding:1px 7px;
-      border-radius:999px;
-      font-size:10px;
-      font-weight:600;
-      letter-spacing:0.02em;
-      background:rgba(15,23,42,0.06);
-      color:rgba(55,65,55,0.72);
-      border:1px solid rgba(15,23,42,0.1);
-      vertical-align:middle;
-    }
-    [data-cr-nav-badge="account"]{
-      position:relative;
-      text-decoration:none;
-    }
-    [data-cr-nav-badge="account"]::after{
-      content:"Account";
-      display:inline-block;
-      margin-left:6px;
-      padding:1px 7px;
-      border-radius:999px;
-      font-size:10px;
-      font-weight:600;
-      letter-spacing:0.02em;
-      background:rgba(74,124,89,0.1);
-      color:rgba(55,90,62,0.92);
-      border:1px solid rgba(74,124,89,0.28);
-      vertical-align:middle;
-    }
-    [data-cr-nav-badge="upgrade"]{
-      position:relative;
-      opacity:0.92;
-      text-decoration:none;
-    }
-    [data-cr-nav-badge="upgrade"]::after{
-      content:"Upgrade";
-      display:inline-block;
-      margin-left:6px;
-      padding:1px 7px;
-      border-radius:999px;
-      font-size:10px;
-      font-weight:600;
-      letter-spacing:0.02em;
-      background:rgba(200,169,110,0.16);
-      color:rgba(90,70,30,0.92);
-      border:1px solid rgba(200,169,110,0.42);
-      vertical-align:middle;
-    }
-  `;
-  document.head.appendChild(style);
 }
 
 function clearNavStripeAttrs(el) {
@@ -1007,7 +944,6 @@ function navStripeTargets() {
     { selector: "#nav-kids", kind: "account" },
     { selector: "#nav-your-team", kind: "account" },
     { selector: "#nav-new-item", kind: "account" },
-    { selector: "#nav-your-case-pulse", kind: "stripe", feature: "vault", unlock: "Upgrade to Full Access for Your Case and the document vault." },
   ];
 }
 
@@ -1033,14 +969,32 @@ function updateGates() {
       );
       return;
     }
-    if (cfg.kind === "stripe") {
-      const allowed = hasAccess(cfg.feature);
-      if (allowed) return;
-      el.setAttribute("data-cr-nav-badge", "upgrade");
-      el.setAttribute("data-gate-feature", cfg.feature);
-      el.setAttribute("title", cfg.unlock);
-    }
   });
+
+  var yc = document.querySelector("#nav-your-case-pulse");
+  if (yc) {
+    clearNavStripeAttrs(yc);
+    yc.removeAttribute("data-cr-nav-tier");
+    if (!signedIn) {
+      yc.setAttribute("data-cr-nav-badge", "account");
+      yc.setAttribute(
+        "title",
+        "Please create a free account to access this section."
+      );
+      yc.classList.remove("nav-mission-pulse");
+    } else if (!hasAccess("vault")) {
+      yc.setAttribute("data-cr-nav-badge", "upgrade");
+      yc.setAttribute("data-gate-feature", "vault");
+      yc.setAttribute("data-cr-nav-tier", "vault");
+      yc.setAttribute(
+        "title",
+        "Your Case rolls out in stages — open plans when you are ready for the full vault."
+      );
+      yc.classList.remove("nav-mission-pulse");
+    } else {
+      yc.classList.add("nav-mission-pulse");
+    }
+  }
 }
 window.updateGates = updateGates;
 
