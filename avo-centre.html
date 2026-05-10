@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>CasePath — AVO Centre</title>
+<link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
+<script>
+(function () {
+  var path = window.location.pathname || "/";
+  var slash = path.lastIndexOf("/");
+  var dir = slash <= 0 ? "/" : path.slice(0, slash + 1);
+  var target = (dir === "/" ? "" : dir) + "index.html?goto=avo";
+  window.location.replace(target);
+})();
+</script>
+</head>
+<body>
+<noscript>
+<p style="font-family:system-ui,sans-serif;padding:1.5rem;margin:0;"><a href="index.html?goto=avo">Open AVO Centre</a></p>
+</noscript>
+</body>
+</html>

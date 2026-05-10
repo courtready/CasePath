@@ -7,7 +7,6 @@
     "nav-parenting-orders",
     "nav-doc-helper",
     "nav-ai-assistant",
-    "nav-avo",
     "nav-pricing",
     "nav-referrals",
     "nav-lawyer-portal"

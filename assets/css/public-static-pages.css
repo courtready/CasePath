@@ -146,8 +146,7 @@ body.public-static-shell::before {
     gap: 0;
   }
 
-  #nav-parenting-orders,
-  #nav-avo {
+  #nav-parenting-orders {
     border-left: none !important;
     margin-left: 0 !important;
     padding-left: 1.15rem !important;

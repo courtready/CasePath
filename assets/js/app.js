@@ -931,12 +931,12 @@ function navStripeSignedIn() {
   }
 }
 
+/** Rollout badges only; live public sections (e.g. AVO Centre) are omitted so they stay unbadged until gated later. */
 function navStripeTargets() {
   return [
     { selector: "#nav-parenting-orders", kind: "soon" },
     { selector: "#nav-doc-helper", kind: "soon" },
     { selector: "#nav-ai-assistant", kind: "soon" },
-    { selector: "#nav-avo", kind: "soon" },
     { selector: "#nav-pricing", kind: "soon" },
     { selector: "#nav-referrals", kind: "soon" },
     { selector: "#nav-lawyer-portal", kind: "soon" },

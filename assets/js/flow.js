@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else if (text.includes("property")) {
         window.location.href = "/property.html";
       } else if (text.includes("avo")) {
-        window.location.href = "/avo.html";
+        window.location.href = "/avo-centre.html";
       } else if (text.includes("breach")) {
         window.location.href = "/breach.html";
       } else if (text.includes("respond")) {
