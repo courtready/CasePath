@@ -8,6 +8,15 @@
   var grid = document.getElementById("nav-main-grid");
   if (!btn || !wrap || !grid) return;
 
+  var scrim = document.getElementById("nav-mobile-scrim");
+  if (!scrim) {
+    scrim = document.createElement("div");
+    scrim.id = "nav-mobile-scrim";
+    scrim.className = "nav-mobile-scrim";
+    scrim.setAttribute("aria-hidden", "true");
+    document.body.appendChild(scrim);
+  }
+
   function syncDropdownTop() {
     var hdr = document.querySelector("header.header");
     var y = hdr ? hdr.getBoundingClientRect().bottom : 100;
@@ -26,6 +35,10 @@
     document.body.classList.add("nav-mobile-menu-open");
     btn.setAttribute("aria-expanded", "true");
   }
+
+  scrim.addEventListener("click", function () {
+    if (mq.matches) closeMenu();
+  });
 
   btn.addEventListener("click", function (e) {
     e.preventDefault();

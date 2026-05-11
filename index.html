@@ -187,9 +187,14 @@
   --cr-page-hero-pad-x: 1.25rem;
   --cr-sticky-rail-top: 0.75rem;
   --cr-doc-helper-hero-min-height: 12.5rem;
+  --cr-public-pad-x: clamp(1rem, 4.2vw, 3rem);
+  --cr-public-content-max: 1100px;
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
 
 body {
   font-family: 'DM Sans', sans-serif;
@@ -559,7 +564,7 @@ nav .nav-site-links ul #nav-your-case-pulse { font-size: 1.22rem; font-weight: 6
     border-bottom: none !important;
     box-shadow: 0 14px 44px rgba(30, 36, 32, 0.18);
     border-radius: 0 0 14px 14px;
-    max-height: min(72vh, 520px);
+    max-height: min(78vh, 560px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     align-items: stretch !important;
@@ -574,6 +579,8 @@ nav .nav-site-links ul #nav-your-case-pulse { font-size: 1.22rem; font-weight: 6
     top: var(--mobile-nav-dropdown-top, 108px);
     z-index: 10003;
     background: #fff;
+    max-height: min(78vh, 560px);
+    padding-bottom: env(safe-area-inset-bottom, 0) !important;
   }
 
   .nav-grid a {
@@ -1122,7 +1129,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
 .disclaimer-banner {
   background: var(--sage-pale);
   border-bottom: 1px solid rgba(74,124,89,0.2);
-  padding: 0.65rem 3rem;
+  padding: 0.65rem var(--cr-public-pad-x, 3rem);
   font-size: 0.78rem;
   color: var(--mid);
   text-align: center;
@@ -1150,14 +1157,14 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
   pointer-events: none;
 }
 .page-hero-inner {
-  max-width: 1100px;
+  max-width: var(--cr-public-content-max, 1100px);
   margin: 0 auto;
   position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0.2rem;
+  gap: 0.35rem;
 }
 .page-eyebrow {
   font-size: 0.74rem;
@@ -1169,25 +1176,42 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
 }
 .page-hero h1 {
   font-family: 'Lora', serif;
-  font-size: clamp(0.95rem, 1.5vw, 1.25rem);
+  font-size: clamp(1.32rem, 0.65rem + 2.6vw, 2.05rem);
   font-weight: 700;
   color: white;
   letter-spacing: -0.02em;
-  line-height: 1.02;
+  line-height: 1.12;
   margin: 0;
 }
-.page-hero h1 em { font-style: italic; color: var(--sage-light); font-size: 1.2em; }
+.page-hero h1 em { font-style: italic; color: var(--sage-light); font-size: 1.12em; }
 .page-hero p {
-  font-size: 0.72rem;
+  font-size: clamp(0.78rem, 0.72rem + 0.45vw, 0.88rem);
   color: rgba(255,255,255,0.65);
   font-weight: 300;
   max-width: min(56rem, 92vw);
-  line-height: 1.15;
+  line-height: 1.28;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .page-hero {
+    min-height: 0;
+    padding-top: 0.88rem;
+    padding-bottom: 1rem;
+    padding-left: var(--cr-public-pad-x, 1.25rem);
+    padding-right: var(--cr-public-pad-x, 1.25rem);
+  }
+  .page-hero p {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    line-height: 1.48;
+    max-width: none;
+  }
 }
 
 /* ── SEARCH BAR ── */
@@ -1364,6 +1388,14 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
   border-radius: 20px !important;
   line-height: 1.15 !important;
 }
+@media (max-width: 900px) {
+  #page-home #hero-btn-row.hero-btn-row-grid > .hero-mission-btn {
+    min-height: 3.45rem !important;
+    padding: 0.95rem 1rem !important;
+    font-size: clamp(1.05rem, 3.6vw, 1.38rem) !important;
+    line-height: 1.2 !important;
+  }
+}
 #hero-upcoming-panel {
   margin-left: auto !important;
   margin-right: 0 !important;
@@ -1530,9 +1562,10 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
 
 /* How it works */
 .section-wrap {
-  padding: 2.5rem 3rem;
-  max-width: 1100px;
+  padding: 2.5rem var(--cr-public-pad-x, 3rem) 4rem;
+  max-width: min(var(--cr-public-content-max, 1100px), 1000px);
   margin: 0 auto;
+  box-sizing: border-box;
 }
 .eyebrow {
   font-size: 0.75rem;
@@ -2836,20 +2869,40 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
     font-size: 0.82rem;
     padding: 0.34rem 0.64rem;
   }
-  .hero { grid-template-columns: 1fr; padding: 4rem 1.5rem 3rem; }
+  .hero { grid-template-columns: 1fr; padding: 4rem var(--cr-public-pad-x, 1.5rem) 3rem; }
   .hero-right { margin-top: 60px; padding-inline-start: 0; transform: none; }
   .hero-visual { display: none; }
-  .section-wrap, .forms-wrap, .vault-wrap, .qa-wrap { padding: 2rem 1.5rem; }
-  .two-col-layout { grid-template-columns: 1fr; padding: 2rem 1.5rem; }
+  .section-wrap, .forms-wrap, .vault-wrap, .qa-wrap { padding: 2rem var(--cr-public-pad-x, 1.25rem) 3rem; }
+  .two-col-layout { grid-template-columns: 1fr; padding: 2rem var(--cr-public-pad-x, 1.25rem); }
   .sidebar { position: static; }
-  .glossary-wrap { grid-template-columns: 1fr; padding: 2rem 1.5rem; }
-  .alpha-nav { position: static; }
+  .glossary-wrap {
+    grid-template-columns: 1fr;
+    padding: 1.75rem var(--cr-public-pad-x, 1.25rem) 2.5rem;
+    gap: 1.5rem;
+  }
+  .alpha-nav {
+    position: static;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    max-width: 100%;
+  }
+  .alpha-nav a {
+    min-height: 40px;
+    height: auto;
+    padding: 0.35rem 0.2rem;
+    box-sizing: border-box;
+  }
+  .glossary-term {
+    padding: 1.1rem var(--cr-public-pad-x, 1.1rem);
+    max-width: 100%;
+    box-sizing: border-box;
+  }
   .steps-grid, .pathways-grid { grid-template-columns: 1fr; }
   .features-grid { grid-template-columns: 1fr; }
   .feat-card.wide { grid-column: span 1; grid-template-columns: 1fr; }
   .hero { grid-template-columns: 1fr; }
   .hero > .vault-float { width: 100% !important; }
-  .dark-section, .cta-wrap { padding: 4rem 1.5rem; }
+  .dark-section, .cta-wrap { padding: 4rem var(--cr-public-pad-x, 1.25rem); }
   #page-mental-health .mh-two-col { grid-template-columns: 1fr !important; }
   .disclaimer-block { margin: 2rem 1.5rem; }
   /* Samsung / narrow phones: hero panel + demo grid (avoid horizontal clip & overflow) */
@@ -2879,13 +2932,14 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
 
 @media (max-width: 600px) {
   #page-home #hero-btn-row.hero-btn-row-grid .hero-mission-btn {
-    font-size: 1.38rem !important;
-    padding: 1.1rem 1rem !important;
-    min-height: 4.6rem !important;
+    font-size: clamp(1rem, 4.2vw, 1.32rem) !important;
+    padding: 0.9rem 0.85rem !important;
+    min-height: 3.5rem !important;
     min-width: 0 !important;
     white-space: normal !important;
     text-align: center;
     max-width: 100%;
+    line-height: 1.22 !important;
   }
 }
 
@@ -2950,10 +3004,14 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
 
 
 /* ── SHARED ── */
-.section-wrap{max-width:1000px;margin:0 auto;padding:2rem 2rem 4rem}
-.info-card-wide{background:white;border:1px solid var(--border);border-radius:16px;padding:1.75rem 2rem;margin-bottom:1.5rem}
+.info-card-wide{background:white;border:1px solid var(--border);border-radius:16px;padding:1.75rem 2rem;margin-bottom:1.5rem;box-sizing:border-box;max-width:100%}
 .info-card-wide h2{font-family:'Lora',serif;font-size:1.2rem;margin:0 0 0.75rem;color:var(--charcoal)}
 .info-card-wide p{font-size:0.82rem;color:var(--mid);line-height:1.7;margin:0 0 0.5rem}
+@media (max-width: 900px) {
+  .info-card-wide { padding: 1.35rem var(--cr-public-pad-x, 1.25rem); margin-bottom: 1.25rem; border-radius: 14px; }
+  .info-card-wide h2 { font-size: 1.1rem; line-height: 1.28; }
+  .info-card-wide p { font-size: 0.84rem; line-height: 1.72; }
+}
 /* ── GATES ── */
 .gate-wrapper{position:relative}
 .gate-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(to bottom,rgba(250,247,242,0.05) 0%,rgba(250,247,242,0.88) 30%,var(--cream) 60%);z-index:400;align-items:flex-start;justify-content:center;padding-top:calc(160px + 3rem);pointer-events:none}.gate-overlay.show{display:flex}.gate-overlay.show .gate-card{pointer-events:all}
@@ -20960,8 +21018,8 @@ function cdPrePopulateChron() {
 
 
   <!-- Site footer -->
-  <footer style="background:#1a1f1a;border-top:1px solid rgba(255,255,255,0.06);padding:3rem 2rem 2rem;">
-    <div style="max-width:1100px;margin:0 auto;">
+  <footer class="casepath-site-footer" style="background:#1a1f1a;border-top:1px solid rgba(255,255,255,0.06);">
+    <div class="casepath-site-footer-inner" style="max-width:1100px;margin:0 auto;">
 
       <!-- Brand + tagline -->
       <div style="margin-bottom:2.5rem;">
@@ -22430,6 +22488,15 @@ if (navGrid && links.length) {
   var grid = document.getElementById("nav-main-grid");
   if (!btn || !wrap || !grid) return;
 
+  var scrim = document.getElementById("nav-mobile-scrim");
+  if (!scrim) {
+    scrim = document.createElement("div");
+    scrim.id = "nav-mobile-scrim";
+    scrim.className = "nav-mobile-scrim";
+    scrim.setAttribute("aria-hidden", "true");
+    document.body.appendChild(scrim);
+  }
+
   function syncDropdownTop() {
     var hdr = document.querySelector("header.header");
     var y = hdr ? hdr.getBoundingClientRect().bottom : 100;
@@ -22448,6 +22515,10 @@ if (navGrid && links.length) {
     document.body.classList.add("nav-mobile-menu-open");
     btn.setAttribute("aria-expanded", "true");
   }
+
+  scrim.addEventListener("click", function () {
+    if (mq.matches) closeMenu();
+  });
 
   btn.addEventListener("click", function (e) {
     e.preventDefault();

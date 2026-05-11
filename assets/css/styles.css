@@ -196,9 +196,30 @@ body {
   --cr-page-hero-pad-x: 1.25rem;
   --cr-sticky-rail-top: 0.75rem;
   --cr-doc-helper-hero-min-height: 12.5rem;
+  /* Public + SPA: consistent horizontal rhythm (stabilisation; no theme change) */
+  --cr-public-pad-x: clamp(1rem, 4.2vw, 3rem);
+  --cr-public-content-max: 1100px;
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* Mobile nav drawer: tap outside to close (below panel z-index 10003, above page) */
+.nav-mobile-scrim {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  background: rgba(30, 36, 32, 0.42);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+body.nav-mobile-menu-open .nav-mobile-scrim {
+  display: block;
+}
 
 body.page-satellite {
   font-family: 'DM Sans', sans-serif;
@@ -772,7 +793,7 @@ body:not(.page-satellite) #navSignOutBtn:hover {
 .disclaimer-banner {
   background: var(--sage-pale);
   border-bottom: 1px solid rgba(74,124,89,0.2);
-  padding: 0.65rem 3rem;
+  padding: 0.65rem var(--cr-public-pad-x, 3rem);
   font-size: 0.78rem;
   color: var(--mid);
   text-align: center;
@@ -1252,6 +1273,8 @@ body.page-satellite #tagline-bar.top-banner {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 20px 2rem;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .home-process-situation .section {
@@ -1558,6 +1581,10 @@ body.page-satellite #tagline-bar.top-banner {
 }
 
 @media (max-width: 860px) {
+  .home-process-situation {
+    padding: 0 var(--cr-public-pad-x, 1.25rem) 2rem;
+  }
+
   .home-process-situation .section {
     padding: 2rem 1.25rem;
   }
@@ -1597,5 +1624,46 @@ body.page-satellite #tagline-bar.top-banner {
 
   .home-process-situation .situation-column .situation-desc {
     margin-top: 0;
+  }
+}
+
+/* ── Site footer (index): responsive padding, no horizontal bleed ── */
+.casepath-site-footer {
+  padding: 3rem var(--cr-public-pad-x, 2rem) 2rem;
+  box-sizing: border-box;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.casepath-site-footer-inner {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--cr-public-content-max, 1100px);
+}
+
+@media (max-width: 900px) {
+  .casepath-site-footer {
+    padding-top: 2.25rem;
+  }
+
+  .lang-option {
+    min-height: 48px;
+    padding: 0.55rem 1rem;
+    box-sizing: border-box;
+  }
+
+  #page-home.active {
+    overflow-x: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-featured {
+    animation: none !important;
+  }
+
+  .process-step:hover,
+  .situation-card:hover {
+    transform: none;
   }
 }

@@ -13,7 +13,7 @@
   <style>
     .tools-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
       gap: 1.5rem;
       margin-top: 2rem;
     }
@@ -21,6 +21,8 @@
     .tool-card {
       display: block;
       padding: 1.5rem;
+      min-height: 5.5rem;
+      box-sizing: border-box;
       border-radius: 12px;
       background: #fff;
       text-decoration: none;
@@ -32,6 +34,14 @@
     .tool-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tool-card,
+      .tool-card:hover {
+        transition: none;
+        transform: none;
+      }
     }
   </style>
 </head>
@@ -115,7 +125,7 @@
   </div>
 </header>
 
-<main class="satellite-main" style="max-width:1100px;margin:0 auto;padding:2rem 1rem;">
+<main class="satellite-main">
   <h1>Support Tools</h1>
   <p>Practical tools to help you take control, reduce harm, and support better outcomes.</p>
 
