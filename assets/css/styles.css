@@ -305,8 +305,10 @@ header,
 }
 
 @media (max-width: 900px) {
+  /* Keep below mobile flyout — was 10080 and painted over the drawer (z-index ~10003). */
   .nav-trailing {
-    z-index: 10080;
+    z-index: 6;
+    position: relative;
   }
 }
 
@@ -362,136 +364,208 @@ header,
 
 .nav-grid a[href*="your-case"] { font-weight: 700; }
 
-/* Main app + static shells: two-row nav (available now · coming soon platform) */
-#nav-main-grid.nav-grid {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.28rem;
-  padding: 0.14rem 0 0.22rem;
-  column-gap: unset;
-  row-gap: unset;
-  grid-template-columns: unset;
-  grid-template-rows: unset;
+/* Main app + static shells: two-row desktop nav only (≥901px — mobile uses flyout-only rules below) */
+@media (min-width: 901px) {
+  #nav-main-grid.nav-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.28rem;
+    padding: 0.14rem 0 0.22rem;
+    column-gap: unset;
+    row-gap: unset;
+    grid-template-columns: unset;
+    grid-template-rows: unset;
+  }
+
+  #nav-main-grid .nav-row-primary {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    column-gap: clamp(0.55rem, 1.35vw, 1.1rem);
+    row-gap: 0.22rem;
+  }
+
+  #nav-main-grid .nav-row-primary > a {
+    flex: 0 1 auto;
+  }
+
+  #nav-main-grid .nav-row-platform {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem 0.75rem;
+    padding-top: 0.26rem;
+    margin-top: 0.06rem;
+    border-top: 1px solid rgba(74, 124, 89, 0.16);
+  }
+
+  #nav-main-grid .nav-platform-eyebrow {
+    flex: 0 0 auto;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: rgba(74, 90, 78, 0.58);
+    white-space: nowrap;
+    user-select: none;
+    font-family: inherit;
+  }
+
+  #nav-main-grid .nav-platform-tray {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.32rem, 0.95vw, 0.72rem);
+    row-gap: 0.18rem;
+    flex: 1 1 220px;
+    min-width: 0;
+  }
+
+  #nav-main-grid .nav-platform-tray > a {
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    opacity: 0.86;
+    color: rgba(74, 85, 72, 0.9) !important;
+    transition: opacity 0.15s ease, color 0.15s ease, transform 0.12s ease;
+  }
+
+  #nav-main-grid .nav-platform-tray > a:hover {
+    opacity: 0.96;
+    color: var(--mid) !important;
+    transform: translateY(-1px);
+  }
+
+  #nav-main-grid .nav-platform-tray .parenting-orders,
+  #nav-main-grid .nav-platform-tray .nav-featured {
+    animation: none !important;
+    box-shadow: none !important;
+  }
+
+  #nav-main-grid .nav-platform-tray .parenting-orders {
+    color: rgba(74, 85, 72, 0.9) !important;
+  }
+
+  #nav-main-grid .nav-platform-tray #nav-lawyer-portal {
+    color: rgba(90, 75, 55, 0.82) !important;
+  }
+
+  #nav-main-grid .nav-row-primary > a[data-cr-nav-badge="account"] {
+    position: relative;
+  }
+
+  #nav-main-grid .nav-row-primary > a[data-cr-nav-badge="account"]::after {
+    content: "";
+    position: absolute;
+    bottom: 0.04rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(74, 124, 89, 0.48);
+    pointer-events: none;
+  }
+
+  #nav-main-grid .nav-platform-tray a#nav-your-case-pulse[data-cr-nav-badge="account"]::after {
+    content: "";
+    position: absolute;
+    bottom: 0.04rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(74, 124, 89, 0.48);
+    pointer-events: none;
+  }
+
+  #nav-main-grid .nav-platform-tray a#nav-your-case-pulse[data-cr-nav-badge="upgrade"]::after {
+    content: "";
+    position: absolute;
+    bottom: 0.04rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(200, 169, 110, 0.72);
+    pointer-events: none;
+  }
 }
 
-#nav-main-grid .nav-row-primary {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  column-gap: clamp(0.55rem, 1.35vw, 1.1rem);
-  row-gap: 0.22rem;
-}
+@media (max-width: 900px) {
+  .nav-top-row.header-inner .nav-site-links {
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
+    max-width: 100%;
+  }
 
-#nav-main-grid .nav-row-primary > a {
-  flex: 0 1 auto;
-}
+  .nav-site-links:not(.nav-mobile-open) #nav-main-grid.nav-grid {
+    display: none !important;
+    flex: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
 
-#nav-main-grid .nav-row-platform {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem 0.75rem;
-  padding-top: 0.26rem;
-  margin-top: 0.06rem;
-  border-top: 1px solid rgba(74, 124, 89, 0.16);
-}
+  .nav-site-links.nav-mobile-open #nav-main-grid.nav-grid,
+  .nav-site-links.nav-mobile-open .nav-grid#nav-main-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: var(--mobile-nav-dropdown-top, 108px) !important;
+    z-index: 10200 !important;
+    background: #fff !important;
+    max-height: min(78vh, 560px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: env(safe-area-inset-bottom, 0) !important;
+    box-shadow: 0 14px 44px rgba(30, 36, 32, 0.18) !important;
+    border-radius: 0 0 14px 14px !important;
+  }
 
-#nav-main-grid .nav-platform-eyebrow {
-  flex: 0 0 auto;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-  color: rgba(74, 90, 78, 0.58);
-  white-space: nowrap;
-  user-select: none;
-  font-family: inherit;
-}
+  .nav-site-links.nav-mobile-open {
+    z-index: 10190;
+  }
 
-#nav-main-grid .nav-platform-tray {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(0.32rem, 0.95vw, 0.72rem);
-  row-gap: 0.18rem;
-  flex: 1 1 220px;
-  min-width: 0;
-}
+  body.nav-mobile-menu-open .nav-mobile-scrim {
+    z-index: 10180;
+  }
 
-#nav-main-grid .nav-platform-tray > a {
-  font-size: 0.82rem !important;
-  font-weight: 600 !important;
-  opacity: 0.86;
-  color: rgba(74, 85, 72, 0.9) !important;
-  transition: opacity 0.15s ease, color 0.15s ease, transform 0.12s ease;
-}
+  body.nav-mobile-menu-open .nav-top-row.header-inner {
+    position: relative;
+    z-index: 10195;
+  }
 
-#nav-main-grid .nav-platform-tray > a:hover {
-  opacity: 0.96;
-  color: var(--mid) !important;
-  transform: translateY(-1px);
-}
+  header.header,
+  nav.nav-wrapper {
+    overflow-x: clip;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
 
-#nav-main-grid .nav-platform-tray .parenting-orders,
-#nav-main-grid .nav-platform-tray .nav-featured {
-  animation: none !important;
-  box-shadow: none !important;
-}
+  .hero {
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
+    box-sizing: border-box;
+  }
 
-#nav-main-grid .nav-platform-tray .parenting-orders {
-  color: rgba(74, 85, 72, 0.9) !important;
-}
-
-#nav-main-grid .nav-platform-tray #nav-lawyer-portal {
-  color: rgba(90, 75, 55, 0.82) !important;
-}
-
-/* Subtle account hint (primary row only) — no text pills */
-#nav-main-grid .nav-row-primary > a[data-cr-nav-badge="account"] {
-  position: relative;
-}
-
-#nav-main-grid .nav-row-primary > a[data-cr-nav-badge="account"]::after {
-  content: "";
-  position: absolute;
-  bottom: 0.04rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: rgba(74, 124, 89, 0.48);
-  pointer-events: none;
-}
-
-#nav-main-grid .nav-platform-tray a#nav-your-case-pulse[data-cr-nav-badge="account"]::after {
-  content: "";
-  position: absolute;
-  bottom: 0.04rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: rgba(74, 124, 89, 0.48);
-  pointer-events: none;
-}
-
-#nav-main-grid .nav-platform-tray a#nav-your-case-pulse[data-cr-nav-badge="upgrade"]::after {
-  content: "";
-  position: absolute;
-  bottom: 0.04rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: rgba(200, 169, 110, 0.72);
-  pointer-events: none;
+  .hero-left,
+  .hero-right {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
 }
 
 .top-banner {
@@ -1203,6 +1277,12 @@ body.page-satellite #tagline-bar.top-banner {
 
   #hero-upcoming-panel {
     transform: none !important;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.7rem, 5.8vw + 0.6rem, 2.65rem);
+    overflow-wrap: anywhere;
+    hyphens: auto;
   }
 }
 
