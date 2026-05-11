@@ -218,7 +218,7 @@ const NAV_LABELS = {
   "nav-your-team": "Your Family Team",
   "nav-avo": "AVO Centre",
   "nav-parenting-orders": "Parenting Orders",
-  "nav-doc-helper": "Document Helper",
+  "nav-doc-helper": "Document Centre",
   "nav-ai-assistant": "AI Assistant",
   "nav-referrals": "Referrals",
   "nav-pricing": "Pricing",
@@ -881,7 +881,7 @@ function hasAccess(feature) {
   }
 
   if (feature === "document_builder") {
-    return credits > 0 || plan === "essential" || isPromoEssentialEnabled();
+    return true;
   }
 
   if (feature === "parenting_orders") {
@@ -935,7 +935,6 @@ function navStripeSignedIn() {
 function navStripeTargets() {
   return [
     { selector: "#nav-parenting-orders", kind: "soon" },
-    { selector: "#nav-doc-helper", kind: "soon" },
     { selector: "#nav-ai-assistant", kind: "soon" },
     { selector: "#nav-pricing", kind: "soon" },
     { selector: "#nav-referrals", kind: "soon" },

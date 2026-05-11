@@ -18,7 +18,7 @@
     glossary: '/casepath/glossary',
     'mental-health': '/casepath/mental-health',
     'parenting-orders': '/casepath/parenting-orders',
-    'doc-helper': '/casepath/document-helper',
+    'doc-helper': '/document-centre.html',
     'ai-assistant': '/casepath/ai-assistant',
     vault: '/casepath/your-case',
     kids: '/casepath/about-the-kids',

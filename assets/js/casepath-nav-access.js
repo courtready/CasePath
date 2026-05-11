@@ -5,7 +5,6 @@
 (function () {
   var COMING_NAV_IDS = [
     "nav-parenting-orders",
-    "nav-doc-helper",
     "nav-ai-assistant",
     "nav-pricing",
     "nav-referrals",
