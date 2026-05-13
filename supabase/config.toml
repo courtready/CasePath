@@ -11,3 +11,6 @@ verify_jwt = true
 
 [functions.vault-signed-url]
 verify_jwt = true
+
+[functions.ai-assistant]
+verify_jwt = false

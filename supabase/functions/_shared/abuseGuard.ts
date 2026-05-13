@@ -171,3 +171,16 @@ export const CONSUME_DOC_CREDIT_USER_LIMITS: RateLimitConfig = {
   maxInWindow: 72,
   minIntervalMs: 120,
 };
+
+/** Ask a Question (public + signed-in): tighter for anonymous IP bucket. */
+export const AI_ASSISTANT_ANON_LIMITS: RateLimitConfig = {
+  windowMs: 60 * 1000,
+  maxInWindow: 18,
+  minIntervalMs: 2500,
+};
+
+export const AI_ASSISTANT_USER_LIMITS: RateLimitConfig = {
+  windowMs: 60 * 1000,
+  maxInWindow: 40,
+  minIntervalMs: 1500,
+};

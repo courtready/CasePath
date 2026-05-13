@@ -1,6 +1,26 @@
 # CasePath — Apache / cPanel (deploy target: server public_html/)
 # See .cpanel.yml: repo root is rsynced to ~/public_html/
 
+# Extensionless URLs: /your-team → your-team.html (fixes 404 on refresh / deep links)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # /page/ → /page (when not a real directory), then .html rule below can run
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+  # Do not rewrite real files, real directories, or existing symlinks
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d [OR]
+  RewriteCond %{REQUEST_FILENAME} -l
+  RewriteRule ^ - [L]
+
+  # Internally serve PageName.html when the browser requests /PageName
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^(.*)$ $1.html [L]
+</IfModule>
+
 <IfModule mod_headers.c>
   # ── CSP: baseline for CasePath + Plausible + Cloudflare Web Analytics ──
   # CSP additions for Plausible: https://plausible.io appears in script-src and connect-src below.

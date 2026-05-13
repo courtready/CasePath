@@ -18053,21 +18053,32 @@ function showLangLoading() {
 }
 function hideLangLoading() { var el=document.getElementById('lang-loading'); if(el) el.remove(); }
 async function callAIProxy(payload) {
+  if (typeof initSupabaseClient === 'function') initSupabaseClient();
   var baseUrl = (window.SUPABASE_PROJECT_URL || '').replace(/\/$/, '');
   if (!baseUrl) throw new Error('Supabase project URL is not configured');
-  var headers = { 'Content-Type': 'application/json', apikey: window.SUPABASE_ANON_KEY || '' };
+  var anon = window.SUPABASE_ANON_KEY || '';
+  var headers = { 'Content-Type': 'application/json', apikey: anon };
   try {
-    var sess = await window.supabaseClient.auth.getSession();
-    var token = sess && sess.data && sess.data.session ? sess.data.session.access_token : '';
-    if (token) headers.Authorization = 'Bearer ' + token;
-  } catch (e) {}
+    if (window.supabaseClient && window.supabaseClient.auth) {
+      var sess = await window.supabaseClient.auth.getSession();
+      var token = sess && sess.data && sess.data.session ? sess.data.session.access_token : '';
+      headers.Authorization = 'Bearer ' + (token || anon);
+    } else {
+      headers.Authorization = 'Bearer ' + anon;
+    }
+  } catch (e) {
+    headers.Authorization = 'Bearer ' + anon;
+  }
   var res = await fetch(baseUrl + '/functions/v1/ai-assistant', {
     method: 'POST',
     headers: headers,
     body: JSON.stringify(payload)
   });
   var data = await res.json().catch(function() { return {}; });
-  if (!res.ok) throw new Error(data && data.error ? data.error : 'AI request failed');
+  if (!res.ok) {
+    var errMsg = (data && data.error) ? String(data.error) : 'AI request failed';
+    throw new Error(errMsg + ' (HTTP ' + res.status + ')');
+  }
   return data;
 }
 
@@ -18237,6 +18248,14 @@ function renderSafeRichText(text) {
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\n/g, '<br>');
   return linkGlossaryTermsInHtml(html);
+}
+
+/** Bot panel only: skip glossary term auto-linking (500+ terms × regex = multi‑second UI freeze). */
+function renderBotRichText(text) {
+  var escaped = escapeHtmlUnsafeText(text);
+  return escaped
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>');
 }
 
 function addAIChatMsg(text, role) {
@@ -19864,21 +19883,42 @@ var BOT_FREE_LIMIT = 5;
 var BOT_MIN_INTERVAL_MS = 2500;
 var botLastRequestAt = 0;
 
+/** Signed-in users get unlimited Ask a Question; align with Supabase hydration (not only legacy currentUser). */
+function botHasUnlimitedAccess() {
+  try {
+    if (typeof crSupabaseAuthed === 'function' && crSupabaseAuthed()) return true;
+    if (currentUser && currentUser.loggedIn) return true;
+    if (window.currentUser && window.currentUser.loggedIn) return true;
+  } catch (e) {}
+  return false;
+}
+
 function toggleBot() {
-  botOpen = !botOpen;
   var panel = document.getElementById('cr-bot-panel');
   var trigger = document.getElementById('cr-bot-trigger');
+  if (!panel || !trigger) {
+    try {
+      console.warn('[CasePath] Ask a Question UI is not available on this page.');
+    } catch (e) {}
+    return;
+  }
+  botOpen = !botOpen;
   if (botOpen) {
     panel.style.display = 'flex';
     panel.offsetHeight; // reflow
     panel.classList.add('open');
     trigger.classList.add('open');
-    setTimeout(function() { document.getElementById('cr-bot-input').focus(); }, 280);
+    setTimeout(function () {
+      var inp = document.getElementById('cr-bot-input');
+      if (inp && typeof inp.focus === 'function') inp.focus();
+    }, 280);
   } else {
     panel.classList.remove('open');
     panel.classList.remove('glossary-docked');
     trigger.classList.remove('open');
-    setTimeout(function() { panel.style.display = 'none'; }, 240);
+    setTimeout(function () {
+      panel.style.display = 'none';
+    }, 240);
   }
 }
 
@@ -19896,11 +19936,13 @@ function switchBotTab(tab, btn) {
 }
 
 function botTabAsk(btn) {
-  var q = btn.textContent.trim();
+  var q = (btn && btn.textContent ? btn.textContent : '').trim();
   var chatTabBtn = document.querySelector('#cr-bot-tabs .cr-tab');
   switchBotTab('chat', chatTabBtn);
-  setTimeout(function() {
-    document.getElementById('cr-bot-input').value = q;
+  setTimeout(function () {
+    var inp = document.getElementById('cr-bot-input');
+    if (!inp) return;
+    inp.value = q;
     botSend();
   }, 60);
 }
@@ -19908,22 +19950,27 @@ function botTabAsk(btn) {
 function botTabAsk2(q) {
   var chatTabBtn = document.querySelector('#cr-bot-tabs .cr-tab');
   switchBotTab('chat', chatTabBtn);
-  setTimeout(function() {
-    document.getElementById('cr-bot-input').value = q;
+  setTimeout(function () {
+    var inp = document.getElementById('cr-bot-input');
+    if (!inp) return;
+    inp.value = q;
     botSend();
   }, 60);
 }
 
 function botAsk(question) {
   if (!botOpen) toggleBot();
-  setTimeout(function() {
-    document.getElementById('cr-bot-input').value = question;
+  setTimeout(function () {
+    var inp = document.getElementById('cr-bot-input');
+    if (!inp) return;
+    inp.value = question;
     botSend();
   }, botOpen ? 0 : 320);
 }
 
 function botSend() {
   var input = document.getElementById('cr-bot-input');
+  if (!input) return;
   var text = input.value.trim();
   if (!text) return;
   if (text.length > 2500) {
@@ -19938,7 +19985,7 @@ function botSend() {
   // Anonymous users get BOT_FREE_LIMIT questions; signed-in users unlimited (see below).
 
   // Check login wall — allow if logged in OR under free limit
-  if (!currentUser && botQuestionCount >= BOT_FREE_LIMIT) {
+  if (!botHasUnlimitedAccess() && botQuestionCount >= BOT_FREE_LIMIT) {
     showBotLoginWall();
     return;
   }
@@ -19948,7 +19995,7 @@ function botSend() {
   botConversationHistory.push({ role: 'user', content: text });
 
   // Increment counter for non-logged-in users
-  if (!currentUser) {
+  if (!botHasUnlimitedAccess()) {
     botQuestionCount++;
     updateBotCounter();
   }
@@ -19959,8 +20006,10 @@ function botSend() {
 function updateBotCounter() {
   var el = document.getElementById('cr-bot-counter');
   if (!el) return;
-  if (typeof crSupabaseAuthed === 'function' && crSupabaseAuthed()) { el.style.display = 'none'; return; }
-  if (currentUser) { el.style.display = 'none'; return; }
+  if (botHasUnlimitedAccess()) {
+    el.style.display = 'none';
+    return;
+  }
   var remaining = BOT_FREE_LIMIT - botQuestionCount;
   if (remaining <= 0) {
     el.style.display = 'none';
@@ -19977,6 +20026,7 @@ function updateBotCounter() {
 
 function showBotLoginWall() {
   var msgs = document.getElementById('cr-bot-messages');
+  if (!msgs) return;
   // Don't add duplicate walls
   if (document.getElementById('bot-login-wall')) return;
   var wall = document.createElement('div');
@@ -19994,10 +20044,16 @@ function showBotLoginWall() {
   msgs.scrollTop = msgs.scrollHeight;
 
   // Disable input
-  document.getElementById('cr-bot-input').disabled = true;
-  document.getElementById('cr-bot-input').placeholder = 'Sign in to continue…';
-  document.getElementById('cr-bot-send').disabled = true;
-  document.getElementById('cr-bot-send').style.opacity = '0.4';
+  var binp = document.getElementById('cr-bot-input');
+  var bsend = document.getElementById('cr-bot-send');
+  if (binp) {
+    binp.disabled = true;
+    binp.placeholder = 'Sign in to continue…';
+  }
+  if (bsend) {
+    bsend.disabled = true;
+    bsend.style.opacity = '0.4';
+  }
 }
 
 function closeBot_openAuth(panel) {
@@ -20011,13 +20067,21 @@ function botUnlockAfterLogin() {
   if (wall) wall.remove();
   var input = document.getElementById('cr-bot-input');
   var send = document.getElementById('cr-bot-send');
-  if (input) { input.disabled = false; input.placeholder = 'Ask a family law question…'; }
-  if (send) { send.disabled = false; send.style.opacity = ''; }
+  if (input) {
+    input.disabled = false;
+    input.placeholder = 'Ask a family law question…';
+  }
+  if (send) {
+    send.disabled = false;
+    send.style.opacity = '';
+  }
+  if (botHasUnlimitedAccess()) botQuestionCount = 0;
   updateBotCounter();
 }
 
 function botAddMsg(text, role) {
   var msgs = document.getElementById('cr-bot-messages');
+  if (!msgs) return;
   var div = document.createElement('div');
   div.className = 'bot-msg' + (role === 'user' ? ' user' : '');
   var avatar = document.createElement('div');
@@ -20032,7 +20096,7 @@ function botAddMsg(text, role) {
   }
   var bubble = document.createElement('div');
   bubble.className = 'bot-msg-bubble';
-  if (role === 'ai') bubble.innerHTML = renderSafeRichText(text);
+  if (role === 'ai') bubble.innerHTML = renderBotRichText(text);
   else bubble.textContent = String(text == null ? '' : text);
   div.appendChild(avatar);
   div.appendChild(bubble);
@@ -20130,7 +20194,7 @@ function botBuildLocalFallbackReply(question) {
   scored.sort(function(a, b) { return b.score - a.score; });
   var matches = [];
   for (var j = 0; j < scored.length && matches.length < 2; j++) {
-    if (scored[j].score >= 5) matches.push({ name: scored[j].name, def: scored[j].def });
+    if (scored[j].score >= 3) matches.push({ name: scored[j].name, def: scored[j].def });
   }
 
   if (!matches.length) {
@@ -20147,6 +20211,7 @@ function botBuildLocalFallbackReply(question) {
 async function botRunAI() {
   botLastRequestAt = Date.now();
   var msgs = document.getElementById('cr-bot-messages');
+  if (!msgs) return;
   var typingDiv = document.createElement('div');
   typingDiv.className = 'bot-msg'; typingDiv.id = 'bot-typing';
   typingDiv.innerHTML = '<div class="cp-monogram" role="img" aria-label="CasePath">CP</div><div class="bot-msg-bubble"><div class="bot-typing"><span></span><span></span><span></span></div></div>';
@@ -20154,30 +20219,34 @@ async function botRunAI() {
   var caseData = {};
   try { caseData = JSON.parse(localStorage.getItem('cr_case') || '{}'); } catch(e) {}
   var caseCtx = caseData.caseType ? 'The user\'s case type is: ' + caseData.caseType + '.' : '';
-  // TODO(production-gating): align Ask a Question rate limits / optional auth with billing when live.
   var systemPrompt = 'You are CasePath "Ask a Question" — the free, educational, glossary-connected guidance layer for Australian family law (FCFCOA). Stay general: processes, terminology, parenting arrangements, court procedure, and navigation help. Do not position yourself as a private workspace or affidavit-drafting tool; if the user needs structured preparation tied to their matter, briefly point them to Case Assistant + Your Case when appropriate. ' + caseCtx + ' Provide clear, accurate legal INFORMATION (not personal legal advice). Cite specific Acts and sections where relevant (e.g. Family Law Act 1975 s 60CC). Keep responses concise — 3-6 sentences unless complexity requires more. Use plain English. Always end with: "ℹ️ This is legal information only — not advice about your specific situation."';
+  var reply = '';
+  var lastUser = '';
   try {
     var messages = botConversationHistory.slice(-10);
-    var prompt = '';
-    var reply = '';
-    var lastUser = '';
     for (var k = messages.length - 1; k >= 0; k--) {
       if (messages[k] && messages[k].role === 'user') { lastUser = messages[k].content || ''; break; }
     }
     try {
-      reply = await runNationalAssistant(lastUser);
-    } catch (e2) {
       var historyText = messages.map(function(m){ return (m.role || 'user').toUpperCase() + ': ' + (m.content || ''); }).join('\n');
-      prompt = 'Conversation so far:\n' + historyText + '\n\nReply to the final USER message.';
+      var prompt = 'Conversation so far:\n' + historyText + '\n\nReply to the final USER message.';
       var data = await callAIProxy({ message: prompt, max_tokens: 700, temperature: 0.35, system: systemPrompt });
-      reply = data && data.reply ? data.reply : 'Sorry, no response. Please try again.';
+      reply = data && data.reply ? String(data.reply).trim() : '';
+    } catch (eProxy) {
+      try {
+        reply = await runNationalAssistant(lastUser);
+        reply = String(reply == null ? '' : reply).trim();
+      } catch (eNat) {
+        reply = '';
+      }
     }
-    var el = document.getElementById('bot-typing'); if (el) el.remove();
-    botConversationHistory.push({ role: 'assistant', content: reply });
+    if (!reply) {
+      reply = botBuildLocalFallbackReply(lastUser);
+    }
     botAddMsg(reply, 'ai');
+    botConversationHistory.push({ role: 'assistant', content: reply });
 
-    // Show login nudge at question 3 (2 remaining)
-    if (!currentUser && botQuestionCount === BOT_FREE_LIMIT - 2) {
+    if (!botHasUnlimitedAccess() && botQuestionCount === BOT_FREE_LIMIT - 2) {
       setTimeout(function() {
         var nudge = document.createElement('div');
         nudge.style.cssText = 'text-align:center;font-size:0.73rem;color:var(--soft);padding:0.3rem 0;';
@@ -20186,8 +20255,10 @@ async function botRunAI() {
         msgs.scrollTop = msgs.scrollHeight;
       }, 400);
     }
-  } catch(e) {
-    var el = document.getElementById('bot-typing'); if (el) el.remove();
+  } catch (e) {
+    try {
+      console.warn('[CasePath] botRunAI', e && e.message ? e.message : e);
+    } catch (e2) {}
     var lastUserMsg = '';
     for (var i = botConversationHistory.length - 1; i >= 0; i--) {
       if (botConversationHistory[i] && botConversationHistory[i].role === 'user') {
@@ -20195,7 +20266,12 @@ async function botRunAI() {
         break;
       }
     }
-    botAddMsg(botBuildLocalFallbackReply(lastUserMsg), 'ai');
+    var fb = botBuildLocalFallbackReply(lastUserMsg);
+    botAddMsg(fb, 'ai');
+    botConversationHistory.push({ role: 'assistant', content: fb });
+  } finally {
+    var elTyping = document.getElementById('bot-typing');
+    if (elTyping) elTyping.remove();
   }
 }
 
@@ -20812,16 +20888,23 @@ function poCopyOrders() {
 function clearBotChat() {
   botConversationHistory = [];
   var msgs = document.getElementById('cr-bot-messages');
+  if (!msgs) return;
   msgs.innerHTML = '<div class="bot-msg"><div class="cp-monogram" role="img" aria-label="CasePath">CP</div><div class="bot-msg-bubble">Hi! I am here for <strong>general Australian family law guidance</strong> — processes, terminology, parenting arrangements, and court procedures. Answers draw from our <strong><a onclick="showPage(\'glossary\');toggleBot();" style="color:var(--sage);cursor:pointer;text-decoration:underline;text-decoration-style:dotted;">525-term Glossary</a></strong> and legislation. This is <strong>not</strong> for drafting your affidavits or managing your private workspace — use <strong>Case Assistant</strong> from the menu (when available) together with <strong>Your Case</strong> for that preparation layer.<br><br>Ask below, or browse <strong>Suggested</strong> and <strong>Topics</strong>.<div class="bot-disclaimer">ℹ️ Legal information only — not advice about your specific situation.</div></div></div>';
   // Re-enable input if it was locked (user might have logged in)
-  if (currentUser) botUnlockAfterLogin();
+  if (botHasUnlimitedAccess()) botUnlockAfterLogin();
 }
 
 // Legacy compatibility — suggested question buttons on the QA page still work
 function askSug(btn) {
+  if (!btn) return;
   if (!botOpen) toggleBot();
-  var q = btn.textContent.trim();
-  setTimeout(function() { document.getElementById('cr-bot-input').value = q; botSend(); }, botOpen ? 0 : 320);
+  var q = (btn.textContent || '').trim();
+  setTimeout(function () {
+    var inp = document.getElementById('cr-bot-input');
+    if (!inp) return;
+    inp.value = q;
+    botSend();
+  }, botOpen ? 0 : 320);
 }
 
 // ── START YOUR CASE SETUP ──────────────────────────────
