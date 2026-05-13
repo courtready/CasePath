@@ -1,4 +1,4 @@
-"""One-off generator for FCRS favicon PNG/ICO from brand colours (#6F8F72, white F). Run from App/public."""
+"""One-off generator for CasePath favicon PNG/ICO from brand colours (#6F8F72, white F). Run from App/public."""
 from __future__ import annotations
 
 import os

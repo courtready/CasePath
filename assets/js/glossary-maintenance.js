@@ -6,7 +6,15 @@ function goAppPage(page) {
   try {
     localStorage.setItem("cr_target_page", p);
   } catch (e) {}
-  window.location.href = "/index.html";
+  if (
+    window.CasePathAuth &&
+    window.CasePathAuth.redirect &&
+    typeof window.CasePathAuth.redirect.safeAssignHref === "function"
+  ) {
+    window.CasePathAuth.redirect.safeAssignHref("/index.html");
+  } else {
+    window.location.href = "/index.html";
+  }
 }
 function showPage(page) {
   goAppPage(typeof page === "string" ? page : "home");

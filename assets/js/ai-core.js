@@ -1,6 +1,8 @@
 // ===============================
 // CASEPATH AI CORE (NATIONAL)
 // ===============================
+// Flip to true when the Case Assistant backend (/api/ai or equivalent) is deployed and authorised for production.
+export const CASEPATH_AI_API_ENABLED = false;
 
 // ---------- MODELS ----------
 const AI_MODELS = {
@@ -192,6 +194,9 @@ function validate(text) {
 
 // ---------- API CALL ----------
 async function callAI(model, prompt) {
+  if (!CASEPATH_AI_API_ENABLED) {
+    return Promise.reject(new Error("Case Assistant AI API is disabled for this deployment."));
+  }
   const res = await fetch("/api/ai", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

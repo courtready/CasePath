@@ -11,3 +11,12 @@
 
 /index.html
   Cache-Control: no-store
+
+/document-centre.html
+  Cache-Control: no-store
+
+/share.html
+  Cache-Control: no-store
+
+/avo-centre.html
+  Cache-Control: no-store

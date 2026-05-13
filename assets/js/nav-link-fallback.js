@@ -54,7 +54,15 @@
         window.location.reload();
         return;
       }
-      window.location.href = "/index.html";
+      if (
+        window.CasePathAuth &&
+        window.CasePathAuth.redirect &&
+        typeof window.CasePathAuth.redirect.safeAssignHref === "function"
+      ) {
+        window.CasePathAuth.redirect.safeAssignHref("/index.html");
+      } else {
+        window.location.href = "/index.html";
+      }
     })();
   });
 
@@ -76,7 +84,15 @@
       return;
     }
     safeSet("cr_target_page", page);
-    window.location.href = "/index.html";
+    if (
+      window.CasePathAuth &&
+      window.CasePathAuth.redirect &&
+      typeof window.CasePathAuth.redirect.safeAssignHref === "function"
+    ) {
+      window.CasePathAuth.redirect.safeAssignHref("/index.html");
+    } else {
+      window.location.href = "/index.html";
+    }
   }
 
   function bindNavLink(id, page) {
@@ -99,7 +115,15 @@
       }
       ev.preventDefault();
       safeSet("cr_auth_action", mode);
-      window.location.href = "/index.html";
+      if (
+        window.CasePathAuth &&
+        window.CasePathAuth.redirect &&
+        typeof window.CasePathAuth.redirect.safeAssignHref === "function"
+      ) {
+        window.CasePathAuth.redirect.safeAssignHref("/index.html");
+      } else {
+        window.location.href = "/index.html";
+      }
     });
   }
 

@@ -3,6 +3,32 @@
  * index.html uses the same Google pattern inline; this file mirrors that behaviour.
  */
 (function () {
+  (function ensureSiteLanguageStore(g) {
+    if (g.casepathSiteLanguageGet) return;
+    function isDevHost() {
+      var h = (location.hostname || "").toLowerCase();
+      return h === "localhost" || h === "127.0.0.1" || h === "[::1]";
+    }
+    g.casepathSiteLanguageGet = function () {
+      try {
+        return isDevHost() ? sessionStorage.getItem("siteLanguage") : localStorage.getItem("siteLanguage");
+      } catch (e) {
+        return null;
+      }
+    };
+    g.casepathSiteLanguageSet = function (code) {
+      try {
+        (isDevHost() ? sessionStorage : localStorage).setItem("siteLanguage", code);
+      } catch (e2) {}
+    };
+    if (isDevHost()) {
+      try {
+        var expire = "expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        document.cookie = "googtrans=;" + expire + ";path=/";
+        document.cookie = "googtrans=;" + expire + ";path=/;domain=" + location.hostname;
+      } catch (e3) {}
+    }
+  })(window);
   var SELECT_HTML =
     '<option value="en">English</option>' +
     '<option value="zh-CN">Mandarin</option>' +
@@ -56,7 +82,8 @@
     var l = document.getElementById("lang-current-label");
     if (f) f.textContent = flag;
     if (l) l.textContent = label;
-    try {
+    if (window.casepathSiteLanguageSet) window.casepathSiteLanguageSet(langCode);
+    else try {
       localStorage.setItem("siteLanguage", langCode);
     } catch (err) {}
     var langSelect = document.getElementById("languageSwitcher");
@@ -124,7 +151,8 @@
 
     langSelect.addEventListener("change", function () {
       var lang = this.value;
-      try {
+      if (window.casepathSiteLanguageSet) window.casepathSiteLanguageSet(lang);
+      else try {
         localStorage.setItem("siteLanguage", lang);
       } catch (e) {}
       var tries = 0;
@@ -142,7 +170,7 @@
     loadTranslateScript();
 
     try {
-      var savedLang = localStorage.getItem("siteLanguage");
+      var savedLang = window.casepathSiteLanguageGet ? window.casepathSiteLanguageGet() : localStorage.getItem("siteLanguage");
       if (savedLang && langSelect.querySelector('option[value="' + savedLang + '"]')) {
         langSelect.value = savedLang;
         setTimeout(function () {

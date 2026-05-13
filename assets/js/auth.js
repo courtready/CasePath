@@ -33,7 +33,13 @@ async function login(email, password) {
 
 async function logout() {
   try {
-    await window.supabaseClient.auth.signOut();
+    if (window.supabaseClient && window.supabaseClient.auth) {
+      try {
+        await window.supabaseClient.auth.signOut({ scope: "global" });
+      } catch (e1) {
+        await window.supabaseClient.auth.signOut();
+      }
+    }
   } catch (e) {
     console.warn("Supabase signOut failed:", e);
   }
@@ -49,9 +55,34 @@ async function requestPasswordReset(email) {
   if (!targetEmail) {
     throw new Error("Please enter your email address first.");
   }
-  const redirectTo = window.location.origin + window.location.pathname;
+  var path = window.location.pathname || "/";
+  if (path.charAt(0) !== "/") path = "/" + path;
+  var redirectTo = window.location.origin + path;
   const { error } = await window.supabaseClient.auth.resetPasswordForEmail(targetEmail, {
     redirectTo,
+  });
+  if (error) throw error;
+  return true;
+}
+
+/**
+ * Resend signup confirmation email (Supabase). Rate-limited client-side when CasePathAuth is present.
+ */
+async function resendSignupVerification(email) {
+  const targetEmail = String(email || "").trim();
+  if (!targetEmail) {
+    throw new Error("Please enter your email address first.");
+  }
+  if (window.CasePathAuth && window.CasePathAuth.rateLimit && typeof window.CasePathAuth.rateLimit.allow === "function") {
+    var rl = window.CasePathAuth.rateLimit.allow("resend_verification");
+    if (!rl.ok) {
+      var sec = rl.retryAfterMs ? Math.ceil(rl.retryAfterMs / 1000) : 60;
+      throw new Error("Please wait before requesting another email (" + sec + "s).");
+    }
+  }
+  const { error } = await window.supabaseClient.auth.resend({
+    type: "signup",
+    email: targetEmail,
   });
   if (error) throw error;
   return true;
@@ -82,5 +113,6 @@ async function mfaChallengeAndVerify(factorId, code) {
 }
 
 window.requestPasswordReset = requestPasswordReset;
+window.resendSignupVerification = resendSignupVerification;
 window.mfaEnrollTotp = mfaEnrollTotp;
 window.mfaChallengeAndVerify = mfaChallengeAndVerify;

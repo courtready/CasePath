@@ -169,7 +169,7 @@ body.public-static-shell::before {
     font-size: 1.05rem !important;
   }
 
-  #nav-main-grid .nav-platform-tray a:last-child {
+  #nav-main-grid .nav-platform-group--soon .nav-platform-tray > a:last-child {
     border-bottom: none;
   }
 
@@ -178,6 +178,22 @@ body.public-static-shell::before {
     margin-top: 0.15rem;
     padding-top: 0.2rem;
     width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .nav-site-links.nav-mobile-open #nav-main-grid .nav-platform-group {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .nav-site-links.nav-mobile-open #nav-main-grid .nav-platform-group--soon {
+    border-top: 1px solid rgba(74, 124, 89, 0.12);
+    margin-top: 0.12rem;
+    padding-top: 0.24rem;
   }
 
   .nav-site-links.nav-mobile-open #nav-main-grid .nav-platform-eyebrow {
@@ -419,12 +435,10 @@ body.public-static-shell::before {
   color: rgba(255,255,255,0.65);
   font-weight: 300;
   max-width: min(56rem, 92vw);
-  line-height: 1.28;
+  line-height: 1.45;
   margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  display: block;
+  overflow: visible;
 }
 
 @media (max-width: 900px) {
@@ -436,9 +450,6 @@ body.public-static-shell::before {
     padding-right: var(--cr-public-pad-x, 1.25rem);
   }
   .page-hero p {
-    display: block;
-    -webkit-line-clamp: unset;
-    overflow: visible;
     line-height: 1.48;
     max-width: none;
   }

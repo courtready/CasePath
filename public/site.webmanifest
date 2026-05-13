@@ -1,6 +1,6 @@
 {
-  "name": "FCRS",
-  "short_name": "FCRS",
+  "name": "CasePath",
+  "short_name": "CasePath",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",

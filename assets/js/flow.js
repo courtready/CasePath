@@ -1,3 +1,15 @@
+function casepathNavigateRelative(path) {
+  if (
+    window.CasePathAuth &&
+    window.CasePathAuth.redirect &&
+    typeof window.CasePathAuth.redirect.safeAssignHref === "function"
+  ) {
+    window.CasePathAuth.redirect.safeAssignHref(path);
+  } else {
+    window.location.href = path;
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector(".process-right");
   if (!container) return;
@@ -9,19 +21,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const text = (card.innerText || "").toLowerCase();
 
       if (text.includes("parenting")) {
-        window.location.href = "/parenting-orders.html";
+        casepathNavigateRelative("/parenting-orders.html");
       } else if (text.includes("divorce")) {
-        window.location.href = "/divorce.html";
+        casepathNavigateRelative("/divorce.html");
       } else if (text.includes("property")) {
-        window.location.href = "/property.html";
+        casepathNavigateRelative("/property.html");
       } else if (text.includes("avo")) {
-        window.location.href = "/avo-centre.html";
+        casepathNavigateRelative("/avo-centre.html");
       } else if (text.includes("breach")) {
-        window.location.href = "/breach.html";
+        casepathNavigateRelative("/breach.html");
       } else if (text.includes("respond")) {
-        window.location.href = "/respond.html";
+        casepathNavigateRelative("/respond.html");
       } else if (text.includes("urgent")) {
-        window.location.href = "/urgent.html";
+        casepathNavigateRelative("/urgent.html");
       }
     });
   });

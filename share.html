@@ -3,7 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Shared item — CasePath</title>
+  <script src="/assets/js/maintenance-mode.js"></script>
+  <title>Sharing unavailable — CasePath</title>
+  <meta name="robots" content="noindex,nofollow">
   <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/css/styles.css">
   <link rel="stylesheet" href="/assets/css/public-static-pages.css">
@@ -49,15 +51,22 @@
         <a href="/avo-centre.html" id="nav-avo" class="nav-avo-centre" data-row="1">AVO Centre</a>
         </div>
         <div class="nav-row-platform">
+        <div class="nav-platform-group nav-platform-group--live">
+        <span class="nav-platform-eyebrow">Live now</span>
+        <div class="nav-platform-tray">
+        <a href="/document-centre.html" id="nav-doc-helper" data-row="2">Document Centre</a>
+        <a href="/index.html" id="nav-your-case-pulse" data-row="2">Your Case</a>
+        <a href="/index.html" id="nav-pricing" data-row="2">Pricing</a>
+        </div>
+        </div>
+        <div class="nav-platform-group nav-platform-group--soon">
         <span class="nav-platform-eyebrow">Coming Soon</span>
         <div class="nav-platform-tray">
         <a href="/index.html" id="nav-parenting-orders" class="parenting-orders nav-parenting-centre" data-row="2">Parenting Orders</a>
-        <a href="/document-centre.html" id="nav-doc-helper" data-row="2">Document Centre</a>
-        <a href="/index.html" id="nav-ai-assistant" data-row="2">AI Assistant</a>
-        <a href="/index.html" id="nav-pricing" data-row="2">Pricing</a>
+        <a href="/index.html" id="nav-ai-assistant" data-row="2">Case Assistant</a>
         <a href="/index.html" id="nav-referrals" data-row="2">Referrals</a>
-        <a href="/index.html" id="nav-your-case-pulse" data-row="2">Your Case</a>
         <a href="/index.html" id="nav-lawyer-portal" data-row="2">Lawyer Portal</a>
+        </div>
         </div>
         </div>
       </div>
@@ -104,8 +113,10 @@
 </header>
 
 <main class="satellite-main share-blurb">
-  <p>This link refers to an encrypted item stored in CasePath. Decryption is only possible in your browser when you are signed in with the same account that created the vault key.</p>
-  <p>Open the <a href="/index.html">main app</a> from the same site, sign in, and use Your Case → CasePath Vault to manage items.</p>
+  <h1 style="font-family:'Lora',serif;font-size:1.5rem;margin:0 0 1rem;">Sharing isn't available yet</h1>
+  <p>CasePath share links are not active in this release. If you've received a link that points here, the sender can't grant access through this page yet — please ignore it.</p>
+  <p>Your data stays where it belongs: items in the CasePath vault are encrypted in the owner's browser and can only be opened from the owner's signed-in session.</p>
+  <p>If you have a CasePath account, you can <a href="/index.html">open the main app</a> to manage your own vault. We'll announce here when secure recipient sharing is ready.</p>
 </main>
 
 <script src="/assets/js/public-static-nav.js"></script>
@@ -113,10 +124,19 @@
 <script src="/assets/js/nav-link-fallback.js" defer></script>
 <script src="/assets/js/translations.js" defer></script>
 <script>
+  // Share-link recipient flow is disabled at launch. Strip any token from the
+  // URL so it isn't leaked via history, referrer, or analytics, and never echo
+  // it back into the page title (which previously implied a valid share state).
   (function () {
-    var p = new URLSearchParams(window.location.search);
-    var t = p.get("token");
-    if (t) document.title = "Shared item — token set";
+    try {
+      var u = new URL(window.location.href);
+      if (u.searchParams.has("token")) {
+        u.searchParams.delete("token");
+        window.history.replaceState({}, document.title, u.pathname + (u.search ? u.search : "") + u.hash);
+      }
+    } catch (e) {
+      /* no-op: best-effort cleanup */
+    }
   })();
 </script>
 </body>

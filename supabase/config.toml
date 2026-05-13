@@ -1,0 +1,13 @@
+# Supabase local / deploy hints. Edge: disable JWT verification for Stripe webhooks.
+
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.create-checkout-session]
+verify_jwt = true
+
+[functions.consume-doc-credit]
+verify_jwt = true
+
+[functions.vault-signed-url]
+verify_jwt = true

@@ -9,9 +9,9 @@
         <a onclick="showPage('mission')" id="nav-mission" class="nav-mission-pulse" data-row="1" data-page="mission" data-i18n="mission">Our Mission</a>
         <a onclick="showPage('glossary')" id="nav-glossary" data-row="1" data-page="glossary">Glossary</a>
         <a onclick="showPage('mental-health')" id="nav-mental-health" data-row="1" data-page="mental-health">Mental Health</a>
+        <a href="/document-centre.html" onclick="showPage('doc-helper')" id="nav-doc-helper" data-row="1" data-page="doc-helper">Output Workflows</a>
+        <a onclick="showPage('ai-assistant')" id="nav-ai-assistant" data-row="1" data-page="ai-assistant">Case Assistant</a>
         <a onclick="showPage('parenting-orders')" id="nav-parenting-orders" class="parenting-orders nav-parenting-centre" style="color:var(--sage);font-weight:700;" data-row="1" data-page="parenting-orders">Parenting Orders</a>
-        <a href="/document-centre.html" onclick="showPage('doc-helper')" id="nav-doc-helper" data-row="1" data-page="doc-helper">Document Centre</a>
-        <a onclick="showPage('ai-assistant')" id="nav-ai-assistant" data-row="1" data-page="ai-assistant">AI Assistant</a>
         <a onclick="showPage('kids')" id="nav-kids" data-row="2" data-page="kids">About the Kids</a>
         <a onclick="showPage('your-team')" id="nav-your-team" data-row="2" data-page="your-team">Your Family Team</a>
         <a href="support-tools.html" id="nav-new-item" class="nav-item" data-row="2" data-page="support-tools">Support Tools</a>
@@ -93,23 +93,55 @@ if (navGrid && links.length) {
   });
 }
 
-function renderAuthArea() {
-  if (!authArea) return;
-  let user = null;
+async function readNavEntitlementState() {
   try {
-    user = JSON.parse(localStorage.getItem('cr_user') || localStorage.getItem('courtready_user') || 'null');
-  } catch (e) {
-    user = null;
+    if (typeof window.syncUser === 'function') await window.syncUser();
+  } catch (e) {}
+  if (window.currentUser && window.currentUser.source === 'supabase' && window.currentUser.id) {
+    return {
+      user: window.currentUser,
+      entitlements:
+        typeof window.getCasePathEntitlements === 'function'
+          ? window.getCasePathEntitlements()
+          : { plan: null, docCredits: 0 }
+    };
   }
-  if (!user || user.source !== 'supabase') {
+  if (!window.supabaseClient || !window.supabaseClient.auth) return null;
+  try {
+    const sessionResult = await window.supabaseClient.auth.getSession();
+    const session = sessionResult && sessionResult.data && sessionResult.data.session;
+    if (!session || !session.user) return null;
+    const memberResult = await window.supabaseClient
+      .from('members')
+      .select('plan, doc_credits')
+      .eq('id', session.user.id)
+      .single();
+    const member = memberResult && memberResult.data;
+    return {
+      user: { id: session.user.id, email: session.user.email, source: 'supabase' },
+      entitlements: {
+        plan: member && typeof member.plan === 'string' ? member.plan : null,
+        docCredits: member && Number.isFinite(Number(member.doc_credits)) ? Number(member.doc_credits) : 0
+      }
+    };
+  } catch (e) {
+    return null;
+  }
+}
+
+async function renderAuthArea() {
+  if (!authArea) return;
+  const state = await readNavEntitlementState();
+  if (!state || !state.user) {
     authArea.innerHTML = `
       <a href="/signin.shtml" onclick="if (typeof openAuth === 'function') { event.preventDefault(); openAuth('signin'); }">Sign in</a>
       <a href="/signup.shtml" class="nav-cta cta-primary" onclick="if (typeof openAuth === 'function') { event.preventDefault(); openAuth('signup'); }">Create free account</a>
     `;
     return;
   }
-  const plan = user.plan || 'free';
-  const credits = Number.isFinite(Number(user.docCredits)) ? Number(user.docCredits) : 0;
+  const entitlements = state.entitlements || {};
+  const plan = entitlements.plan || 'free';
+  const credits = Number.isFinite(Number(entitlements.docCredits)) ? Number(entitlements.docCredits) : 0;
   authArea.innerHTML = `
     <span class="nav-plan">${plan === 'pro' ? 'Pro Plan' : `Credits: ${credits}`}</span>
     <a href="/your-case.shtml" onclick="if (typeof showPage === 'function') { event.preventDefault(); showPage('vault'); }">Your Case</a>
@@ -152,6 +184,6 @@ if (langSwitch) {
   applyLanguage(savedLang);
 }
 
-renderAuthArea();
+void renderAuthArea();
 })();
 </script>

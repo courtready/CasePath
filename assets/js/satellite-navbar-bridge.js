@@ -19,7 +19,7 @@
     'mental-health': '/casepath/mental-health',
     'parenting-orders': '/casepath/parenting-orders',
     'doc-helper': '/document-centre.html',
-    'ai-assistant': '/casepath/ai-assistant',
+    'ai-assistant': '/index.html?goto=ai-assistant',
     vault: '/casepath/your-case',
     kids: '/casepath/about-the-kids',
     'your-team': '/casepath/your-family-team',
@@ -29,15 +29,31 @@
     'lawyer-portal': '/casepath/lawyer-portal'
   };
 
+  function navigateSameOrigin(url) {
+    var u = url || '/index.html';
+    if (
+      window.CasePathAuth &&
+      window.CasePathAuth.redirect &&
+      typeof window.CasePathAuth.redirect.safeAssignHref === 'function'
+    ) {
+      if (window.CasePathAuth.redirect.safeAssignHref(u)) return;
+    }
+    if (typeof u === 'string' && u.charAt(0) === '/') {
+      window.location.href = u;
+      return;
+    }
+    window.location.href = '/index.html';
+  }
+
   window.showPage = function (pageId) {
     var url = ROUTES[pageId] || '/index.html';
-    window.location.href = url;
+    navigateSameOrigin(url);
   };
 
   window.cdBuildDashboard = function () {};
 
   window.openAuth = function () {
-    window.location.href = '/index.html';
+    navigateSameOrigin('/index.html');
   };
 
   window.signOut = function () {
@@ -55,7 +71,8 @@
   window.setLang = function (langCode) {
     try {
       localStorage.setItem('lang', langCode);
-      localStorage.setItem('siteLanguage', langCode);
+      if (window.casepathSiteLanguageSet) window.casepathSiteLanguageSet(langCode);
+      else localStorage.setItem('siteLanguage', langCode);
     } catch (err) {}
     applyLanguage(langCode);
   };
@@ -96,6 +113,43 @@
     if (pricing && !pricing.getAttribute('data-i18n')) pricing.setAttribute('data-i18n', 'pricing');
   }
 
+  async function readSupabaseNavState() {
+    try {
+      if (typeof window.syncUser === 'function') await window.syncUser();
+    } catch (e) {}
+    var current = window.currentUser || null;
+    if (current && current.source === 'supabase' && current.id) {
+      return {
+        user: current,
+        entitlements:
+          typeof window.getCasePathEntitlements === 'function'
+            ? window.getCasePathEntitlements()
+            : { plan: null, docCredits: 0 }
+      };
+    }
+    if (!window.supabaseClient || !window.supabaseClient.auth) return null;
+    try {
+      var sessionResult = await window.supabaseClient.auth.getSession();
+      var session = sessionResult && sessionResult.data && sessionResult.data.session;
+      if (!session || !session.user) return null;
+      var memberResult = await window.supabaseClient
+        .from('members')
+        .select('plan, doc_credits')
+        .eq('id', session.user.id)
+        .single();
+      var member = memberResult && memberResult.data;
+      return {
+        user: { id: session.user.id, email: session.user.email, source: 'supabase' },
+        entitlements: {
+          plan: member && typeof member.plan === 'string' ? member.plan : null,
+          docCredits: member && Number.isFinite(Number(member.doc_credits)) ? Number(member.doc_credits) : 0
+        }
+      };
+    } catch (e) {
+      return null;
+    }
+  }
+
   function wireAuthArea() {
     var authArea = document.getElementById('auth-area');
     var navAuthArea = document.getElementById('nav-auth-area');
@@ -105,33 +159,30 @@
     }
     if (!authArea) return;
 
-    var user = null;
-    try {
-      user = JSON.parse(localStorage.getItem('cr_user') || localStorage.getItem('courtready_user') || 'null');
-    } catch (e) {
-      user = null;
-    }
+    void (async function () {
+      var state = await readSupabaseNavState();
+      if (!state || !state.user) {
+        authArea.innerHTML =
+          '<a href="/signin.shtml" onclick="if (typeof openAuth === \'function\') { event.preventDefault(); openAuth(\'signin\'); }">Sign in</a>' +
+          '<a href="/signup.shtml" class="nav-cta cta-primary" onclick="if (typeof openAuth === \'function\') { event.preventDefault(); openAuth(\'signup\'); }">Create free account</a>';
+        return;
+      }
 
-    if (!user || user.source !== 'supabase') {
+      var entitlements = state.entitlements || {};
+      var plan = entitlements.plan || 'free';
+      var credits = Number.isFinite(Number(entitlements.docCredits)) ? Number(entitlements.docCredits) : 0;
       authArea.innerHTML =
-        '<a href="/signin.shtml" onclick="if (typeof openAuth === \'function\') { event.preventDefault(); openAuth(\'signin\'); }">Sign in</a>' +
-        '<a href="/signup.shtml" class="nav-cta cta-primary" onclick="if (typeof openAuth === \'function\') { event.preventDefault(); openAuth(\'signup\'); }">Create free account</a>';
-      return;
-    }
-
-    var plan = user.plan || 'free';
-    var credits = Number.isFinite(Number(user.docCredits)) ? Number(user.docCredits) : 0;
-    authArea.innerHTML =
-      '<span class="nav-plan">' + (plan === 'pro' ? 'Pro Plan' : ('Credits: ' + credits)) + '</span>' +
-      '<a href="/your-case.shtml" onclick="if (typeof showPage === \'function\') { event.preventDefault(); showPage(\'vault\'); }">Your Case</a>' +
-      '<a href="#" id="logout">Logout</a>';
-    var logout = document.getElementById('logout');
-    if (logout) {
-      logout.addEventListener('click', function (event) {
-        event.preventDefault();
-        window.signOut();
-      });
-    }
+        '<span class="nav-plan">' + (plan === 'pro' ? 'Pro Plan' : ('Credits: ' + credits)) + '</span>' +
+        '<a href="/your-case.shtml" onclick="if (typeof showPage === \'function\') { event.preventDefault(); showPage(\'vault\'); }">Your Case</a>' +
+        '<a href="#" id="logout">Logout</a>';
+      var logout = document.getElementById('logout');
+      if (logout) {
+        logout.addEventListener('click', function (event) {
+          event.preventDefault();
+          window.signOut();
+        });
+      }
+    })();
   }
 
   function wireLanguageSwitcher() {

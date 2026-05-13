@@ -3,14 +3,27 @@
  * and static-page nav preflight (capture phase). Does not replace Supabase auth.
  */
 (function () {
-  var COMING_NAV_IDS = [
-    "nav-parenting-orders",
-    "nav-ai-assistant",
-    "nav-pricing",
-    "nav-referrals",
-    "nav-lawyer-portal"
-  ];
-  var ACCOUNT_NAV_IDS = ["nav-mental-health", "nav-kids", "nav-your-team", "nav-new-item"];
+  function casepathSafeAssignHref(path) {
+    if (
+      window.CasePathAuth &&
+      window.CasePathAuth.redirect &&
+      typeof window.CasePathAuth.redirect.safeAssignHref === "function"
+    ) {
+      return window.CasePathAuth.redirect.safeAssignHref(path);
+    }
+    var p = String(path || "").trim();
+    if (!p || p.charAt(0) !== "/") return false;
+    if (/^https?:/i.test(p) || /^\/\//.test(p)) return false;
+    var low = p.toLowerCase();
+    if (low.indexOf("javascript:") === 0 || low.indexOf("data:") === 0 || low.indexOf("vbscript:") === 0) {
+      return false;
+    }
+    window.location.href = p;
+    return true;
+  }
+
+  var COMING_NAV_IDS = ["nav-parenting-orders", "nav-ai-assistant", "nav-referrals", "nav-lawyer-portal"];
+  var ACCOUNT_NAV_IDS = ["nav-mental-health", "nav-kids", "nav-your-team", "nav-avo", "nav-new-item"];
 
   function clearNavRolloutAttrs(el) {
     if (!el || !el.removeAttribute) return;
@@ -33,7 +46,18 @@
       el.setAttribute("data-cr-nav-badge", "soon");
       el.setAttribute("title", "Coming soon — this section is under development.");
     });
-    var signedIn = authedFromLocalStorage();
+    var aiAsstSoon = document.getElementById("nav-ai-assistant");
+    if (aiAsstSoon) {
+      aiAsstSoon.setAttribute(
+        "title",
+        "Case Assistant — chronology, evidence, and preparation tied to Your Case (preview, coming soon)."
+      );
+    }
+    var parentingSoon = document.getElementById("nav-parenting-orders");
+    if (parentingSoon) {
+      parentingSoon.setAttribute("title", "Parenting Orders draft generator — coming soon.");
+    }
+    var signedIn = authedFromSupabaseSession();
     ACCOUNT_NAV_IDS.forEach(function (id) {
       var el = document.getElementById(id);
       if (!el) return;
@@ -58,21 +82,37 @@
 
   window.casepathApplyStaticNavRolloutBadges = applyStaticNavRolloutBadges;
 
-  function readLocalUser() {
+  var supabaseSessionSeen = false;
+
+  function authedFromSupabaseSession() {
     try {
-      var raw = localStorage.getItem("cr_user") || localStorage.getItem("courtready_user");
-      if (!raw) return null;
-      return JSON.parse(raw);
+      if (window.__crAuthHydrated && window.authState && window.authState.isAuthenticated) return true;
     } catch (e) {
-      return null;
+      /* ignore */
     }
+    return supabaseSessionSeen;
   }
 
-  function authedFromLocalStorage() {
-    var u = readLocalUser();
-    if (!u || u.source !== "supabase" || !u.id) return false;
-    if (u.loggedIn === false) return false;
-    return true;
+  async function refreshSupabaseSessionGate() {
+    try {
+      if (window.__crAuthHydrated && window.authState && window.authState.isAuthenticated) {
+        supabaseSessionSeen = true;
+        return true;
+      }
+    } catch (e) {
+      /* ignore */
+    }
+    if (!window.supabaseClient || !window.supabaseClient.auth) {
+      supabaseSessionSeen = false;
+      return false;
+    }
+    try {
+      var r = await window.supabaseClient.auth.getSession();
+      supabaseSessionSeen = !!(r && r.data && r.data.session);
+    } catch (e2) {
+      supabaseSessionSeen = false;
+    }
+    return supabaseSessionSeen;
   }
 
   function closeMobileNavMenu() {
@@ -109,7 +149,7 @@
       '<button type="button" class="modal-close" aria-label="Close">&times;</button>' +
       '<h2 id="casepath-soon-title">Coming Soon</h2>' +
       '<p class="modal-sub">This section is currently under development and will be released in a future production update.</p>' +
-      '<p class="modal-sub" style="margin-top:-0.75rem;font-size:0.8rem;">CasePath is being rolled out in stages.</p>' +
+      '<p class="modal-sub" style="margin-top:-0.75rem;font-size:0.8rem;">CasePath is being rolled out in stages. For general family law questions in the meantime, use <strong>Ask a Question</strong> (the ⚖️ button on any page) or the <strong>Glossary</strong> — both stay free.</p>' +
       '<button type="button" class="btn-full" data-casepath-soon-close="1">OK</button>' +
       "</div>";
 
@@ -191,7 +231,7 @@
         return;
       } catch (e) {}
     }
-    window.location.href = "/index.html?auth=" + m;
+    casepathSafeAssignHref("/index.html?auth=" + m);
   }
 
   window.casepathGoAuth = casepathGoAuth;
@@ -240,7 +280,7 @@
       if (!grid || grid.id !== "nav-main-grid") return;
       var id = a.id || "";
       if (id === "nav-your-case-pulse") {
-        if (!authedFromLocalStorage()) {
+        if (!authedFromSupabaseSession()) {
           ev.preventDefault();
           ev.stopPropagation();
           window.casepathShowAccountRequiredModal();
@@ -259,7 +299,7 @@
         if (id === "nav-your-team" && /your-team\.html$/i.test(path)) return;
         if (id === "nav-mental-health" && /mental-health\.html$/i.test(path)) return;
         if (id === "nav-new-item" && /support-tools\.html$/i.test(path)) return;
-        if (!authedFromLocalStorage()) {
+        if (!authedFromSupabaseSession()) {
           ev.preventDefault();
           ev.stopPropagation();
           window.casepathShowAccountRequiredModal();
@@ -273,13 +313,7 @@
     var gate = document.body.getAttribute("data-casepath-account-gate");
     if (!gate) return;
     void (async function () {
-      var ok = authedFromLocalStorage();
-      if (!ok && window.supabaseClient && window.supabaseClient.auth) {
-        try {
-          var r = await window.supabaseClient.auth.getSession();
-          ok = !!(r && r.data && r.data.session);
-        } catch (e) {}
-      }
+      var ok = await refreshSupabaseSessionGate();
       if (!ok) {
         window.casepathShowAccountRequiredModal();
         try {
@@ -289,8 +323,9 @@
     })();
   }
 
-  function boot() {
+  async function boot() {
     ensureModals();
+    await refreshSupabaseSessionGate();
     applyStaticNavRolloutBadges();
     runAccountPageGate();
   }
@@ -298,7 +333,7 @@
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot);
   } else {
-    boot();
+    void boot();
   }
 
   document.addEventListener("keydown", function (ev) {

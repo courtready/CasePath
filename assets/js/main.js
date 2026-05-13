@@ -16,7 +16,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 document.getElementById("translatePreviewBtn")?.addEventListener("click", function () {
   const content = document.querySelector(".document-output")?.innerText;
-  const lang = localStorage.getItem("siteLanguage") || "en";
+  const lang =
+    (typeof window.casepathSiteLanguageGet === "function" ? window.casepathSiteLanguageGet() : null) ||
+    localStorage.getItem("siteLanguage") ||
+    "en";
 
   if (!content) return;
 

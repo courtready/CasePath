@@ -195,7 +195,6 @@ body {
   --cr-page-hero-pad-y-end: 0.75rem;
   --cr-page-hero-pad-x: 1.25rem;
   --cr-sticky-rail-top: 0.75rem;
-  --cr-doc-helper-hero-min-height: 12.5rem;
   /* Public + SPA: consistent horizontal rhythm (stabilisation; no theme change) */
   --cr-public-pad-x: clamp(1rem, 4.2vw, 3rem);
   --cr-public-content-max: 1100px;
@@ -396,10 +395,39 @@ header,
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 0.45rem 0.75rem;
-    padding-top: 0.26rem;
-    margin-top: 0.06rem;
+    column-gap: clamp(0.85rem, 2.2vw, 2.35rem);
+    row-gap: 0.35rem;
+    padding-top: 0.3rem;
+    margin-top: 0.08rem;
     border-top: 1px solid rgba(74, 124, 89, 0.16);
+  }
+
+  #nav-main-grid .nav-platform-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.42rem 0.65rem;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  #nav-main-grid .nav-platform-group--live .nav-platform-tray > a {
+    opacity: 0.94;
+  }
+
+  #nav-main-grid .nav-platform-group--live #nav-doc-helper {
+    font-weight: 700 !important;
+    opacity: 1;
+  }
+
+  #nav-main-grid .nav-platform-group--live #nav-your-case-pulse {
+    font-weight: 700 !important;
+    opacity: 1;
+  }
+
+  #nav-main-grid .nav-platform-group--live #nav-pricing {
+    opacity: 0.97;
   }
 
   #nav-main-grid .nav-platform-eyebrow {
@@ -423,6 +451,10 @@ header,
     row-gap: 0.18rem;
     flex: 1 1 220px;
     min-width: 0;
+  }
+
+  #nav-main-grid .nav-platform-group .nav-platform-tray {
+    flex: 0 1 auto;
   }
 
   #nav-main-grid .nav-platform-tray > a {

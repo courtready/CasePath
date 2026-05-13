@@ -4,16 +4,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>CasePath — Australian Family Court Guide | Forms, Glossary & Document Helper</title>
+<script src="/assets/js/maintenance-mode.js"></script>
+<title>CasePath — Australian Family Court Guide | Forms, Glossary & Output Workflows</title>
 <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
 <link rel="alternate icon" href="/assets/favicon/favicon.svg">
 <link rel="apple-touch-icon" href="/assets/favicon/favicon.svg">
 <link rel="manifest" href="/assets/favicon/site.webmanifest">
 <meta name="theme-color" content="#0F172A">
 <link rel="stylesheet" href="/assets/css/styles.css">
+<link rel="stylesheet" href="/assets/css/case-workspace.css?v=20260511p33">
+<script src="/assets/js/casepath-site-language-store.js"></script>
 
 <!-- ── PRIMARY SEO META ── -->
-<meta name="description" content="CasePath helps Australians navigate family court without a lawyer. Free guides to parenting orders, affidavits, divorce, property settlements, AVOs and all FCFCOA forms — plus an AI-powered Document Helper and 500+ term legal glossary.">
+<meta name="description" content="CasePath helps Australians navigate family court without a lawyer. Free guides to parenting orders, affidavits, divorce, property settlements, AVOs and all FCFCOA forms — plus chronology-informed Output Workflows and a 500+ term legal glossary.">
 <meta name="keywords" content="family court australia, parenting orders, affidavit family law, initiating application, family court forms, divorce australia, property settlement, AVO, family violence order, family court glossary, federal circuit court, FCFCOA, family law act 1975, interim orders, consent orders, family dispute resolution">
 <meta name="author" content="CasePath">
 <meta name="robots" content="index, follow">
@@ -23,8 +26,8 @@
 <!-- ── OPEN GRAPH (Facebook / LinkedIn) ── -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CasePath">
-<meta property="og:title" content="CasePath — Australian Family Court Guide | Forms, Glossary & Document Helper">
-<meta property="og:description" content="Free guides to parenting orders, affidavits, divorce and all family court forms. 500+ legal terms explained in plain English. AI-powered Document Helper for Australians navigating family court.">
+<meta property="og:title" content="CasePath — Australian Family Court Guide | Forms, Glossary & Output Workflows">
+<meta property="og:description" content="Free guides to parenting orders, affidavits, divorce and all family court forms. 500+ legal terms explained in plain English. Chronology-informed Output Workflows for Australians navigating family court.">
 <meta property="og:url" content="https://casepath.com.au/">
 <meta property="og:image" content="https://casepath.com.au/og-image.jpg">
 <meta property="og:image:width" content="1200">
@@ -47,7 +50,7 @@
       "@id": "https://casepath.com.au/#website",
       "url": "https://casepath.com.au/",
       "name": "CasePath",
-      "description": "Australian family court guides, legal glossary, court forms and document helper",
+      "description": "Australian family court guides, legal glossary, court forms and chronology-informed output workflows",
       "publisher": { "@id": "https://casepath.com.au/#organization" },
       "inLanguage": "en-AU",
       "potentialAction": {
@@ -155,7 +158,7 @@
         { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://casepath.com.au/" },
         { "@type": "ListItem", "position": 2, "name": "Family Court Forms", "item": "https://casepath.com.au/forms" },
         { "@type": "ListItem", "position": 3, "name": "Legal Glossary", "item": "https://casepath.com.au/glossary" },
-        { "@type": "ListItem", "position": 4, "name": "Document Helper", "item": "https://casepath.com.au/document-helper" }
+        { "@type": "ListItem", "position": 4, "name": "Output Workflows", "item": "https://casepath.com.au/document-helper" }
       ]
     }
   ]
@@ -186,7 +189,6 @@
   --cr-page-hero-pad-y-end: 0.75rem;
   --cr-page-hero-pad-x: 1.25rem;
   --cr-sticky-rail-top: 0.75rem;
-  --cr-doc-helper-hero-min-height: 12.5rem;
   --cr-public-pad-x: clamp(1rem, 4.2vw, 3rem);
   --cr-public-content-max: 1100px;
 }
@@ -657,7 +659,7 @@ nav .nav-site-links ul #nav-your-case-pulse { font-size: 1.22rem; font-weight: 6
     font-size: 1.05rem !important;
   }
 
-  #nav-main-grid .nav-platform-tray a:last-child {
+  #nav-main-grid .nav-platform-group--soon .nav-platform-tray > a:last-child {
     border-bottom: none;
   }
 
@@ -666,6 +668,22 @@ nav .nav-site-links ul #nav-your-case-pulse { font-size: 1.22rem; font-weight: 6
     margin-top: 0.12rem;
     padding-top: 0.18rem;
     width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .nav-site-links.nav-mobile-open #nav-main-grid .nav-platform-group {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .nav-site-links.nav-mobile-open #nav-main-grid .nav-platform-group--soon {
+    border-top: 1px solid rgba(74, 124, 89, 0.12);
+    margin-top: 0.12rem;
+    padding-top: 0.22rem;
   }
 
   .nav-site-links.nav-mobile-open #nav-main-grid .nav-platform-eyebrow {
@@ -1265,12 +1283,10 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
   color: rgba(255,255,255,0.65);
   font-weight: 300;
   max-width: min(56rem, 92vw);
-  line-height: 1.28;
+  line-height: 1.45;
   margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  display: block;
+  overflow: visible;
 }
 
 @media (max-width: 900px) {
@@ -1282,9 +1298,6 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
     padding-right: var(--cr-public-pad-x, 1.25rem);
   }
   .page-hero p {
-    display: block;
-    -webkit-line-clamp: unset;
-    overflow: visible;
     line-height: 1.48;
     max-width: none;
   }
@@ -3305,7 +3318,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
 .ob-days-badge.urgent{background:#fce7e7;color:#b91c1c}
 
 
-/* ── AI ASSISTANT PAGE ── */
+/* ── CASE ASSISTANT PAGE ── */
 .ai-assistant-layout{display:grid;grid-template-columns:280px 1fr;gap:1.5rem;max-width:1100px;margin:0 auto;padding:2rem 2rem 4rem;align-items:start}
 @media(max-width:768px){.ai-assistant-layout{grid-template-columns:1fr}}
 @media(max-width:800px){#page-vault .section-wrap > div:first-child{grid-template-columns:1fr !important;} #page-vault .section-wrap > div:first-child > div:first-child{position:static !important;}}
@@ -3420,11 +3433,11 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
 }
 .nav-back:hover { border-color: var(--sage); color: var(--sage); }
 
-/* ── DOC HELPER: hero pill eyebrow (scoped — does not override global .page-hero typography) ── */
+/* ── DOC HELPER: pill eyebrow only — band height/padding match global .page-hero ── */
 #page-doc-helper .page-hero {
-  background: linear-gradient(135deg, var(--charcoal) 0%, #2a3828 100%);
-  padding: 0.55rem 2rem 0.85rem;
-  min-height: var(--cr-doc-helper-hero-min-height);
+  background: var(--charcoal);
+  min-height: var(--cr-page-hero-min-height);
+  padding: var(--cr-page-hero-pad-y-start) var(--cr-page-hero-pad-x) var(--cr-page-hero-pad-y-end);
 }
 #page-doc-helper .page-eyebrow {
   display: inline-flex;
@@ -3434,11 +3447,11 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
   color: var(--sage-light);
   padding: 0.45rem 1.1rem;
   border-radius: 100px;
-  font-size: calc(0.86rem * 3);
+  font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
 }
 
 /* ── TAB SWITCHER (doc-helper only) ── */
@@ -3678,6 +3691,27 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<!-- ── ANALYTICS: Plausible (privacy-friendly, no layout/stripe changes) ── -->
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-sYi00raSzctYvZfbcTKPu.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
+<script>
+window.casepathTrack = function(eventName, props = {}) {
+  try {
+    if (window.plausible) {
+      window.plausible(eventName, { props });
+    }
+  } catch (e) {
+    console.warn('Analytics tracking failed', e);
+  }
+};
+</script>
+<!-- ── END ANALYTICS ── -->
+
 </head>
 <body>
 <div class="disclaimer-banner">
@@ -3705,15 +3739,22 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
         <a href="/avo-centre.html" onclick="if(typeof showPage==='function'){showPage('avo');return false;}" id="nav-avo" class="nav-avo-centre" data-row="1">AVO Centre</a>
         </div>
         <div class="nav-row-platform">
+        <div class="nav-platform-group nav-platform-group--live">
+        <span class="nav-platform-eyebrow">Live now</span>
+        <div class="nav-platform-tray">
+        <a href="/document-centre.html" onclick="if(typeof showPage==='function'){showPage('doc-helper');return false;}" id="nav-doc-helper" data-row="2">Document Centre</a>
+        <a href="/your-case.html" onclick="if(typeof cdBuildDashboard==='function'){cdBuildDashboard();} if(typeof showPage==='function'){showPage('vault');return false;}" id="nav-your-case-pulse" data-row="2">Your Case</a>
+        <a href="/pricing.html" onclick="if(typeof showPage==='function'){showPage('pricing');return false;}" id="nav-pricing" data-row="2">Pricing</a>
+        </div>
+        </div>
+        <div class="nav-platform-group nav-platform-group--soon">
         <span class="nav-platform-eyebrow">Coming Soon</span>
         <div class="nav-platform-tray">
         <a href="/parenting-orders.html" onclick="if(typeof showPage==='function'){showPage('parenting-orders');return false;}" id="nav-parenting-orders" class="parenting-orders nav-parenting-centre" data-row="2">Parenting Orders</a>
-        <a href="/document-centre.html" onclick="if(typeof showPage==='function'){showPage('doc-helper');return false;}" id="nav-doc-helper" data-row="2">Document Centre</a>
-        <a href="/ai-assistant.html" onclick="if(typeof showPage==='function'){showPage('ai-assistant');return false;}" id="nav-ai-assistant" data-row="2">AI Assistant</a>
-        <a href="/pricing.html" onclick="if(typeof showPage==='function'){showPage('pricing');return false;}" id="nav-pricing" data-row="2">Pricing</a>
+        <a href="/index.html?goto=ai-assistant" onclick="if(typeof showPage==='function'){showPage('ai-assistant');return false;}" id="nav-ai-assistant" data-row="2">Case Assistant</a>
         <a href="/referrals.html" onclick="if(typeof showPage==='function'){showPage('referrals');return false;}" id="nav-referrals" data-row="2">Referrals</a>
-        <a href="/your-case.html" onclick="if(typeof cdBuildDashboard==='function'){cdBuildDashboard();} if(typeof showPage==='function'){showPage('vault');return false;}" id="nav-your-case-pulse" data-row="2">Your Case</a>
         <a href="/lawyer-portal.html" onclick="if(typeof showPage==='function'){showPage('lawyer-portal');return false;}" id="nav-lawyer-portal" data-row="2">Lawyer Portal</a>
+        </div>
         </div>
         </div>
       </div>
@@ -3776,12 +3817,12 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
       <div class="sc-q-label">Question 1 of 3</div>
       <h2>What best describes your situation?</h2>
       <div class="sc-options-grid">
-        <button class="sc-opt-btn" onclick="scSelectOpt('q1','parenting',this)"><span class="sc-opt-icon">👨‍👧</span><span><strong style="display:block;margin-bottom:0.15rem;">I want parenting orders</strong><small style="color:var(--soft);font-size:0.78rem;line-height:1.5;display:block;">Who the children live with, how much time they spend with each parent, and parental responsibility.</small><span style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;"><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📖 Glossary</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">💬 Ask the bot</span></span></span><span class="sc-check">✓</span></button>
-        <button class="sc-opt-btn" onclick="scSelectOpt('q1','divorce',this)"><span class="sc-opt-icon">💍</span><span><strong style="display:block;margin-bottom:0.15rem;">I want a divorce</strong><small style="color:var(--soft);font-size:0.78rem;line-height:1.5;display:block;">How to apply for divorce, what's required, how long it takes, and what forms to file.</small><span style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;"><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📝 Forms Centre</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📄 Document Helper</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">💬 Ask the bot</span></span></span><span class="sc-check">✓</span></button>
-        <button class="sc-opt-btn" onclick="scSelectOpt('q1','property',this)"><span class="sc-opt-icon">🏠</span><span><strong style="display:block;margin-bottom:0.15rem;">We need to divide property</strong><small style="color:var(--soft);font-size:0.78rem;line-height:1.5;display:block;">Property settlement, superannuation splitting, financial disclosure, and consent orders.</small><span style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;"><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📖 Glossary</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📄 Financial Statement</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">💬 Ask the bot</span></span></span><span class="sc-check">✓</span></button>
-        <button class="sc-opt-btn" onclick="scSelectOpt('q1','breach',this)"><span class="sc-opt-icon">⚠️</span><span><strong style="display:block;margin-bottom:0.15rem;">Orders have been breached</strong><small style="color:var(--soft);font-size:0.78rem;line-height:1.5;display:block;">What to do when the other party is not complying with existing orders — contravention applications.</small><span style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;"><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📖 Glossary</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">💬 Ask the bot</span></span></span><span class="sc-check">✓</span></button>
-        <button class="sc-opt-btn" onclick="scSelectOpt('q1','respond',this)"><span class="sc-opt-icon">📋</span><span><strong style="display:block;margin-bottom:0.15rem;">I need to respond to an application</strong><small style="color:var(--soft);font-size:0.78rem;line-height:1.5;display:block;">You've been served with an application. Here's what you need to do and when.</small><span style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;"><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📄 Document Helper</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📝 Forms Centre</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">💬 Ask the bot</span></span></span><span class="sc-check">✓</span></button>
-        <button class="sc-opt-btn" onclick="scSelectOpt('q1','urgent',this)"><span class="sc-opt-icon">🚨</span><span><strong style="display:block;margin-bottom:0.15rem;">I need urgent orders</strong><small style="color:var(--soft);font-size:0.78rem;line-height:1.5;display:block;">Interim and urgent applications, including family violence injunctions and recovery orders.</small><span style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;"><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📖 Glossary</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">🛡️ AVO Guide</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">💬 Ask the bot</span></span></span><span class="sc-check">✓</span></button>
+        <button class="sc-opt-btn" onclick="scSelectOpt('q1','parenting',this)"><span class="sc-opt-icon">👨‍👧</span><span><strong style="display:block;margin-bottom:0.15rem;">I want parenting orders</strong><small style="color:var(--soft);font-size:0.78rem;line-height:1.5;display:block;">Who the children live with, how much time they spend with each parent, and parental responsibility.</small><span style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;"><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📖 Glossary</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">💬 Ask a Question</span></span></span><span class="sc-check">✓</span></button>
+        <button class="sc-opt-btn" onclick="scSelectOpt('q1','divorce',this)"><span class="sc-opt-icon">💍</span><span><strong style="display:block;margin-bottom:0.15rem;">I want a divorce</strong><small style="color:var(--soft);font-size:0.78rem;line-height:1.5;display:block;">How to apply for divorce, what's required, how long it takes, and what forms to file.</small><span style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;"><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📝 Forms Centre</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📄 Output Workflows</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">💬 Ask a Question</span></span></span><span class="sc-check">✓</span></button>
+        <button class="sc-opt-btn" onclick="scSelectOpt('q1','property',this)"><span class="sc-opt-icon">🏠</span><span><strong style="display:block;margin-bottom:0.15rem;">We need to divide property</strong><small style="color:var(--soft);font-size:0.78rem;line-height:1.5;display:block;">Property settlement, superannuation splitting, financial disclosure, and consent orders.</small><span style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;"><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📖 Glossary</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📄 Financial Statement</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">💬 Ask a Question</span></span></span><span class="sc-check">✓</span></button>
+        <button class="sc-opt-btn" onclick="scSelectOpt('q1','breach',this)"><span class="sc-opt-icon">⚠️</span><span><strong style="display:block;margin-bottom:0.15rem;">Orders have been breached</strong><small style="color:var(--soft);font-size:0.78rem;line-height:1.5;display:block;">What to do when the other party is not complying with existing orders — contravention applications.</small><span style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;"><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📖 Glossary</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">💬 Ask a Question</span></span></span><span class="sc-check">✓</span></button>
+        <button class="sc-opt-btn" onclick="scSelectOpt('q1','respond',this)"><span class="sc-opt-icon">📋</span><span><strong style="display:block;margin-bottom:0.15rem;">I need to respond to an application</strong><small style="color:var(--soft);font-size:0.78rem;line-height:1.5;display:block;">You've been served with an application. Here's what you need to do and when.</small><span style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;"><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📄 Output Workflows</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📝 Forms Centre</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">💬 Ask a Question</span></span></span><span class="sc-check">✓</span></button>
+        <button class="sc-opt-btn" onclick="scSelectOpt('q1','urgent',this)"><span class="sc-opt-icon">🚨</span><span><strong style="display:block;margin-bottom:0.15rem;">I need urgent orders</strong><small style="color:var(--soft);font-size:0.78rem;line-height:1.5;display:block;">Interim and urgent applications, including family violence injunctions and recovery orders.</small><span style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;"><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">📖 Glossary</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">🛡️ AVO Guide</span><span style="font-size:0.7rem;background:var(--sage-pale);color:var(--sage);padding:0.15rem 0.55rem;border-radius:100px;font-weight:600;">💬 Ask a Question</span></span></span><span class="sc-check">✓</span></button>
       </div>
     </div>
     <!-- Q2 -->
@@ -3804,7 +3845,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
       <h2>What do you need help with right now?</h2>
       <p style="font-size:0.82rem;color:var(--soft);margin:-0.75rem 0 1.25rem;line-height:1.6;">Every tool is always in the menu — this just opens the most relevant one first.</p>
       <div class="sc-options-grid" style="grid-template-columns:1fr 1fr;">
-        <button class="sc-opt-btn" onclick="scSelectOpt('q3','doc-helper',this)"><span class="sc-opt-icon">📝</span><span><strong style="display:block;margin-bottom:0.1rem;">Write an affidavit</strong><small style="color:var(--soft);font-size:0.78rem;">Document Helper</small></span><span class="sc-check">✓</span></button>
+        <button class="sc-opt-btn" onclick="scSelectOpt('q3','doc-helper',this)"><span class="sc-opt-icon">📝</span><span><strong style="display:block;margin-bottom:0.1rem;">Write an affidavit</strong><small style="color:var(--soft);font-size:0.78rem;">Output Workflow</small></span><span class="sc-check">✓</span></button>
         <button class="sc-opt-btn" onclick="scSelectOpt('q3','parenting-orders',this)"><span class="sc-opt-icon">⚖️</span><span><strong style="display:block;margin-bottom:0.1rem;">Parenting orders</strong><small style="color:var(--soft);font-size:0.78rem;">Generate draft orders</small></span><span class="sc-check">✓</span></button>
         <button class="sc-opt-btn" onclick="scSelectOpt('q3','avo',this)"><span class="sc-opt-icon">🛡️</span><span><strong style="display:block;margin-bottom:0.1rem;">AVO / family violence</strong><small style="color:var(--soft);font-size:0.78rem;">AVO Centre</small></span><span class="sc-check">✓</span></button>
         <button class="sc-opt-btn" onclick="scSelectOpt('q3','vault',this)"><span class="sc-opt-icon">🗂️</span><span><strong style="display:block;margin-bottom:0.1rem;">Organise evidence</strong><small style="color:var(--soft);font-size:0.78rem;">Your Case</small></span><span class="sc-check">✓</span></button>
@@ -3814,7 +3855,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
         <button class="sc-opt-btn" onclick="scSelectOpt('q3','mental-health',this)"><span class="sc-opt-icon">🧠</span><span><strong style="display:block;margin-bottom:0.1rem;">Mental health support</strong><small style="color:var(--soft);font-size:0.78rem;">Resources & tools</small></span><span class="sc-check">✓</span></button>
         <button class="sc-opt-btn" onclick="scSelectOpt('q3','kids',this)"><span class="sc-opt-icon">👶</span><span><strong style="display:block;margin-bottom:0.1rem;">Helping my children</strong><small style="color:var(--soft);font-size:0.78rem;">About the Kids</small></span><span class="sc-check">✓</span></button>
         <button class="sc-opt-btn" onclick="scSelectOpt('q3','your-team',this)"><span class="sc-opt-icon">👥</span><span><strong style="display:block;margin-bottom:0.1rem;">Build my support team</strong><small style="color:var(--soft);font-size:0.78rem;">Family Team guide</small></span><span class="sc-check">✓</span></button>
-        <button class="sc-opt-btn" onclick="scSelectOpt('q3','ai-assistant',this)"><span class="sc-opt-icon">✨</span><span><strong style="display:block;margin-bottom:0.1rem;">Ask the AI assistant</strong><small style="color:var(--soft);font-size:0.78rem;">Get instant answers</small></span><span class="sc-check">✓</span></button>
+        <button type="button" class="sc-opt-btn sc-opt-disabled" disabled title="Case Assistant is coming soon" aria-disabled="true" style="opacity:0.55;cursor:not-allowed;"><span class="sc-opt-icon">✨</span><span><strong style="display:block;margin-bottom:0.1rem;">Case Assistant</strong><small style="color:var(--soft);font-size:0.78rem;">Coming soon — use Your Case, Ask a Question, or the Glossary for now</small></span><span class="sc-check">✓</span></button>
         <button class="sc-opt-btn" onclick="scSelectOpt('q3','referrals',this)"><span class="sc-opt-icon">🔍</span><span><strong style="display:block;margin-bottom:0.1rem;">Find a lawyer or service</strong><small style="color:var(--soft);font-size:0.78rem;">Referrals directory</small></span><span class="sc-check">✓</span></button>
       </div>
     </div>
@@ -4006,7 +4047,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
                 <div class="step">
                   <div class="step-number">03</div>
                   <p class="step-title">Store everything safely</p>
-                  <p class="step-desc">Encrypted private vault. Documents leave your device protected.</p>
+                  <p class="step-desc">Private case workspace with encrypted evidence and chronology records.</p>
                 </div>
                 <div class="step">
                   <div class="step-number">04</div>
@@ -4032,7 +4073,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
                 <div class="step">
                   <div class="step-number">07</div>
                   <p class="step-title">Stay supported throughout</p>
-                  <p class="step-desc">AI assistant, glossary, and guidance — before, during, and after court.</p>
+                  <p class="step-desc">Ask a Question for general guidance, plus glossary support — before, during, and after court. Use Case Assistant inside Your Case for structured preparation.</p>
                 </div>
               </div>
             </div>
@@ -4163,9 +4204,10 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
           </div>
         </div>
         <div class="feat-card reveal">
-          <div class="feat-emoji">🤖</div>
-          <h3>AI Assistant</h3>
-          <p>Ask anything about the Family Law Act 1975, parenting orders, property settlement, or consent orders. Answers grounded in actual Australian legislation — with references.</p>
+          <div class="feat-emoji">📁</div>
+          <h3>Case Assistant (AI-powered)</h3>
+          <p>Work through <strong>Your Case</strong> with structured help for chronology, evidence, affidavits, and parenting-order preparation — not a generic chatbot.</p>
+          <p style="font-size:0.78rem;color:var(--mid);margin:0.5rem 0 0;line-height:1.5;">For general family law questions, terminology, and process explanations, use <strong>Ask a Question</strong> (the ⚖️ button on any page) — free and informational.</p>
         </div>
         <div class="feat-card reveal">
           <div class="feat-emoji">📝</div>
@@ -4235,7 +4277,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
     <div class="info-card-wide" style="margin-bottom:2rem;">
       <h2>Getting through</h2>
       <p style="font-size:0.95rem;color:var(--mid);line-height:1.8;margin-bottom:1.25rem;">Family law cases are not quick. The average contested parenting matter takes 12 to 18 months. During that time, you are expected to file documents, meet deadlines, attend hearings, manage evidence, co-parent under pressure, and somehow keep your life together. The emotional toll is immense — and it is rarely acknowledged by the system itself.</p>
-      <p style="font-size:0.95rem;color:var(--mid);line-height:1.8;">CasePath gives you Your Case to track every phase, a secure vault for your evidence, a document helper that turns your rough notes into court-ready filings, and mental health resources that treat your wellbeing as central to your case — not a footnote. We help you to stay organised, stay informed, and stay standing.</p>
+      <p style="font-size:0.95rem;color:var(--mid);line-height:1.8;">CasePath gives you Your Case to track every phase, chronology and evidence, output workflows that assemble structured drafts from your records, and mental health resources that treat your wellbeing as central to your case — not a footnote. We help you to stay organised, stay informed, and stay standing.</p>
     </div>
 
     <div class="info-card-wide" style="margin-bottom:2rem;">
@@ -4281,7 +4323,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
         </div>
         <div style="display:flex;align-items:flex-start;gap:0.75rem;">
           <span style="font-size:1.1rem;flex-shrink:0;margin-top:2px;">🔒</span>
-          <p style="margin:0;font-size:0.82rem;color:var(--mid);line-height:1.7;"><strong style="color:var(--charcoal);">Your information is yours.</strong> Everything you add to The Vault on CasePath is encrypted, private, and under your control. We do not sell data, serve ads, or share your information with anyone — ever.</p>
+          <p style="margin:0;font-size:0.82rem;color:var(--mid);line-height:1.7;"><strong style="color:var(--charcoal);">Your information is yours.</strong> Everything you add to Your Case Workspace is encrypted, private, and under your control. We do not sell data, serve ads, or share your information with anyone — ever.</p>
         </div>
       </div>
     </div>
@@ -10673,21 +10715,22 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
   <div class="legal-disclaimer-bar">This tool provides document assistance only and does not provide legal advice.<br>You should seek independent legal advice before relying on any generated document.</div>
 </div><!-- end page-glossary -->
 
-<!-- ════ ASK A QUESTION ════ -->
+<!-- ════ ASK A QUESTION (FREE PUBLIC GUIDANCE) ════ -->
 <div class="page" id="page-qa">
   <div class="page-hero">
     <div class="page-hero-inner">
-      <div class="page-eyebrow">AI Assistant</div>
+      <div class="page-eyebrow">Free · Educational · Public</div>
       <h1>Ask a <em>Question</em></h1>
-      <p>Get answers grounded in Australian family law — with citations to the relevant Act or Rule</p>
+      <p>General family law guidance and information — Australian processes, terminology, parenting arrangements, and court procedures.</p>
     </div>
   </div>
   <div class="qa-wrap" style="text-align:center;padding:4rem 2rem;">
     <div style="font-size:4rem;margin-bottom:1.5rem;">⚖️</div>
-    <h2 style="font-family:'Lora',serif;font-size:1.6rem;margin-bottom:0.75rem;color:var(--charcoal);">Your legal assistant is always available</h2>
-    <p style="color:var(--mid);font-size:1rem;max-width:480px;margin:0 auto 2rem;line-height:1.7;">The CasePath bot appears on every page — look for the <strong>⚖️ button</strong> in the bottom-right corner. Ask anything about Australian family law, any time. Answers are grounded in our <a onclick="showPage('glossary')" style="color:var(--sage);font-weight:600;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;">525-term Glossary</a> and Australian legislation.</p>
-    <button class="btn-primary" style="font-size:1rem;padding:0.85rem 2rem;" onclick="toggleBot()">Open the assistant →</button>
-    <p style="font-size:0.78rem;color:var(--soft);margin-top:1.5rem;">Free to use · No account required · Covers parenting, property, AVOs, divorce &amp; more</p>
+    <h2 style="font-family:'Lora',serif;font-size:1.6rem;margin-bottom:0.75rem;color:var(--charcoal);">Plain-English answers, grounded in the Glossary</h2>
+    <p style="color:var(--mid);font-size:1rem;max-width:520px;margin:0 auto 2rem;line-height:1.7;">The CasePath panel appears on every page — look for the <strong>⚖️ button</strong> in the bottom-right corner. This layer is for <strong>educational, glossary-connected Q&amp;A</strong> (not case-specific drafting or workspace workflows). Answers draw on our <a onclick="showPage('glossary')" style="color:var(--sage);font-weight:600;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;">525-term Glossary</a> and Australian legislation.</p>
+    <button class="btn-primary" style="font-size:1rem;padding:0.85rem 2rem;" onclick="toggleBot()">Open Ask a Question →</button>
+    <p style="font-size:0.78rem;color:var(--soft);margin-top:1.5rem;">Free to use · No account required · Informational only — not advice about your specific situation</p>
+    <p style="font-size:0.78rem;color:var(--mid);margin-top:0.75rem;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.55;">Signed in and building <strong>Your Case</strong>? For chronology, evidence, affidavits, and preparation workflows, use <strong>Case Assistant (AI-powered)</strong> from the menu when it is available.</p>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem;margin-top:3rem;text-align:left;">
       <div style="background:var(--sage-pale);border-radius:12px;padding:1rem;cursor:pointer;" onclick="toggleBot();setTimeout(function(){botAsk('What does best interests of the child mean?')},320)">
@@ -10727,54 +10770,23 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
   <div class="legal-disclaimer-bar">This tool provides document assistance only and does not provide legal advice.<br>You should seek independent legal advice before relying on any generated document.</div>
 </div>
 
-<!-- ════ AI ASSISTANT ════ -->
+<!-- ════ CASE ASSISTANT (WORKSPACE / PREPARATION) — UI placeholder; interactive assistant gated off for production ════ -->
 <div class="page" id="page-ai-assistant">
   <div class="page-hero">
     <div class="page-hero-inner">
-      <div class="page-eyebrow">Here to Help</div>
-      <h1>AI Legal <em>Assistant</em></h1>
-      <p>Your personal family law assistant — remembers your case details and gives answers grounded in Australian legislation</p>
+      <div class="page-eyebrow">Your Case · Workspace</div>
+      <h1>Case Assistant <em>(coming soon)</em></h1>
+      <p>Structured preparation tied to <strong>Your Case</strong> — chronology, evidence, and drafting workflows — is on the roadmap. The interactive assistant is not enabled in this production release.</p>
     </div>
   </div>
-  <div class="ai-assistant-layout">
-      <div class="ai-sidebar">
-        <div class="ai-case-card" id="ai-case-summary">
-          <div class="ai-case-header">📁 Your Case</div>
-          <div id="ai-case-body"><p style="font-size:0.8rem;color:var(--mid);font-style:italic;">No case set up yet. <button onclick="openOnboarding()" style="background:none;border:none;color:var(--sage);cursor:pointer;font-weight:600;padding:0;font-size:0.8rem;">Set up →</button></p></div>
-        </div>
-        <div class="ai-topics">
-          <div class="ai-topics-header">Quick topics</div>
-          <button class="ai-topic-btn" onclick="askAI('What are the key steps to file a parenting application?')">📋 Filing a parenting application</button>
-          <button class="ai-topic-btn" onclick="askAI('What is required before filing — do I need mediation?')">🤝 Pre-filing requirements</button>
-          <button class="ai-topic-btn" onclick="askAI('How does property division work after separation?')">🏠 Property settlement</button>
-          <button class="ai-topic-btn" onclick="askAI('How do I apply for an AVO or protection order?')">🛡️ Protection orders</button>
-          <button class="ai-topic-btn" onclick="askAI('What is an affidavit and how do I write one?')">📄 Writing an affidavit</button>
-          <button class="ai-topic-btn" onclick="askAI('What happens if the other party breaches orders?')">⚖️ Breaching orders</button>
-          <button class="ai-topic-btn" onclick="askAI('How does the court decide parenting arrangements?')">👶 Best interests of the child</button>
-          <button class="ai-topic-btn" onclick="askAI('What is subpoena and how do I use it?')">📬 Subpoenas</button>
-        </div>
-        <button class="ai-clear-btn" onclick="clearAIChat()">🗑 Clear conversation</button>
-      </div>
-      <div class="ai-main">
-        <div class="ai-info-bar">🤖 <strong>AI Assistant</strong> — Answers are based on Australian family law legislation. Always cite the specific section. This does not constitute legal advice and is to be used as a guide only.</div>
-        <div class="chat-window" id="ai-chat-window">
-          <div class="qmsg">
-            <div class="qmsg-avatar">CR</div>
-            <div>
-              <div class="qmsg-bubble">Hello. I'm your CasePath AI Assistant. I have access to your case details and can give you more tailored legal information than the general Q&amp;A.<br><br>Ask me anything about your family law matter — parenting, property, divorce, AVOs, court procedure, forms, or strategy.
-                <div class="msg-disclaimer">ℹ️ Legal information only — not advice about your specific situation.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="chat-input-row">
-          <input type="text" id="ai-chat-input" placeholder="Ask your AI assistant about your case…" onkeydown="if(event.key==='Enter') sendAIMessage()">
-          <button class="send-btn" onclick="sendAIMessage()">↑</button>
-        </div>
-      </div>
+  <p style="margin:1rem 2rem 0;max-width:1100px;margin-left:auto;margin-right:auto;">In the meantime, use <a onclick="showPage('vault')" style="cursor:pointer;color:var(--sage);font-weight:600;">Your Case</a> for your workspace, <a onclick="showPage('qa')" style="cursor:pointer;color:var(--sage);font-weight:600;">Ask a Question</a> for general guidance, or the <a onclick="showPage('glossary')" style="cursor:pointer;color:var(--sage);font-weight:600;">Glossary</a>.</p>
+  <div class="ai-assistant-layout" style="grid-template-columns:1fr;max-width:42rem;margin:1.5rem auto 0;padding:0 2rem 2rem;">
+    <div class="ai-main" style="border:1px solid var(--border);border-radius:16px;padding:1.75rem;background:var(--cream);">
+      <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--sage);margin-bottom:0.75rem;">Coming soon</div>
+      <p style="margin:0 0 1rem;line-height:1.55;color:var(--charcoal);">The Case Assistant chat and topic shortcuts are disabled until the service is fully launched. No data is sent to AI endpoints from this screen.</p>
+      <p style="margin:0;font-size:0.85rem;color:var(--mid);line-height:1.5;">Enable in a controlled environment with <code style="font-size:0.8em;">window.CASEPATH_ENABLE_AI_ASSISTANT = true</code> before restoring backend routes.</p>
     </div>
-
-    
+  </div>
   <div class="legal-disclaimer-bar">This tool provides document assistance only and does not provide legal advice.<br>You should seek independent legal advice before relying on any generated document.</div>
 </div>
 
@@ -12370,7 +12382,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
       </div>
 
       <div style="background:linear-gradient(135deg,var(--sage-pale),#f0faf0);border:1px solid rgba(74,124,89,0.2);border-radius:12px;padding:1rem 1.25rem;margin-top:1.5rem;">
-        <p style="font-size:0.82rem;color:var(--mid);margin:0;line-height:1.6;"><strong style="color:var(--sage);">Next steps:</strong> These draft orders can be attached to your Initiating Application, included in your Response, or used as the basis for Consent Orders if both parties agree. Use the <a onclick="showPage('doc-helper')" style="color:var(--sage);font-weight:600;cursor:pointer;text-decoration:underline dotted;">Document Helper</a> to draft the full application.</p>
+        <p style="font-size:0.82rem;color:var(--mid);margin:0;line-height:1.6;"><strong style="color:var(--sage);">Next steps:</strong> These draft orders can be attached to your Initiating Application, included in your Response, or used as the basis for Consent Orders if both parties agree. Use <a onclick="showPage('doc-helper')" style="color:var(--sage);font-weight:600;cursor:pointer;text-decoration:underline dotted;">Output Workflows</a> to continue chronology-informed drafting.</p>
       </div>
     </div>
 
@@ -12384,8 +12396,8 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
   <div class="page-hero">
     <div class="page-hero-inner">
       <div class="page-eyebrow" id="eyebrow-doc-helper" data-default="Forms & Documents">📋 Forms &amp; Documents</div>
-      <h1>Forms Centre &amp; <em>Document Helper</em></h1>
-      <p>Find every official FCFCOA form — then use the Document Helper to convert your notes into a correctly structured court-ready filing.</p>
+      <h1>Forms Centre &amp; <em>Output Workflows</em></h1>
+      <p>Find every official FCFCOA form — then assemble structured legal outputs from your chronology, incidents, threads, and evidence in Your Case.</p>
     </div>
   </div>
 
@@ -12395,7 +12407,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
     📄 Forms Centre <span class="tab-badge">9 forms</span>
   </button>
   <button class="tab-btn" onclick="switchTab('helper')" id="tab-helper">
-    ✏️ Document Helper <span class="tab-badge">7 types</span>
+    ✏️ Output Workflows <span class="tab-badge">7 types</span>
   </button>
 </div>
 
@@ -12410,9 +12422,9 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
       <div style="font-size:2rem;flex-shrink:0;">✏️</div>
       <div class="crosslink-banner-text">
         <h3>Need help completing a form?</h3>
-        <p>Each form below has a "Let's do this together" button — it opens the Document Helper pre-loaded for that form type so you can draft it step-by-step.</p>
+        <p>Each form below has a "Let's do this together" button — it opens Output Workflows pre-loaded for that form type so you can assemble from chronology step-by-step.</p>
       </div>
-      <button class="btn-sm btn-sm-gold" onclick="switchTab('helper')">Open Document Helper →</button>
+      <button class="btn-sm btn-sm-gold" onclick="switchTab('helper')">Open Output Workflows →</button>
     </div>
 
     <!-- Disclaimer -->
@@ -12567,7 +12579,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
 <!-- ═══════════════════════════════════════
      TAB 2: DOCUMENT HELPER
 ════════════════════════════════════════ -->
-<div class="gate-wrapper" id="gate-doc-helper"><div class="gate-overlay" id="overlay-doc-helper"><div class="gate-card"><div class="gate-icon">✏️</div><h2>Free account required</h2><p>Create a free account to use the Document Helper to draft court-ready documents.</p><div class="gate-actions"><button class="btn-primary" onclick="openAuth('signup')">Create free account</button><button class="btn-secondary" onclick="openAuth('signin')">Sign in</button></div></div></div>
+<div class="gate-wrapper" id="gate-doc-helper"><div class="gate-overlay" id="overlay-doc-helper"><div class="gate-card"><div class="gate-icon">✏️</div><h2>Free account required</h2><p>Create a free account to use chronology-driven Output Workflows.</p><div class="gate-actions"><button class="btn-primary" onclick="openAuth('signup')">Create free account</button><button class="btn-secondary" onclick="openAuth('signin')">Sign in</button></div></div></div>
 <div class="tab-panel" id="panel-helper">
   <div class="doc-helper-wrap">
 
@@ -12576,7 +12588,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
       <div style="font-size:2rem;flex-shrink:0;">📄</div>
       <div class="crosslink-banner-text">
         <h3>Need the official form too?</h3>
-        <p>Once you've drafted your document here, head to Forms Centre to download the official FCFCOA form to attach or file with it.</p>
+        <p>Once you've assembled your output here, head to Forms Centre to download the official FCFCOA form to attach or file with it.</p>
       </div>
       <button class="btn-sm btn-sm-gold" onclick="switchTab('forms')">Browse Forms Centre →</button>
     </div>
@@ -12593,23 +12605,23 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
       <div class="how-steps">
         <div class="how-step">
           <div class="how-num">1</div>
-          <div class="how-label">Choose document type</div>
-          <div class="how-desc">Select from 7 FCFCOA document types</div>
+          <div class="how-label">Select chronology sources</div>
+          <div class="how-desc">Choose events, threads, categories, dates, and evidence</div>
         </div>
         <div class="how-step">
           <div class="how-num">2</div>
-          <div class="how-label">Fill your details</div>
-          <div class="how-desc">Name, address, court details pre-filled</div>
+          <div class="how-label">Preview structured sections</div>
+          <div class="how-desc">See exactly what content is included and grouped</div>
         </div>
         <div class="how-step">
           <div class="how-num">3</div>
-          <div class="how-label">Paste your notes</div>
-          <div class="how-desc">Bullet points, sentences, fragments — any format</div>
+          <div class="how-label">Assemble and refine</div>
+          <div class="how-desc">Edit wording, structure, and chronology-backed sections</div>
         </div>
         <div class="how-step">
           <div class="how-num">4</div>
-          <div class="how-label">Download your doc</div>
-          <div class="how-desc">Word (.docx) or Print to PDF</div>
+          <div class="how-label">Export or download</div>
+          <div class="how-desc">Save as structured output (Word/PDF/export)</div>
         </div>
       </div>
     </div>
@@ -14051,10 +14063,19 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
       </div><!-- end dh-fields-initiating -->
     </div>
 
+    <!-- Step 2.5: Chronology-informed source selection -->
+    <div class="info-card-wide" style="margin-bottom:1.5rem;" id="dh-assembly-card">
+      <h2 style="margin-bottom:0.35rem;">2.5 Chronology sources (recommended)</h2>
+      <p style="font-size:0.855rem;color:var(--mid);margin-bottom:0.95rem;line-height:1.65;">
+        Build this draft from your chronology events, threads, and linked evidence. This keeps document drafting grounded in your case record.
+      </p>
+      <div id="dh-assembly-root"></div>
+    </div>
+
     <!-- Step 3: Paste notes -->
     <div class="info-card-wide" style="margin-bottom:1.5rem;">
-      <h2 style="margin-bottom:0.75rem;">3. Paste your notes</h2>
-      <p style="font-size:0.855rem;color:var(--mid);margin-bottom:0.85rem;">Write naturally — bullet points, sentences, fragments. One idea per line works best. The tool will structure and number them for you.</p>
+      <h2 style="margin-bottom:0.75rem;">3. Assemble and refine notes</h2>
+      <p style="font-size:0.855rem;color:var(--mid);margin-bottom:0.85rem;">Start from chronology selections, then refine naturally — bullet points, sentences, fragments. One idea per line works best.</p>
       <textarea id="dh-input" placeholder="e.g.&#10;On 14 March 2024 the respondent arrived at the property at 7pm&#10;He had been drinking and was aggressive&#10;I asked him to leave and he refused&#10;The children were present and visibly distressed&#10;I called police at 7:23pm — incident report number 2024/44821" style="width:100%;min-height:200px;padding:1rem;border:1px solid var(--border);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:0.82rem;line-height:1.6;resize:vertical;background:#fafafa;box-sizing:border-box;" oninput="updateCharCount();checkOpinionWords()"></textarea>
       <div id="dh-opinion-warnings" style="display:none;margin-top:0.65rem;padding:0.75rem 1rem;background:#fff8f0;border:1.5px solid #f0a060;border-radius:10px;font-size:0.835rem;line-height:1.65;color:#7c3d0a;"></div>
       <div style="display:flex;gap:0.75rem;margin-top:1rem;flex-wrap:wrap;align-items:center;">
@@ -14306,7 +14327,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
 
     <!-- CONNECT YOUR LAWYER -->
     <h2 style="font-family:'Lora',serif;font-size:1.3rem;margin:2.5rem 0 0.5rem;">Connect your lawyer to CasePath</h2>
-    <p style="font-size:0.875rem;color:var(--mid);margin:0 0 1.25rem;line-height:1.7;">If your lawyer has a CasePath Lawyer Portal subscription, you can invite them to access your case vault — giving them real-time visibility of your documents, timeline and evidence without any extra uploads or emails.</p>
+    <p style="font-size:0.875rem;color:var(--mid);margin:0 0 1.25rem;line-height:1.7;">If your lawyer has a CasePath Lawyer Portal subscription, you can invite them to access your case workspace — giving them real-time visibility of your chronology and supporting evidence without extra uploads or emails.</p>
     <div class="info-card-wide" id="lawyer-connect-card">
       <div id="lawyer-not-connected">
         <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
@@ -14323,12 +14344,12 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
           <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#e7f3e8,#f0faf0);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">✅</div>
           <div style="flex:1;min-width:180px;">
             <strong style="display:block;margin-bottom:0.2rem;" id="lawyer-connected-name">Your Lawyer</strong>
-            <p style="font-size:0.82rem;color:var(--mid);margin:0;line-height:1.5;" id="lawyer-connected-email">Connected · Can view your case vault</p>
+            <p style="font-size:0.82rem;color:var(--mid);margin:0;line-height:1.5;" id="lawyer-connected-email">Connected · Can view your case workspace</p>
           </div>
           <button onclick="disconnectLawyer()" style="background:none;border:1px solid var(--border);color:var(--mid);padding:0.5rem 1rem;border-radius:100px;font-size:0.78rem;cursor:pointer;">Disconnect</button>
         </div>
         <div style="margin-top:1rem;padding:0.75rem 1rem;background:var(--sage-pale);border-radius:10px;font-size:0.8rem;color:var(--sage);border-left:3px solid var(--sage);">
-          🔒 Your lawyer can view your case dashboard and evidence vault. They cannot edit or delete anything. You can disconnect at any time.
+          🔒 Your lawyer can view your case dashboard, chronology, and supporting evidence. They cannot edit or delete anything. You can disconnect at any time.
         </div>
       </div>
     </div>
@@ -14609,11 +14630,11 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
 
 <!-- ════ LAWYER PORTAL ════ -->
 <div class="page" id="page-lawyer-portal">
-  <div class="page-hero" style="background:linear-gradient(135deg,#1a2e1a 0%,#2d4a2d 100%);">
+  <div class="page-hero">
     <div class="page-hero-inner">
-      <div class="page-eyebrow" style="color:rgba(200,169,110,0.85);border-color:rgba(200,169,110,0.3);">For Family Lawyers</div>
-      <h1 style="color:white;">CasePath <em style="color:#c8a96e;">Lawyer Portal</em></h1>
-      <p style="color:rgba(255,255,255,0.7);">Your clients are already using CasePath. Join their team — see exactly what they see, review their evidence vault, and stay across their case in real time.</p>
+      <div class="page-eyebrow">For Family Lawyers</div>
+      <h1>CasePath <em>Lawyer Portal</em></h1>
+    <p>Your clients are already using CasePath. Join their team — see exactly what they see, review chronology and supporting evidence, and stay across their case in real time.</p>
     </div>
   </div>
   <div class="section-wrap">
@@ -14635,8 +14656,8 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;margin-bottom:2rem;">
       <div class="info-card" style="margin:0;border-top:3px solid var(--sage);">
         <div style="font-size:2rem;margin-bottom:0.75rem;">📂</div>
-        <h3>Access client vaults</h3>
-        <p>When a client invites you, you gain read access to their evidence vault — documents, photos, timelines and case notes — all encrypted and controlled by them.</p>
+        <h3>Access client workspaces</h3>
+        <p>When a client invites you, you gain read access to their chronology, incidents, evidence, and case notes — encrypted and controlled by them.</p>
       </div>
       <div class="info-card" style="margin:0;border-top:3px solid var(--sage);">
         <div style="font-size:2rem;margin-bottom:0.75rem;">👥</div>
@@ -14675,7 +14696,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
         </div>
         <div class="avo-step">
           <div class="avo-step-num">2</div>
-          <div><strong>Client sends an invite</strong><p>Your client finds you in the CasePath lawyer directory and sends you a vault access invitation. You'll receive an email notification instantly.</p></div>
+          <div><strong>Client sends an invite</strong><p>Your client finds you in the CasePath lawyer directory and sends you a workspace access invitation. You'll receive an email notification instantly.</p></div>
         </div>
         <div class="avo-step">
           <div class="avo-step-num">3</div>
@@ -14692,7 +14713,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
     <div class="info-card-wide" style="margin-bottom:2rem;">
       <h2>What you see in the portal</h2>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.75rem;margin-top:1rem;">
-        <div style="background:var(--sage-pale);border-radius:10px;padding:0.9rem 1.1rem;border-left:3px solid var(--sage);font-size:0.875rem;line-height:1.6;"><strong>📁 Evidence vault</strong><br>All documents, photos and files your client has uploaded and chosen to share</div>
+        <div style="background:var(--sage-pale);border-radius:10px;padding:0.9rem 1.1rem;border-left:3px solid var(--sage);font-size:0.875rem;line-height:1.6;"><strong>📁 Supporting evidence</strong><br>All documents, photos and files your client has uploaded and chosen to share</div>
         <div style="background:var(--sage-pale);border-radius:10px;padding:0.9rem 1.1rem;border-left:3px solid var(--sage);font-size:0.875rem;line-height:1.6;"><strong>🗓 Case timeline</strong><br>Key dates, court appearances, filing deadlines and hearing tracker</div>
         <div style="background:var(--sage-pale);border-radius:10px;padding:0.9rem 1.1rem;border-left:3px solid var(--sage);font-size:0.875rem;line-height:1.6;"><strong>📝 Case notes</strong><br>Client-authored notes on each incident, communication or development</div>
         <div style="background:var(--sage-pale);border-radius:10px;padding:0.9rem 1.1rem;border-left:3px solid var(--sage);font-size:0.875rem;line-height:1.6;"><strong>📬 Secure messages</strong><br>Direct in-platform messaging — no personal email addresses shared</div>
@@ -14840,11 +14861,11 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
       <h2 style="margin:0;font-family:'Lora',serif;font-size:1.2rem;">Invite your lawyer</h2>
       <button onclick="closeConnectLawyer()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--mid);">✕</button>
     </div>
-    <p style="font-size:0.82rem;color:var(--mid);margin:0 0 1.25rem;line-height:1.6;">Enter the email address your lawyer uses for their CasePath Lawyer Portal account. They will receive an access invitation and can review your case vault once they accept.</p>
+    <p style="font-size:0.82rem;color:var(--mid);margin:0 0 1.25rem;line-height:1.6;">Enter the email address your lawyer uses for their CasePath Lawyer Portal account. They will receive an access invitation and can review your case workspace once they accept.</p>
     <div class="ob-field"><label>Lawyer's name</label><input type="text" id="cl-name" placeholder="e.g. Jane Smith"></div>
     <div class="ob-field"><label>Lawyer's CasePath email</label><input type="email" id="cl-email" placeholder="lawyer@example.com.au"></div>
     <div style="background:#fffdf4;border:1px solid rgba(200,169,110,0.3);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1.25rem;">
-      <p style="font-size:0.78rem;color:var(--mid);margin:0;line-height:1.6;">🔒 <strong>Your lawyer will only see:</strong> your case timeline, evidence vault contents, and case details you have entered. They cannot edit or delete your data. You can revoke access at any time.</p>
+      <p style="font-size:0.78rem;color:var(--mid);margin:0;line-height:1.6;">🔒 <strong>Your lawyer will only see:</strong> your chronology timeline, supporting evidence, and case details you have entered. They cannot edit or delete your data. You can revoke access at any time.</p>
     </div>
     <div id="cl-error" style="display:none;color:#b91c1c;font-size:0.82rem;margin-bottom:0.75rem;padding:0.6rem 0.9rem;background:#fce7e7;border-radius:8px;"></div>
     <div class="ob-btns">
@@ -14858,9 +14879,251 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
 <div class="page" id="page-vault">
   <div class="page-hero">
     <div class="page-hero-inner">
-      <div class="page-eyebrow" id="cd-eyebrow">Your Case</div>
-      <h1>Your <em>Case</em></h1>
-      <p id="cd-hero-sub">Everything you've built. Everything you need to do next.</p>
+      <div class="page-eyebrow" id="cd-eyebrow">Case Workspace</div>
+      <h1>Case <em>Workspace</em></h1>
+      <p id="cd-hero-sub">A private case control centre for evidence, chronology, and calm next steps.</p>
+    </div>
+  </div>
+
+  <div class="section-wrap" id="case-workspace-root" style="max-width:1200px;margin:0 auto 0.8rem;">
+    <div class="cw-shell">
+      <aside class="cw-panel cw-left">
+        <h3 class="cw-title">Case Workspace</h3>
+        <p class="cw-muted">Organise sensitive records without losing emotional clarity.</p>
+        <input id="cw-search" class="cw-search" placeholder="Search notes, tags, incidents..." />
+        <div class="cw-nav" style="margin-top:0.75rem;">
+          <button class="cw-nav-btn active" data-cw-category="chronology">Chronology</button>
+          <button class="cw-nav-btn" data-cw-category="evidence">Evidence</button>
+          <button class="cw-nav-btn" data-cw-category="documents">Documents</button>
+          <button class="cw-nav-btn" data-cw-category="communications">Communications</button>
+          <button class="cw-nav-btn" data-cw-category="parenting">Parenting</button>
+          <button class="cw-nav-btn" data-cw-category="financial">Financial</button>
+          <button class="cw-nav-btn" data-cw-category="medical">Medical</button>
+          <button class="cw-nav-btn" data-cw-category="school">School</button>
+          <button class="cw-nav-btn" data-cw-category="tasks">Tasks</button>
+          <button class="cw-nav-btn" data-cw-category="affidavit-builder">Affidavit Builder</button>
+        </div>
+        <div class="cw-chip-row">
+          <span class="cw-chip">parenting</span>
+          <span class="cw-chip">breach</span>
+          <span class="cw-chip">communication</span>
+          <span class="cw-chip">urgent</span>
+        </div>
+      </aside>
+
+      <section class="cw-panel cw-center">
+        <div class="cw-toolbar">
+          <select id="cw-category-filter" class="cw-select">
+            <option value="">All categories</option>
+            <option value="evidence">Evidence</option>
+            <option value="documents">Documents</option>
+            <option value="communications">Communications</option>
+            <option value="parenting">Parenting</option>
+            <option value="financial">Financial</option>
+            <option value="medical">Medical</option>
+            <option value="school">School</option>
+            <option value="tasks">Tasks</option>
+            <option value="affidavit-builder">Affidavit Builder</option>
+          </select>
+          <button id="cw-upload-btn" class="cw-btn primary">Record Incident</button>
+          <button id="cw-export-btn" class="cw-btn">Export bundle</button>
+        </div>
+        <div class="cw-toolbar" style="grid-template-columns:1fr 1fr 1fr;">
+          <select id="cw-status-filter" class="cw-select">
+            <option value="">All statuses</option>
+            <option value="draft">Draft</option>
+            <option value="active">Active</option>
+            <option value="archived">Archived</option>
+            <option value="affidavit-linked">Affidavit-linked</option>
+            <option value="disputed">Disputed</option>
+            <option value="exported">Exported</option>
+          </select>
+          <input id="cw-thread-title" class="cw-input" placeholder="Incident thread title (e.g. School Issues)">
+          <select id="cw-thread-select" class="cw-select">
+            <option value="">Incident thread (optional)</option>
+          </select>
+        </div>
+        <div class="cw-chip-row" id="cw-thread-chips"></div>
+        <div class="cw-chip-row" id="cw-affidavit-chips">
+          <span class="cw-chip" data-cw-aff-filter="">all affidavit states</span>
+          <span class="cw-chip" data-cw-aff-filter="true">affidavit relevant</span>
+          <span class="cw-chip" data-cw-aff-filter="false">not affidavit relevant</span>
+        </div>
+        <div class="cw-toolbar" style="grid-template-columns:1fr 1fr;">
+          <select id="cw-thread-filter" class="cw-select">
+            <option value="">Filter by incident thread</option>
+          </select>
+          <select id="cw-group-by" class="cw-select">
+            <option value="month">Group by month</option>
+            <option value="thread">Group by thread</option>
+            <option value="category">Group by category</option>
+            <option value="status">Group by status</option>
+            <option value="affidavit">Group by affidavit relevance</option>
+          </select>
+        </div>
+        <div class="cw-toolbar" style="grid-template-columns:1fr 1fr;">
+          <select id="cw-export-category-filter" class="cw-select">
+            <option value="">Export category: all</option>
+            <option value="parenting">Parenting</option>
+            <option value="communication">Communication</option>
+            <option value="financial">Financial</option>
+            <option value="school">School</option>
+            <option value="medical">Medical</option>
+            <option value="court">Court</option>
+            <option value="wellbeing">Wellbeing</option>
+            <option value="breach">Breach</option>
+            <option value="avo">AVO</option>
+            <option value="agreement">Agreement</option>
+            <option value="incident">Incident</option>
+            <option value="task">Task</option>
+          </select>
+          <select id="cw-export-visibility-filter" class="cw-select">
+            <option value="">Export visibility: all</option>
+            <option value="private">private</option>
+            <option value="shared">shared</option>
+          </select>
+        </div>
+        <div class="cw-toolbar" style="grid-template-columns:1fr 1fr;">
+          <select id="cw-export-affidavit-filter" class="cw-select">
+            <option value="">Export affidavit: all</option>
+            <option value="true">affidavit relevant</option>
+            <option value="false">not affidavit relevant</option>
+          </select>
+          <select id="cw-export-status-filter" class="cw-select">
+            <option value="">Export status: all</option>
+            <option value="draft">Draft</option>
+            <option value="active">Active</option>
+            <option value="archived">Archived</option>
+            <option value="affidavit-linked">Affidavit-linked</option>
+            <option value="disputed">Disputed</option>
+            <option value="exported">Exported</option>
+          </select>
+        </div>
+        <div class="cw-toolbar" style="grid-template-columns:1fr;">
+          <select id="cw-export-thread-filter" class="cw-select">
+            <option value="">Export thread: all</option>
+          </select>
+        </div>
+
+        <div id="cw-dropzone" class="cw-quick-upload">
+          <h4>Quick Incident Entry</h4>
+          <p class="cw-muted" style="margin:0 0 0.55rem;">1) What happened 2) When 3) Category 4) Notes 5) Attach evidence.</p>
+          <p id="cw-scaffold-prompt" class="cw-muted" style="margin:0 0 0.55rem;">Try: incident, communication, or supporting evidence event.</p>
+          <div class="cw-chip-row">
+            <span class="cw-chip">images</span>
+            <span class="cw-chip">PDF</span>
+            <span class="cw-chip">DOCX</span>
+            <span class="cw-chip">ZIP</span>
+            <span class="cw-chip">screenshots</span>
+          </div>
+        </div>
+
+        <div style="margin:0.7rem 0 0.4rem;font-size:0.74rem;color:var(--soft);text-transform:uppercase;letter-spacing:0.06em;">Recent evidence</div>
+        <div id="cw-files-grid" class="cw-file-grid"></div>
+
+        <div style="margin:0.85rem 0 0.4rem;font-size:0.74rem;color:var(--soft);text-transform:uppercase;letter-spacing:0.06em;">Chronology (grouped)</div>
+        <div id="cw-thread-health" class="cw-chip-row" style="margin-bottom:0.5rem;"></div>
+        <div id="cw-timeline-list" class="cw-timeline"></div>
+      </section>
+
+      <aside class="cw-panel cw-right">
+        <h3 class="cw-title" style="margin-bottom:0.15rem;">Add Incident</h3>
+        <p class="cw-muted">Chronology event first, evidence second.</p>
+        <input id="cw-event-title" class="cw-input" placeholder="What happened?" />
+        <input id="cw-event-date" type="date" class="cw-input" />
+        <select id="cw-event-type" class="cw-select">
+          <option value="parenting">Parenting</option>
+          <option value="communication">Communication</option>
+          <option value="financial">Financial</option>
+          <option value="school">School</option>
+          <option value="medical">Medical</option>
+          <option value="court">Court</option>
+          <option value="wellbeing">Wellbeing</option>
+          <option value="breach">Breach</option>
+          <option value="avo">AVO</option>
+          <option value="agreement">Agreement</option>
+          <option value="incident">Incident</option>
+          <option value="task">Task</option>
+        </select>
+        <input id="cw-event-subcategory" class="cw-input" placeholder="Subcategory (optional)">
+        <select id="cw-event-importance" class="cw-select">
+          <option value="normal">Importance: Normal</option>
+          <option value="low">Importance: Low</option>
+          <option value="high">Importance: High</option>
+          <option value="critical">Importance: Critical</option>
+        </select>
+        <select id="cw-event-status" class="cw-select">
+          <option value="active">Status: Active</option>
+          <option value="draft">Status: Draft</option>
+          <option value="archived">Status: Archived</option>
+          <option value="affidavit-linked">Status: Affidavit-linked</option>
+          <option value="disputed">Status: Disputed</option>
+          <option value="exported">Status: Exported</option>
+        </select>
+        <textarea id="cw-event-desc" class="cw-textarea" rows="3" placeholder="Optional notes"></textarea>
+        <label class="cw-meta" style="display:block;margin-top:0.3rem;"><input id="cw-event-visible" type="checkbox" checked> Chronology visible</label>
+        <label class="cw-meta" style="display:block;margin-top:0.15rem;"><input id="cw-event-affidavit" type="checkbox"> Affidavit relevant</label>
+        <button id="cw-add-event-btn" class="cw-btn primary" style="margin-top:0.55rem;">Add Incident</button>
+
+        <hr style="border:none;border-top:1px solid var(--border);margin:0.95rem 0;">
+        <h4 class="cw-title" style="font-size:0.92rem;">Notes, tags, links</h4>
+        <textarea id="cw-note" class="cw-textarea" rows="3" placeholder="Notes preview for this item..."></textarea>
+        <input id="cw-tags" class="cw-input" placeholder="tags (comma separated)" />
+        <button id="cw-save-note-btn" class="cw-btn" style="margin-top:0.55rem;">Save note</button>
+
+        <div style="margin-top:0.85rem;">
+          <div class="cw-meta">State indicators</div>
+          <div class="cw-state">
+            <span>encrypted locally</span>
+            <span>uploaded</span>
+            <span>synced</span>
+            <span>linked to affidavit</span>
+            <span>recently added</span>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:0.95rem 0;">
+        <h4 class="cw-title" style="font-size:0.92rem;">Linked events in thread</h4>
+        <div id="cw-linked-events" class="cw-timeline" style="margin-top:0.45rem;"></div>
+      </aside>
+    </div>
+
+    <div class="cw-mobile-nav">
+      <button class="cw-mobile-btn">Chronology</button>
+      <button id="cw-mobile-upload" class="cw-mobile-btn primary">Record Incident</button>
+      <button class="cw-mobile-btn">Evidence</button>
+      <button class="cw-mobile-btn">Tasks</button>
+      <button class="cw-mobile-btn">Me</button>
+    </div>
+    <button id="cw-fab-add" class="cw-btn primary" style="position:fixed;right:16px;bottom:92px;z-index:75;border-radius:999px;padding:0.65rem 0.95rem;">+ Add Incident</button>
+  </div>
+
+  <input type="file" id="cw-upload-input" accept=".pdf,.docx,.txt,.jpg,.jpeg,.png,.zip" style="display:none;">
+  <input type="hidden" id="cw-last-event-id" value="">
+  <div id="cw-upload-modal" class="cw-upload-modal">
+    <div class="cw-upload-sheet">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;">
+        <strong style="font-size:0.9rem;color:var(--charcoal);">Attach supporting evidence</strong>
+        <button id="cw-upload-close" class="cw-btn" style="padding:0.28rem 0.52rem;">Close</button>
+      </div>
+      <div class="cw-meta" style="margin-bottom:0.55rem;">Private storage, signed upload URL, owner-only access.</div>
+      <select id="cw-upload-category" class="cw-select">
+        <option value="evidence">Evidence</option>
+        <option value="documents">Documents</option>
+        <option value="communications">Communications</option>
+        <option value="parenting">Parenting</option>
+        <option value="financial">Financial</option>
+        <option value="medical">Medical</option>
+        <option value="school">School</option>
+      </select>
+      <textarea id="cw-upload-notes" class="cw-textarea" rows="3" placeholder="Optional notes"></textarea>
+      <select id="cw-upload-link-event" class="cw-select">
+        <option value="">Attach to incident (optional)</option>
+      </select>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.45rem;margin-top:0.55rem;">
+        <button id="cw-upload-pick" class="cw-btn primary">Pick file</button>
+        <button id="cw-upload-camera" class="cw-btn">Camera</button>
+      </div>
+      <div id="cw-upload-status" class="cw-meta" style="margin-top:0.55rem;"></div>
     </div>
   </div>
 
@@ -15047,9 +15310,11 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
     <div style="background:var(--sage-pale);border-radius:16px;padding:1.5rem;margin-bottom:2rem;">
       <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--sage);margin-bottom:1rem;">Quick Access</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.75rem;">
-        <button onclick="showPage('doc-helper')" style="background:white;border:1.5px solid var(--border);border-radius:12px;padding:0.9rem 1rem;font-family:inherit;font-size:0.82rem;font-weight:600;color:var(--charcoal);cursor:pointer;text-align:left;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--sage)'" onmouseout="this.style.borderColor='var(--border)'">📝 Document Helper</button>
+        <button onclick="showPage('doc-helper')" style="background:white;border:1.5px solid var(--border);border-radius:12px;padding:0.9rem 1rem;font-family:inherit;font-size:0.82rem;font-weight:600;color:var(--charcoal);cursor:pointer;text-align:left;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--sage)'" onmouseout="this.style.borderColor='var(--border)'">📝 Output Workflows</button>
         <button onclick="showPage('parenting-orders')" style="background:white;border:1.5px solid var(--border);border-radius:12px;padding:0.9rem 1rem;font-family:inherit;font-size:0.82rem;font-weight:600;color:var(--charcoal);cursor:pointer;text-align:left;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--sage)'" onmouseout="this.style.borderColor='var(--border)'">⚖️ Parenting Orders</button>
+        <button onclick="showPage('qa')" style="background:white;border:1.5px solid var(--border);border-radius:12px;padding:0.9rem 1rem;font-family:inherit;font-size:0.82rem;font-weight:600;color:var(--charcoal);cursor:pointer;text-align:left;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--sage)'" onmouseout="this.style.borderColor='var(--border)'">💬 Ask a Question</button>
         <button onclick="showPage('glossary')" style="background:white;border:1.5px solid var(--border);border-radius:12px;padding:0.9rem 1rem;font-family:inherit;font-size:0.82rem;font-weight:600;color:var(--charcoal);cursor:pointer;text-align:left;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--sage)'" onmouseout="this.style.borderColor='var(--border)'">📖 Glossary</button>
+        <button onclick="showPage('ai-assistant')" style="background:white;border:1.5px solid var(--border);border-radius:12px;padding:0.9rem 1rem;font-family:inherit;font-size:0.82rem;font-weight:600;color:var(--charcoal);cursor:pointer;text-align:left;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--sage)'" onmouseout="this.style.borderColor='var(--border)'">✨ Case Assistant</button>
         <button onclick="showPage('forms')" style="background:white;border:1.5px solid var(--border);border-radius:12px;padding:0.9rem 1rem;font-family:inherit;font-size:0.82rem;font-weight:600;color:var(--charcoal);cursor:pointer;text-align:left;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--sage)'" onmouseout="this.style.borderColor='var(--border)'">📄 Forms Centre</button>
         <button onclick="showPage('avo')" style="background:white;border:1.5px solid var(--border);border-radius:12px;padding:0.9rem 1rem;font-family:inherit;font-size:0.82rem;font-weight:600;color:var(--charcoal);cursor:pointer;text-align:left;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--sage)'" onmouseout="this.style.borderColor='var(--border)'">🛡️ AVO Centre</button>
         <button onclick="showPage('doc-helper')" style="background:var(--sage);border:1.5px solid var(--sage);border-radius:12px;padding:0.9rem 1rem;font-family:inherit;font-size:0.82rem;font-weight:600;color:white;cursor:pointer;text-align:left;transition:all 0.18s;" onmouseover="this.style.background='#3a5c42'" onmouseout="this.style.background='var(--sage)'">🤝 Let's do this together</button>
@@ -15101,7 +15366,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
     <div class="checkout-success" id="checkout-success-body">
       <div class="success-icon">✓</div>
       <h3>Payment confirmed!</h3>
-      <p>Your CasePath account has been upgraded. The AI Assistant and Document Vault are now unlocked.</p>
+      <p>Your CasePath account has been upgraded. Your Case workspace entitlements are active. Case Assistant (AI) remains scheduled for a future release.</p>
       <button class="btn-primary" style="width:100%;justify-content:center;" onclick="dismissCheckoutSuccess()">
         Go to my account →
       </button>
@@ -15122,7 +15387,7 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
       <div class="field"><label>Password</label><input type="password" id="signin-pass" placeholder="••••••••"></div>
       <div id="signin-error" style="display:none;background:#fef2f2;border:1px solid #fca5a5;color:#b91c1c;font-size:0.8rem;padding:0.6rem 0.9rem;border-radius:8px;margin-bottom:0.75rem;"></div>
       <button type="button" class="btn-full" onclick="doSignIn()">Sign In</button>
-      <p style="text-align:center;margin-top:0.75rem;font-size:0.8rem;color:var(--soft)"><a onclick="doPasswordReset()" style="color:var(--sage);font-weight:500;cursor:pointer;">Forgot password?</a></p>
+      <p style="text-align:center;margin-top:0.75rem;font-size:0.8rem;color:var(--soft)"><a onclick="doPasswordReset()" style="color:var(--sage);font-weight:500;cursor:pointer;">Forgot password?</a> · <a onclick="doResendVerification();return false;" style="color:var(--sage);font-weight:500;cursor:pointer;">Resend confirmation email</a></p>
       <p style="text-align:center;margin-top:1rem;font-size:0.8rem;color:var(--soft)">Don't have an account? <a onclick="switchAuth('signup')" style="color:var(--sage);font-weight:500;cursor:pointer;">Create one free</a></p>
     </div>
 
@@ -15217,8 +15482,8 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/argon2-browser@1.18.0/dist/argon2-bundled.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4/dist/umd/supabase.js" integrity="sha384-7SfFUrg31wOnGWBLLniKFCNmCSguYA5wI1WPDOt7kP/mom4R9/0pwghVEnv0uwYP" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/argon2-browser@1.18.0/dist/argon2-bundled.min.js" integrity="sha384-XOR3aNvHciLPIf6r+2glkrmbBbLmIJ1EChMXjw8eBKBf8gE0rDq1TyUNuRdorOqi" crossorigin="anonymous"></script>
 <script src="/assets/js/supabase.js?v=20260427d"></script>
 <script>
 (function () {
@@ -15226,7 +15491,8 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
    * STRIPE PRICE IDs — required for production.
    *
    * Checkout flow: button → openPricingCheckout(plan) → POST /functions/v1/create-checkout-session
-   * (which injects user_id metadata) → Stripe Checkout → stripe-webhook → members table.
+   * with body { sku, return_path } only; user id comes from the JWT. Checkout uses client_reference_id
+   * for the Supabase user id. Stripe Checkout → stripe-webhook → members (price ids from Edge secrets only).
    *
    * Direct buy.stripe.com Payment Links are NOT used. They bypass create-checkout-session,
    * so the webhook receives no user_id and cannot credit the purchaser. If you re-enable
@@ -15236,11 +15502,15 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
    *   1. Stripe Dashboard (live mode) → Products → create one Price per SKU below.
    *   2. Replace each empty string with the matching price_… id.
    *   3. Mirror the SAME values into Supabase project secrets with the same env names.
-   *      The webhook compares incoming priceId to those env vars; mismatch = "Unknown price" 400.
+   *      The webhook maps each line item price id to entitlements; unknown ids fail closed (500 + audit).
+   *
+   * SKUs: starter_monthly, essential, pro_monthly, credits_1/5/10, parenting_pack, lawyer_portal
+   * (see supabase/functions/_shared/billing.ts).
    */
   var assign = function (k, v) {
     if (typeof window !== "undefined" && (window[k] == null || window[k] === "")) window[k] = v;
   };
+  assign("STRIPE_PRICE_STARTER_MONTHLY", "");
   assign("STRIPE_PRICE_PRO_MONTHLY", "");
   assign("STRIPE_PRICE_ESSENTIAL", "");
   assign("STRIPE_PRICE_CREDITS_1", "");
@@ -15250,8 +15520,14 @@ body:has(#page-mission.active) #lawyer-portal-footer-panel {
   assign("STRIPE_PRICE_LAWYER_PORTAL", "");
 })();
 </script>
-<script src="/assets/js/auth.js?v=20260427d"></script>
-<script src="/assets/js/casepath-nav-access.js?v=20260511f"></script>
+<script src="/auth/redirect.js?v=20260511p3"></script>
+<script src="/auth/rate-limit.js?v=20260511p3"></script>
+<script src="/auth/auth.js?v=20260511p3"></script>
+<script src="/auth/session.js?v=20260511p3"></script>
+<script src="/auth/routeGuard.js?v=20260511p3"></script>
+<script src="/auth/mfa-foundation.js?v=20260511p3"></script>
+<script src="/assets/js/auth.js?v=20260511p3"></script>
+<script src="/assets/js/casepath-nav-access.js?v=20260511p3"></script>
 <script src="/assets/js/vaultCrypto.js?v=20260427d"></script>
 <script>
 // ── Auth state ──
@@ -15265,10 +15541,11 @@ function crMarkHasAccount() {
 function crSetSignedInFlag(isSignedIn) {
   try { localStorage.setItem('cr_signed_in', isSignedIn ? '1' : '0'); } catch (e) {}
 }
-/** When false, page blur overlays and bot login checks behave like production. Set localStorage cr_dev_gate_bypass to "1" to re-enable the old localhost-only bypass while developing. */
+/** Local development only; production never bypasses Supabase session or DB entitlements. */
 var DEV_ACCESS_BYPASS = (function () {
   try {
-    return typeof localStorage !== "undefined" && localStorage.getItem("cr_dev_gate_bypass") === "1";
+    var localDevHost = /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(window.location.hostname || "");
+    return localDevHost && (window.CASEPATH_ENV === "development" || window.CASEPATH_ENABLE_DEV_ENTITLEMENTS === true);
   } catch (e) {
     return false;
   }
@@ -15278,6 +15555,9 @@ var _applyingHeaderDisclaimerText = false;
 
 function crSupabaseAuthed() {
   try {
+    if (window.__crAuthHydrated && window.authState && window.authState.isAuthenticated) {
+      return true;
+    }
     var u = window.currentUser;
     return !!(u && u.id && u.loggedIn === true && u.source === "supabase");
   } catch (e) {
@@ -15296,7 +15576,7 @@ function crPasswordMeetsPolicy(pass) {
   return true;
 }
 
-var CR_PASSWORD_POLICY_HINT =
+var CP_PASSWORD_POLICY_HINT =
   'Must contain a lowercase letter, an uppercase letter, a number, and a symbol, and be at least 8 characters.';
 
 /** Remove accidental duplicate global chrome (e.g. full index inserted into a fragment host or stale cached markup). */
@@ -15341,36 +15621,47 @@ if (typeof document !== 'undefined') {
   disclaimerObserver.observe(document.documentElement, { childList: true, subtree: true });
 }
 
-// ── STRIPE TEST KEY (publishable only — safe for frontend) ──
-const STRIPE_PK = 'pk_test_51OExampleTestKeyReplaceWithYours000000000000000000000000000000000000000000000000000000000000';
+// ── Stripe publishable key (optional): only used by legacy in-page card UI. Live checkout uses openPricingCheckout + Edge. ──
+const STRIPE_PK =
+  typeof window !== "undefined" && window.CASEPATH_STRIPE_PUBLISHABLE_KEY
+    ? String(window.CASEPATH_STRIPE_PUBLISHABLE_KEY).trim()
+    : "";
 let stripe = null;
 let stripeCardElement = null;
 
-// Try init Stripe (will fail gracefully if key invalid in prototype)
-try { stripe = Stripe(STRIPE_PK); } catch(e) {}
+if (STRIPE_PK && /^pk_live_/.test(STRIPE_PK)) {
+  try {
+    stripe = Stripe(STRIPE_PK);
+  } catch (e) {}
+} else if (STRIPE_PK && /^pk_test_/.test(STRIPE_PK)) {
+  console.warn("CASEPATH_STRIPE_PUBLISHABLE_KEY is a test key; Stripe Elements are disabled. Use pk_live_ for production.");
+}
 
 // Pricing config
+// Pricing config (legacy checkout modal / labels — live checkout uses openPricingCheckout + Edge function)
 const PLANS = {
-  starter:       { name: 'Starter',                    price: 0,   label: 'Free' },
-  essential:     { name: 'Essential',                  price: 29,  label: '$29 AUD' },
-  full_access:   { name: 'Full Access',                price: 19,  label: '$19/month AUD' },
-  casepack:      { name: '⭐ Parenting Pack',           price: 149, label: '$149 AUD' },
-  doc_single:    { name: 'Document Helper (One-off)',  price: 29,  label: '$29 AUD' },
-  lawyer_portal: { name: 'Lawyer Portal',              price: 0,   label: 'Contact / Coming Soon' }
+  starter:       { name: 'Starter',                    price: 24,  label: '$24/mo AUD' },
+  essential:     { name: 'Essential',                  price: 79,  label: '$79/mo AUD' },
+  full_access:   { name: 'Full Access',                price: 149, label: '$149/mo AUD' },
+  casepack:      { name: 'Parenting Pack',             price: 549, label: 'From $549 AUD' },
+  doc_single:    { name: 'Document credit',            price: 59,  label: 'From $59 AUD' },
+  lawyer_portal: { name: 'Lawyer Portal',              price: 0,   label: 'Coming soon' }
 };
 let selectedPlan = null;
 let pricingContext = null; // which page triggered pricing
 
-const PAID_FEATURES = ['qa'];
-const GATED = ['legislation', 'forms', 'qa', 'vault'];
+// Ask a Question (page-qa + floating bot) is permanently free — do not add 'qa' to paid gates.
+const PAID_FEATURES = [];
+// Legacy list (unused for runtime); kept for documentation. 'qa' intentionally omitted (free public layer).
+const GATED = ['legislation', 'forms', 'vault'];
 
 /** SPA sections browsable without signing in (aligned with public mission + glossary pages). */
 function crPublicShellPage(pageId) {
-  return ['home', 'mission', 'glossary', 'avo'].indexOf(pageId) !== -1;
+  return ['home', 'mission', 'glossary', 'pricing', 'qa'].indexOf(pageId) !== -1;
 }
 
 function casepathIsComingSoonPage(pageId) {
-  return ['parenting-orders', 'doc-helper', 'ai-assistant', 'pricing', 'referrals', 'lawyer-portal'].indexOf(pageId) !== -1;
+  return ['parenting-orders', 'ai-assistant', 'referrals', 'lawyer-portal'].indexOf(pageId) !== -1;
 }
 
 function crFlushPendingPageAfterAuth() {
@@ -15391,16 +15682,31 @@ function crConsumePostAuthRedirect() {
     var next = sessionStorage.getItem('cr_after_auth_url');
     if (!next) return false;
     sessionStorage.removeItem('cr_after_auth_url');
-    window.location.href = next;
-    return true;
+    if (window.CasePathAuth && window.CasePathAuth.redirect && typeof window.CasePathAuth.redirect.safeAssignHref === 'function') {
+      if (window.CasePathAuth.redirect.safeAssignHref(next)) return true;
+    }
+    if (next.charAt(0) === '/') {
+      window.location.replace(next);
+      return true;
+    }
+    return false;
   } catch (e) {
     return false;
   }
 }
 window.crConsumePostAuthRedirect = crConsumePostAuthRedirect;
 
+function crCurrentEntitlements() {
+  try {
+    if (typeof window.getCasePathEntitlements === "function") return window.getCasePathEntitlements();
+    if (window.CasePathEntitlements) return window.CasePathEntitlements;
+  } catch (e) {}
+  return { plan: null, docCredits: 0 };
+}
+
 function hasPaidAccess() {
-  return currentUser && currentUser.plan;
+  var entitlements = crCurrentEntitlements();
+  return !!(entitlements.plan || Number(entitlements.docCredits) > 0);
 }
 
 function updatePagePaymentGates() {
@@ -15493,9 +15799,10 @@ function updatePlanBadge() {
     }
   }
   if (badge) {
-    if (currentUser && currentUser.plan) {
-      const planNames = { starter:'Starter', essential:'Essential', full_access:'Full Access', casepack:'Parenting Pack', doc_single:'Document Helper', lawyer_portal:'Lawyer Portal' };
-      badge.textContent = '⭐ ' + (planNames[currentUser.plan] || currentUser.plan);
+    const entitlements = crCurrentEntitlements();
+    if (entitlements.plan) {
+      const planNames = { starter:'Starter', essential:'Essential', pro:'Full Access', full_access:'Full Access', casepack:'Parenting Pack', doc_single:'Output Workflow Credit', lawyer_portal:'Lawyer Portal', lawyer_portal_access:'Lawyer Portal' };
+      badge.textContent = '⭐ ' + (planNames[entitlements.plan] || entitlements.plan);
       badge.style.display = '';
     } else {
       badge.style.display = 'none';
@@ -15535,34 +15842,42 @@ function toggleBilling() {
   var annualLabel = document.getElementById('billing-annual-label');
   var fullNote = document.getElementById('plan-full-annual-note');
   var essentialNote = document.getElementById('plan-essential-annual-note');
+  var starterPrice = document.getElementById('plan-starter-price');
+  var priceEss = document.getElementById('plan-essential-price');
+  var priceFull = document.getElementById('plan-full-price');
+  if (!knob || !toggle || !monthLabel || !annualLabel) return;
   if (billingAnnual) {
     knob.style.transform = 'translateX(24px)';
     toggle.style.background = 'var(--gold)';
     monthLabel.style.color = 'var(--soft)'; monthLabel.style.fontWeight = '400';
     annualLabel.style.color = 'var(--charcoal)'; annualLabel.style.fontWeight = '600';
-    // Essential: $14.99 × 0.8 = $11.99/mo, × 12 = $143.88/yr
-    document.getElementById('plan-essential-price').textContent = '$11.99';
-    document.getElementById('plan-essential-period').textContent = '/ month';
-    document.getElementById('plan-essential-annual-total').textContent = '$143.90';
-    essentialNote.style.display = '';
-    // Full Access: $29.99 × 0.8 = $23.99/mo, × 12 = $287.88
-    document.getElementById('plan-full-price').textContent = '$23.99';
-    document.getElementById('plan-full-period').textContent = '/ month';
-    document.getElementById('plan-full-annual-total').textContent = '$287.88';
-    fullNote.style.display = '';
+    if (starterPrice) starterPrice.textContent = '$19';
+    if (priceEss) {
+      priceEss.textContent = '$63';
+      var essTot = document.getElementById('plan-essential-annual-total');
+      if (essTot) essTot.textContent = '$756';
+      if (essentialNote) essentialNote.style.display = '';
+    }
+    if (priceFull) {
+      priceFull.textContent = '$119';
+      var fullTot = document.getElementById('plan-full-annual-total');
+      if (fullTot) fullTot.textContent = '$1,428';
+      if (fullNote) fullNote.style.display = '';
+    }
   } else {
     knob.style.transform = 'translateX(0)';
     toggle.style.background = 'var(--sage)';
     monthLabel.style.color = 'var(--charcoal)'; monthLabel.style.fontWeight = '600';
     annualLabel.style.color = 'var(--soft)'; annualLabel.style.fontWeight = '400';
-    // Essential monthly
-    document.getElementById('plan-essential-price').textContent = '$14.99';
-    document.getElementById('plan-essential-period').textContent = '/ month';
-    essentialNote.style.display = 'none';
-    // Full Access monthly
-    document.getElementById('plan-full-price').textContent = '$29.99';
-    document.getElementById('plan-full-period').textContent = '/ month';
-    fullNote.style.display = 'none';
+    if (starterPrice) starterPrice.textContent = '$24';
+    if (priceEss) {
+      priceEss.textContent = '$79';
+      if (essentialNote) essentialNote.style.display = 'none';
+    }
+    if (priceFull) {
+      priceFull.textContent = '$149';
+      if (fullNote) fullNote.style.display = 'none';
+    }
   }
 }
 
@@ -15674,12 +15989,7 @@ async function submitPayment() {
 }
 
 function onPaymentSuccess() {
-  // Upgrade in-memory user view; authoritative entitlements come from Supabase.
-  if (currentUser) {
-    currentUser.plan = selectedPlan;
-    currentUser.planLabel = PLANS[selectedPlan]?.name;
-    currentUser.planDate = new Date().toISOString();
-  }
+  if (typeof window.syncUser === 'function') void window.syncUser();
   // Show success screen
   document.getElementById('checkout-form-body').style.display = 'none';
   document.getElementById('checkout-success-body').style.display = 'block';
@@ -15702,6 +16012,9 @@ document.addEventListener('DOMContentLoaded', () => {});
 async function loadAuth() {
   try {
     if (typeof initSupabaseClient === 'function') initSupabaseClient();
+    if (window.CasePathAuth && typeof window.CasePathAuth.session.hydrateFromGetSession === 'function') {
+      await window.CasePathAuth.session.hydrateFromGetSession();
+    }
     if (typeof syncUser === 'function') {
       await syncUser();
     } else {
@@ -15713,7 +16026,10 @@ async function loadAuth() {
           id: session.user.id,
           email: session.user.email || '',
           name: (session.user.user_metadata && (session.user.user_metadata.full_name || session.user.user_metadata.name)) || '',
-          postcode: (session.user.user_metadata && session.user.user_metadata.postcode) || ''
+          postcode: (session.user.user_metadata && session.user.user_metadata.postcode) || '',
+          loggedIn: true,
+          source: 'supabase',
+          emailVerified: !!(session.user.email_confirmed_at || session.user.new_email_confirmed_at)
         };
       } else {
         crSetSignedInFlag(false);
@@ -15765,7 +16081,7 @@ function updateNav() {
   updatePlanBadge();
 }
 
-var ACCOUNT_PAGES = ['doc-helper', 'your-team', 'vault', 'qa'];
+var ACCOUNT_PAGES = ['doc-helper', 'your-team', 'vault'];
 
 function getRouteBasePath() {
   if (typeof window === 'undefined' || !window.location) return '';
@@ -15872,9 +16188,8 @@ function showPage(id, shouldSyncUrl) {
   window.scrollTo(0, 0);
   updateGates();
   applyPageTopLayout(id);
-  if (id === 'vault') { checkCaseOnboarding(); cdBuildDashboard(); }
+  if (id === 'vault') { void resolveCaseWorkspaceEntry(); cdBuildDashboard(); }
   if (id === 'home')  { cdUpdateHeroBtn(); }
-  if (id === 'ai-assistant') renderAICaseSummary();
   if (id === 'glossary') {
     applyGlossaryGate();
     syncGlossaryCategoryCounts();
@@ -15975,6 +16290,15 @@ async function doSignIn() {
   const email = document.getElementById('signin-email').value.trim();
   const pass  = document.getElementById('signin-pass').value;
   const err   = document.getElementById('signin-error');
+  if (window.CasePathAuth && window.CasePathAuth.rateLimit && typeof window.CasePathAuth.rateLimit.allow === 'function') {
+    var rlSignin = window.CasePathAuth.rateLimit.allow('login');
+    if (!rlSignin.ok) {
+      var waitS = rlSignin.retryAfterMs ? Math.ceil(rlSignin.retryAfterMs / 1000) : 60;
+      err.textContent = 'Too many sign-in attempts. Please wait ' + waitS + ' seconds and try again.';
+      err.style.display = '';
+      return;
+    }
+  }
   if (!email || !pass) { err.textContent = 'Please enter your email and password.'; err.style.display = ''; return; }
   err.style.display = 'none';
   const result = await login(email, pass);
@@ -16010,6 +16334,17 @@ async function doPasswordReset() {
     }
     return;
   }
+  if (window.CasePathAuth && window.CasePathAuth.rateLimit && typeof window.CasePathAuth.rateLimit.allow === 'function') {
+    var rlPw = window.CasePathAuth.rateLimit.allow('password_reset');
+    if (!rlPw.ok) {
+      var waitP = rlPw.retryAfterMs ? Math.ceil(rlPw.retryAfterMs / 1000) : 300;
+      if (err) {
+        err.textContent = 'Too many reset requests. Please wait ' + waitP + ' seconds before trying again.';
+        err.style.display = '';
+      }
+      return;
+    }
+  }
   try {
     await requestPasswordReset(email);
     alert('Password reset email sent. Check your inbox and spam folder.');
@@ -16017,6 +16352,39 @@ async function doPasswordReset() {
   } catch (e) {
     if (err) {
       err.textContent = (e && e.message) ? e.message : 'Unable to send password reset right now.';
+      err.style.display = '';
+    }
+  }
+}
+
+async function doResendVerification() {
+  var emailEl = document.getElementById('signin-email');
+  var email = emailEl ? emailEl.value.trim() : '';
+  var err = document.getElementById('signin-error');
+  if (!email) {
+    if (err) {
+      err.textContent = 'Enter the email you used to sign up, then tap Resend confirmation email.';
+      err.style.display = '';
+    }
+    return;
+  }
+  if (typeof resendSignupVerification !== 'function') {
+    if (err) {
+      err.textContent = 'Resend is not available. Please refresh the page and try again.';
+      err.style.display = '';
+    }
+    return;
+  }
+  try {
+    await resendSignupVerification(email);
+    if (err) {
+      err.textContent =
+        'If that address is registered, we sent another confirmation. Please check your inbox and spam folder.';
+      err.style.display = '';
+    }
+  } catch (e2) {
+    if (err) {
+      err.textContent = (e2 && e2.message) ? e2.message : 'Could not resend right now. Try again shortly.';
       err.style.display = '';
     }
   }
@@ -16133,7 +16501,7 @@ async function doSignUp() {
   if (!name)  { err.textContent = 'Please enter your name.'; err.style.display = ''; return; }
   if (!email || !email.includes('@')) { err.textContent = 'Please enter a valid email address.'; err.style.display = ''; return; }
   if (!crPasswordMeetsPolicy(pass)) {
-    err.textContent = CR_PASSWORD_POLICY_HINT;
+    err.textContent = CP_PASSWORD_POLICY_HINT;
     err.style.display = '';
     return;
   }
@@ -16169,7 +16537,7 @@ async function doSignUp() {
     if (error) {
       var rawMsg = String((error && error.message) || '').trim();
       if (rawMsg.toLowerCase().indexOf('password') !== -1) {
-        err.textContent = CR_PASSWORD_POLICY_HINT;
+        err.textContent = CP_PASSWORD_POLICY_HINT;
       } else {
         err.textContent = (rawMsg || 'Could not create account. Please try again.') + ' ' + diag;
       }
@@ -16216,8 +16584,8 @@ async function doSignUp() {
     if (typeof botUnlockAfterLogin === 'function') botUnlockAfterLogin();
     if (typeof crConsumePostAuthRedirect === 'function' && crConsumePostAuthRedirect()) return;
     try { sessionStorage.removeItem('cr_pending_page'); } catch (e) {}
-    showPage('start-case');
-    setTimeout(startOnboarding, 350);
+    showPage('vault');
+    setTimeout(function(){ void resolveCaseWorkspaceEntry(); }, 220);
   } catch (e) {
     console.error('doSignUp', e);
     err.textContent = ((e && e.message) ? e.message : 'Signup failed. Please try again.') + ' ' + diag;
@@ -16293,7 +16661,7 @@ function selectCase(type) {
     (obCaseTypes.indexOf('parenting') !== -1 || obCaseTypes.length === 0) ? '' : 'none';
 }
 
-function obNext() {
+async function obNext() {
   if (obCurrentStep === 1) {
     if (!obCaseTypes.length) { document.getElementById('case-error').style.display = ''; return; }
     obCurrentStep = 2;
@@ -16303,9 +16671,9 @@ function obNext() {
     obCurrentStep = 3;
     renderObStep(3);
   } else if (obCurrentStep === 3) {
-    saveProfile();
+    await saveProfile();
     closeOnboarding();
-    showPage('home');
+    showPage('vault');
   }
   document.querySelector('.ob-shell').scrollTop = 0;
 }
@@ -16437,7 +16805,7 @@ function buildReview() {
   document.getElementById('review-content').innerHTML = html;
 }
 
-function saveProfile() {
+async function saveProfile() {
   if (!currentUser) return;
   const profile = {
     caseTypes: obCaseTypes.slice(),
@@ -16460,6 +16828,13 @@ function saveProfile() {
     completedAt: new Date().toISOString()
   };
   currentUser.profile = profile;
+  try { localStorage.setItem('cr_case', JSON.stringify(profile)); } catch (e) {}
+  await initializeWorkspaceScaffold(obCaseTypes[0] || null);
+  await persistWorkspaceMemberState({
+    onboarding_completed: true,
+    workspace_initialized: true,
+    primary_case_type: obCaseTypes[0] || null
+  });
 }
 
 function skipOnboarding() { closeOnboarding(); showPage('home'); }
@@ -16531,9 +16906,9 @@ async function requireSensitiveActionMfa(actionFn) {
 }
 
 async function setupVaultSecurity() {
-  if (!window.vaultCrypto) { alert('Vault crypto module not loaded.'); return; }
+  if (!window.vaultCrypto) { alert('Workspace encryption module not loaded.'); return; }
   if (!currentUser || !currentUser.id) { openAuth('signin'); return; }
-  var passphrase = prompt('Create a vault passphrase (minimum 12 characters):');
+  var passphrase = prompt('Create a case workspace passphrase (minimum 12 characters):');
   if (!passphrase || passphrase.length < 12) { alert('Use at least 12 characters.'); return; }
   try {
     var bundle = await window.vaultCrypto.createVaultBootstrap(passphrase);
@@ -16546,16 +16921,16 @@ async function setupVaultSecurity() {
     };
     var saved = await window.supabaseClient.from('vault_keys').upsert(upsertPayload, { onConflict: 'user_id' });
     if (saved.error) throw saved.error;
-    alert('Vault security initialized.\n\nSave this recovery key now (shown once):\n' + bundle.recoveryKey);
+    alert('Case workspace security initialized.\n\nSave this recovery key now (shown once):\n' + bundle.recoveryKey);
     await refreshVaultFiles();
   } catch (e) {
-    alert((e && e.message) ? e.message : 'Failed to initialize vault security.');
+    alert((e && e.message) ? e.message : 'Failed to initialize case workspace security.');
   }
 }
 
 async function recoverVaultWithRecoveryKey() {
   if (!currentUser || !currentUser.id) { openAuth('signin'); return; }
-  var recoveryKey = prompt('Enter your saved vault recovery key:');
+  var recoveryKey = prompt('Enter your saved workspace recovery key:');
   if (!recoveryKey) return;
   try {
     var keyRes = await window.supabaseClient
@@ -16564,11 +16939,11 @@ async function recoverVaultWithRecoveryKey() {
       .eq('user_id', currentUser.id)
       .maybeSingle();
     if (keyRes.error) throw keyRes.error;
-    if (!keyRes.data) throw new Error('Vault key setup not found. Set vault passphrase first.');
+    if (!keyRes.data) throw new Error('Workspace key setup not found. Set workspace passphrase first.');
     var metadata = keyRes.data.metadata || {};
     var keyMaterial = keyRes.data.wrapped_keys || {};
     await window.vaultCrypto.unwrapDekWithRecoveryKey(recoveryKey.trim(), keyMaterial, metadata);
-    alert('Recovery key verified. You can now set a new vault passphrase.');
+    alert('Recovery key verified. You can now set a new workspace passphrase.');
   } catch (e) {
     alert('Recovery failed. If recovery key is lost, old encrypted files cannot be recovered.');
   }
@@ -16599,8 +16974,8 @@ async function getVaultKeyRecord() {
 async function getVaultDekWithPassphrase() {
   if (vaultSessionDek && Date.now() < vaultSessionDekExpiry) return vaultSessionDek;
   var rec = await getVaultKeyRecord();
-  if (!rec) throw new Error('Vault passphrase is not set yet.');
-  var passphrase = prompt('Enter your vault passphrase:');
+  if (!rec) throw new Error('Workspace passphrase is not set yet.');
+  var passphrase = prompt('Enter your workspace passphrase:');
   if (!passphrase) throw new Error('Passphrase required.');
   var dek = await window.vaultCrypto.unwrapDekWithPassphrase(passphrase, rec.wrapped_keys, rec.metadata);
   vaultSessionDek = dek;
@@ -16739,10 +17114,10 @@ async function exportVaultManifest() {
 async function rotateVaultPassphraseFlow() {
   if (!currentUser || !currentUser.id) { openAuth('signin'); return; }
   var keyRec = await getVaultKeyRecord();
-  if (!keyRec) { alert('Set vault passphrase first.'); return; }
-  var currentPassphrase = prompt('Enter current vault passphrase:');
+  if (!keyRec) { alert('Set workspace passphrase first.'); return; }
+  var currentPassphrase = prompt('Enter current workspace passphrase:');
   if (!currentPassphrase) return;
-  var nextPassphrase = prompt('Enter new vault passphrase (minimum 12 characters):');
+  var nextPassphrase = prompt('Enter new workspace passphrase (minimum 12 characters):');
   if (!nextPassphrase || nextPassphrase.length < 12) { alert('Use at least 12 characters.'); return; }
   var currentDek = await window.vaultCrypto.unwrapDekWithPassphrase(
     currentPassphrase,
@@ -17199,28 +17574,184 @@ function toggleGlossaryDetail(id, btn) {
   btn.textContent = expanded ? '📖 Tell me more about this' : '📖 Show less';
 }
 
-function renderAICaseSummary() {
-  const el = document.getElementById('ai-case-summary');
-  if (!el) return;
-  if (!currentUser || !currentUser.caseData) {
-    el.innerHTML = '<p style="color:var(--mid);font-size:0.875rem;">No case details yet. <button onclick="openOnboarding()" style="background:none;border:none;color:var(--sage);cursor:pointer;font-weight:600;padding:0;font-size:0.875rem;">Set up your case →</button></p>';
+function caseWorkspaceHasLocalSeed() {
+  try {
+    var d = JSON.parse(localStorage.getItem('cr_case') || '{}');
+    return !!(d && (d.caseType || (Array.isArray(d.caseTypes) && d.caseTypes.length)));
+  } catch (_e) {
+    return false;
+  }
+}
+
+async function getWorkspaceState() {
+  var fallback = {
+    shouldOnboard: !caseWorkspaceHasLocalSeed(),
+    hasWorkspace: caseWorkspaceHasLocalSeed(),
+    member: null
+  };
+  if (!window.supabaseClient || !currentUser || !currentUser.id) return fallback;
+  try {
+    var memberRes = await window.supabaseClient
+      .from("members")
+      .select("onboarding_completed,workspace_initialized,primary_case_type,first_incident_created_at,workspace_last_opened_at")
+      .eq("id", currentUser.id)
+      .maybeSingle();
+    var member = memberRes && memberRes.data ? memberRes.data : null;
+
+    var counts = await Promise.all([
+      window.supabaseClient.from("case_chronology_events").select("id", { count: "exact", head: true }).eq("user_id", currentUser.id).is("deleted_at", null),
+      window.supabaseClient.from("vault_items").select("id", { count: "exact", head: true }).eq("user_id", currentUser.id).is("deleted_at", null),
+      window.supabaseClient.from("case_incident_threads").select("id", { count: "exact", head: true }).eq("user_id", currentUser.id).is("deleted_at", null)
+    ]);
+    var hasData = counts.some(function (r) { return !r.error && Number(r.count || 0) > 0; });
+    var hasWorkspace = !!(hasData || (member && (member.onboarding_completed || member.workspace_initialized || member.primary_case_type)) || caseWorkspaceHasLocalSeed());
+    return {
+      shouldOnboard: !hasWorkspace,
+      hasWorkspace: hasWorkspace,
+      member: member
+    };
+  } catch (_e) {
+    return fallback;
+  }
+}
+
+async function persistWorkspaceMemberState(patch) {
+  if (!window.supabaseClient || !currentUser || !currentUser.id || !patch) return;
+  var payload = { id: currentUser.id };
+  Object.keys(patch).forEach(function (k) {
+    if (typeof patch[k] !== "undefined") payload[k] = patch[k];
+  });
+  if (!Object.keys(payload).length) return;
+  await window.supabaseClient.from("members").upsert(payload, { onConflict: "id" });
+  if (currentUser && patch) {
+    if (typeof patch.onboarding_completed !== "undefined") currentUser.onboardingCompleted = !!patch.onboarding_completed;
+    if (typeof patch.workspace_initialized !== "undefined") currentUser.workspaceInitialized = !!patch.workspace_initialized;
+    if (typeof patch.primary_case_type !== "undefined") currentUser.primaryCaseType = patch.primary_case_type || null;
+    if (typeof patch.first_incident_created_at !== "undefined") currentUser.firstIncidentCreatedAt = patch.first_incident_created_at || null;
+    if (typeof patch.workspace_last_opened_at !== "undefined") currentUser.workspaceLastOpenedAt = patch.workspace_last_opened_at || null;
+  }
+}
+
+async function initializeWorkspaceScaffold(primaryCaseType) {
+  if (!window.supabaseClient || !currentUser || !currentUser.id) return;
+  function scaffoldForCaseType(rawType) {
+    var t = String(rawType || "").toLowerCase();
+    if (t === "parenting") {
+      return {
+        starterThreads: ["Parenting Arrangements", "School Communication", "Handover Issues", "Child Wellbeing", "Co-Parent Communication"],
+        guidance: "Record parenting events, handovers, school issues and important communications as they occur.",
+        quickAddLabel: "Record Handover Issue",
+        categoryPriority: ["parenting", "school", "communications", "medical", "incident", "financial"]
+      };
+    }
+    if (t === "property") {
+      return {
+        starterThreads: ["Assets", "Liabilities", "Financial Disclosure", "Property Discussions", "Bank Records"],
+        guidance: "Track financial discussions, disclosures, assets and important records chronologically.",
+        quickAddLabel: "Add Financial Event",
+        categoryPriority: ["financial", "documents", "communications", "incident", "tasks", "medical"]
+      };
+    }
+    if (t === "protection" || t === "avo" || t === "urgent" || t === "breach" || t === "respond") {
+      return {
+        starterThreads: ["Incident Reports", "Communications", "Safety Concerns", "Police Interaction", "Court Events"],
+        guidance: "Record incidents, communications and supporting evidence as close to the event as possible.",
+        quickAddLabel: "Record Incident",
+        categoryPriority: ["incident", "communications", "documents", "medical", "parenting", "financial"]
+      };
+    }
+    if (t === "divorce") {
+      return {
+        starterThreads: ["Separation Timeline", "Legal Documents", "Important Dates", "Court Process", "Communication Records"],
+        guidance: "Build a clear chronology of separation events, documents and important milestones.",
+        quickAddLabel: "Record Milestone",
+        categoryPriority: ["documents", "incident", "communications", "tasks", "financial", "parenting"]
+      };
+    }
+    return {
+      starterThreads: ["Parenting Issues", "Communication Issues", "Financial Issues", "School Issues", "Medical Issues"],
+      guidance: "Your chronology is ready. Start by recording your first incident, note or event.",
+      quickAddLabel: "Record Incident",
+      categoryPriority: ["incident", "parenting", "communications", "financial", "medical", "school"]
+    };
+  }
+  var scaffold = scaffoldForCaseType(primaryCaseType);
+  try {
+    var existing = await window.supabaseClient
+      .from("case_incident_threads")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", currentUser.id)
+      .is("deleted_at", null);
+    if (!existing.error && Number(existing.count || 0) > 0) return;
+    var now = new Date().toISOString();
+    var rows = scaffold.starterThreads.map(function (title) {
+      return {
+        user_id: currentUser.id,
+        title: title,
+        category: (title || "incident").toLowerCase().split(" ")[0],
+        status: "active",
+        chronology_visible: true,
+        affidavit_relevant: false,
+        tags: [],
+        created_from_device: "desktop",
+        created_from_platform: "web"
+      };
+    });
+    if (primaryCaseType) rows.unshift({
+      user_id: currentUser.id,
+      title: "Primary Case Focus",
+      category: String(primaryCaseType).toLowerCase(),
+      status: "active",
+      chronology_visible: true,
+      affidavit_relevant: false,
+      tags: [String(primaryCaseType).toLowerCase()],
+      created_from_device: "desktop",
+      created_from_platform: "web"
+    });
+    await window.supabaseClient.from("case_incident_threads").insert(rows);
+    await persistWorkspaceMemberState({
+      workspace_initialized: true,
+      primary_case_type: primaryCaseType || null
+    });
+    try {
+      localStorage.setItem("cw_guidance", scaffold.guidance);
+      localStorage.setItem("cw_quick_add_label", scaffold.quickAddLabel);
+      localStorage.setItem("cw_category_priority", JSON.stringify(scaffold.categoryPriority || []));
+    } catch (_e0) {}
+    if (typeof window.caseWorkspaceRefresh === "function") void window.caseWorkspaceRefresh();
+    if (typeof window.logVaultEvent === "function") {
+      await window.logVaultEvent("workspace_initialize", "default_scaffold", "ok", { thread_count: rows.length });
+    }
+    if (typeof cdBuildDashboard === "function") cdBuildDashboard();
+    var timelineEl = document.getElementById("cw-timeline-list");
+    if (timelineEl && !timelineEl.children.length) {
+      timelineEl.innerHTML = '<div class="cw-timeline-item"><div class="cw-date">Your chronology is ready</div><div class="cw-item-sub">' + scaffold.guidance + '</div><div style="margin-top:0.6rem;display:flex;gap:0.5rem;"><button class="cw-btn primary" onclick="var b=document.getElementById(\'cw-add-event-btn\');if(b)b.click();">' + scaffold.quickAddLabel + '</button><button class="cw-btn" onclick="var b=document.getElementById(\'cw-upload-btn\');if(b)b.click();">Add Evidence</button></div></div>';
+    }
+  } catch (_e) {
+    /* best-effort scaffold only */
+  }
+}
+
+async function checkCaseOnboarding() {
+  var state = await getWorkspaceState();
+  if (state.shouldOnboard) {
+    setTimeout(openOnboarding, 220);
     return;
   }
-  let dateLine = '';
-  if (d.date) {
-    const today = new Date(); today.setHours(0,0,0,0);
-    const court = new Date(d.date);
-    const diff = Math.round((court-today)/(1000*60*60*24));
-    const fmt = court.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
-    const badge = diff<=7&&diff>=0?`<span class="ob-days-badge urgent">${diff===0?'TODAY':diff+' days'}</span>`:diff>0?`<span class="ob-days-badge">${diff} days away</span>`:`<span class="ob-days-badge urgent">Past</span>`;
-    dateLine = `<p><strong>Next Date:</strong> ${fmt} ${badge}</p>`;
+  await persistWorkspaceMemberState({ workspace_last_opened_at: new Date().toISOString() });
+}
+
+async function resolveCaseWorkspaceEntry() {
+  if (!currentUser) return;
+  if (window.__cwEntryResolveInFlight) return;
+  window.__cwEntryResolveInFlight = true;
+  try {
+    await checkCaseOnboarding();
+  } finally {
+    window.__cwEntryResolveInFlight = false;
   }
-  el.innerHTML = `${d.name?`<p><strong>Name:</strong> ${d.name}</p>`:''}<p><strong>Case Type:</strong> ${d.caseType}</p>${d.court?`<p><strong>Court:</strong> ${d.court}</p>`:''}${dateLine}`;
 }
-function checkCaseOnboarding() {
-  const d = JSON.parse(localStorage.getItem('cr_case') || '{}');
-  if (!d.caseType) setTimeout(openOnboarding, 400);
-}
+window.resolveCaseWorkspaceEntry = resolveCaseWorkspaceEntry;
 // ── AVO role toggle ───────────────────────────────────────────────────────
 function setAvoRole(role) {
   document.getElementById('avo-view-applicant').style.display = role==='applicant'?'':'none';
@@ -17402,7 +17933,7 @@ async function sendLawyerInvite() {
   });
 }
 async function disconnectLawyer() {
-  if (!confirm('Disconnect your lawyer? They will lose access to your case vault.')) return;
+  if (!confirm('Disconnect your lawyer? They will lose access to your case workspace.')) return;
   await requireSensitiveActionMfa(async function () {
     localStorage.removeItem('cr_connected_lawyer');
     renderLawyerConnection();
@@ -17416,7 +17947,7 @@ function renderLawyerConnection() {
   if (data) {
     const c = JSON.parse(data);
     document.getElementById('lawyer-connected-name').textContent = c.name;
-    document.getElementById('lawyer-connected-email').textContent = c.email + ' · Connected · Can view your case vault';
+    document.getElementById('lawyer-connected-email').textContent = c.email + ' · Connected · Can view your case workspace';
     notConnected.style.display = 'none';
     connected.style.display = '';
   } else {
@@ -17428,6 +17959,9 @@ renderLawyerConnection();
 
 
 var LANGUAGE_SWITCH_ENABLED = true;
+/** Default off for production; set window.CASEPATH_ENABLE_AI_ASSISTANT = true to exercise Case Assistant backends in a controlled environment. */
+var CASEPATH_AI_ASSISTANT_UI_ENABLED =
+  typeof window !== "undefined" && window.CASEPATH_ENABLE_AI_ASSISTANT === true;
 var _translationCache={}, _originalTexts={}, _currentLang='en';
 function toggleLangDropdown(e) { if (!LANGUAGE_SWITCH_ENABLED) return; e.stopPropagation(); document.getElementById('lang-dropdown').classList.toggle('open'); }
 document.addEventListener('click', function() { var dd=document.getElementById('lang-dropdown'); if(dd) dd.classList.remove('open'); });
@@ -17438,7 +17972,7 @@ function setLang(langCode,flag,label) {
   document.getElementById('lang-current-flag').textContent=flag;
   document.getElementById('lang-current-label').textContent=label;
   _currentLang=langCode;
-  try { localStorage.setItem('siteLanguage', langCode); } catch (e) {}
+  try { if (window.casepathSiteLanguageSet) window.casepathSiteLanguageSet(langCode); else localStorage.setItem('siteLanguage', langCode); } catch (e) {}
   var langSelect = document.getElementById('languageSwitcher');
   if (langSelect) {
     langSelect.value = langCode;
@@ -17543,7 +18077,7 @@ async function translatePage(langCode,langLabel) {
   });
   hideLangLoading();
 }
-// ── AI Assistant page functions ─────────────────────────────────────────
+// ── Case Assistant page (workspace preparation) ─────────────────────────
 function renderAICaseSummary() {
   const d = JSON.parse(localStorage.getItem('cr_case') || '{}');
   const el = document.getElementById('ai-case-body');
@@ -17560,11 +18094,17 @@ function renderAICaseSummary() {
     const fmt = court.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
     html += `<p><strong>Next date:</strong> ${fmt}${diff >= 0 ? ` (${diff}d)` : ' <span style="color:#b91c1c">(past)</span>'}</p>`;
   }
+  html += '<p style="font-size:0.72rem;color:var(--soft);margin:0.6rem 0 0;line-height:1.45;">Workspace: keep chronology, evidence uploads, and hearing dates in <a onclick="showPage(\'vault\')" style="color:var(--sage);font-weight:600;cursor:pointer;">Your Case</a> while you prepare — Case Assistant is designed to sit alongside that workflow.</p>';
   el.innerHTML = html;
 }
 
 function sendAIMessage() {
+  if (!CASEPATH_AI_ASSISTANT_UI_ENABLED) {
+    if (typeof casepathShowComingSoonModal === 'function') casepathShowComingSoonModal();
+    return;
+  }
   const input = document.getElementById('ai-chat-input');
+  if (!input) return;
   const text = input.value.trim();
   if (!text) return;
   if (text.length > 4000) { addAIChatMsg('Please keep messages under 4,000 characters.', 'ai'); return; }
@@ -17574,7 +18114,13 @@ function sendAIMessage() {
 }
 
 function askAI(question) {
-  document.getElementById('ai-chat-input').value = question;
+  if (!CASEPATH_AI_ASSISTANT_UI_ENABLED) {
+    if (typeof casepathShowComingSoonModal === 'function') casepathShowComingSoonModal();
+    return;
+  }
+  var inp = document.getElementById('ai-chat-input');
+  if (!inp) return;
+  inp.value = question;
   sendAIMessage();
 }
 
@@ -17655,7 +18201,7 @@ function addAIChatMsg(text, role) {
   div.className = role === 'user' ? 'qmsg qmsg-user' : 'qmsg';
   const avatar = document.createElement('div');
   avatar.className = 'qmsg-avatar';
-  avatar.textContent = role === 'user' ? 'You' : 'CR';
+  avatar.textContent = role === 'user' ? 'You' : 'CP';
   const outer = document.createElement('div');
   const bubble = document.createElement('div');
   bubble.className = 'qmsg-bubble';
@@ -17670,11 +18216,15 @@ function addAIChatMsg(text, role) {
 }
 
 async function runAIAssistant(question) {
+  if (!CASEPATH_AI_ASSISTANT_UI_ENABLED) {
+    if (typeof casepathShowComingSoonModal === 'function') casepathShowComingSoonModal();
+    return;
+  }
   const cw = document.getElementById('ai-chat-window');
   if (!cw) return;
   const typing = document.createElement('div');
   typing.className = 'qmsg'; typing.id = 'ai-typing-indicator';
-  typing.innerHTML = `<div class="qmsg-avatar">CR</div><div><div class="qmsg-bubble typing"><span></span><span></span><span></span></div></div>`;
+  typing.innerHTML = `<div class="qmsg-avatar">CP</div><div><div class="qmsg-bubble typing"><span></span><span></span><span></span></div></div>`;
   cw.appendChild(typing); cw.scrollTop = cw.scrollHeight;
   
   const caseData = JSON.parse(localStorage.getItem('cr_case') || '{}');
@@ -17689,7 +18239,8 @@ async function runAIAssistant(question) {
   if (poCompareCtx) {
     caseCtx += ` Parenting orders comparison summary: ${poCompareCtx}`;
   }
-  const systemPrompt = `You are a specialist AI legal assistant for Australian family law. ${caseCtx} You provide detailed, accurate legal INFORMATION (not advice). Always cite specific Acts and section numbers (e.g. Family Law Act 1975 (Cth) s 60CC). Structure your answers clearly. End every response with: "ℹ️ This is legal information only, not legal advice about your specific situation."`;
+  // TODO(production-gating): require paid/starter (or equivalent) entitlement before invoking Case Assistant backends.
+  const systemPrompt = `You are CasePath's Case Assistant — a preparation-focused workflow helper for Australian family law (not a generic chatbot). ${caseCtx} Help the user organise thinking around chronology, evidence, affidavits, parenting orders, and court preparation. Provide detailed, accurate legal INFORMATION (not personal legal advice). Always cite specific Acts and section numbers where relevant (e.g. Family Law Act 1975 (Cth) s 60CC). Structure answers clearly. End every response with: "ℹ️ This is legal information only, not legal advice about your specific situation."`;
   
   try {
     var reply = '';
@@ -17708,9 +18259,13 @@ async function runAIAssistant(question) {
 }
 
 function clearAIChat() {
+  if (!CASEPATH_AI_ASSISTANT_UI_ENABLED) {
+    if (typeof casepathShowComingSoonModal === 'function') casepathShowComingSoonModal();
+    return;
+  }
   const cw = document.getElementById('ai-chat-window');
   if (!cw) return;
-  cw.innerHTML = `<div class="qmsg"><div class="qmsg-avatar">CR</div><div><div class="qmsg-bubble">Conversation cleared. Ask me anything about your family law matter.<div class="msg-disclaimer">ℹ️ Legal information only — not advice about your specific situation.</div></div></div></div>`;
+  cw.innerHTML = `<div class="qmsg"><div class="qmsg-avatar">CP</div><div><div class="qmsg-bubble">Conversation cleared. Ask about preparation for your matter — chronology, evidence, drafting steps, or what to gather next.<div class="msg-disclaimer">ℹ️ Legal information only — not advice about your specific situation.</div></div></div></div>`;
 }
 
 // Initial URL routing runs after syncUser (billing bootstrap) so session state is correct before showPage gates.
@@ -17747,10 +18302,10 @@ renderTeamTracker();
 <div id="vault-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;overflow-y:auto;">
   <div style="max-width:960px;margin:80px auto 2rem;background:var(--cream);border-radius:20px;padding:2rem;position:relative;">
     <button onclick="document.getElementById('vault-modal').style.display='none'" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--mid);">✕</button>
-    <h2 style="font-family:'Lora',serif;margin:0 0 1.5rem;">My Document Vault</h2>
+    <h2 style="font-family:'Lora',serif;margin:0 0 1.5rem;">Case Workspace</h2>
     <div class="vault-wrap">
     <div class="vault-top-row">
-      <div><div class="vault-user-title" id="vault-user-title">Your Vault</div><div class="vault-user-sub" id="vault-user-sub">No files yet</div></div>
+      <div><div class="vault-user-title" id="vault-user-title">Your Case Workspace</div><div class="vault-user-sub" id="vault-user-sub">No evidence yet</div></div>
       <div class="enc-badge">🔒 End-to-end encrypted · Private to you only</div>
     </div>
     <div class="folder-grid">
@@ -17762,30 +18317,30 @@ renderTeamTracker();
     </div>
     <div class="files-card">
       <div class="files-toolbar">
-        <div class="files-path">All Files <span>›</span> Court Documents</div>
-        <button class="upload-btn" id="vault-upload-btn">↑ Upload File</button>
-        <input type="file" id="vault-file-input" accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png" style="display:none;">
+        <div class="files-path">All Evidence <span>›</span> Court Documents</div>
+        <button class="upload-btn" id="vault-upload-btn">↑ Add Evidence</button>
+        <input type="file" id="vault-file-input" accept=".pdf,.docx,.txt,.jpg,.jpeg,.png,.zip" style="display:none;">
       </div>
       <div id="vault-files-list">
-        <div class="file-row"><div class="file-icon-col">🔒</div><div class="file-name">No encrypted files yet</div><div class="file-size">0 KB</div><div class="file-date">—</div><div class="file-btns"></div></div>
+        <div class="file-row"><div class="file-icon-col">🔒</div><div class="file-name">No evidence items yet</div><div class="file-size">0 KB</div><div class="file-date">—</div><div class="file-btns"></div></div>
       </div>
     </div>
     <div class="vault-sec-info">
       <div class="vsi-icon">🛡️</div>
-      <div><h4>Your documents are completely private</h4><p>All files are encrypted before upload. We cannot read your vault files. If you lose both your password and recovery key, encrypted vault files cannot be recovered.</p></div>
+      <div><h4>Your case records are completely private</h4><p>All files are encrypted before upload. We cannot read your case evidence. If you lose both your password and recovery key, encrypted evidence files cannot be recovered.</p></div>
     </div>
     <div style="margin-top:1rem;background:#f8fbf8;border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;">
       <div style="display:flex;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;align-items:center;margin-bottom:0.6rem;">
         <strong style="font-size:0.86rem;color:var(--charcoal);">Account Security</strong>
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-          <button class="icon-btn" style="padding:0.45rem 0.7rem;" onclick="setupVaultSecurity()">Set Vault Passphrase</button>
+          <button class="icon-btn" style="padding:0.45rem 0.7rem;" onclick="setupVaultSecurity()">Set Workspace Passphrase</button>
           <button class="icon-btn" style="padding:0.45rem 0.7rem;" onclick="recoverVaultWithRecoveryKey()">Use Recovery Key</button>
           <button class="icon-btn" style="padding:0.45rem 0.7rem;" onclick="enrollTotpMfa()">Enable MFA (TOTP)</button>
-          <button class="icon-btn" style="padding:0.45rem 0.7rem;" onclick="requireSensitiveActionMfa(exportVaultManifest)">Export Vault</button>
-          <button class="icon-btn" style="padding:0.45rem 0.7rem;" onclick="requireSensitiveActionMfa(rotateVaultPassphraseFlow)">Rotate Vault Key</button>
+          <button class="icon-btn" style="padding:0.45rem 0.7rem;" onclick="requireSensitiveActionMfa(exportVaultManifest)">Export Case Workspace</button>
+          <button class="icon-btn" style="padding:0.45rem 0.7rem;" onclick="requireSensitiveActionMfa(rotateVaultPassphraseFlow)">Rotate Workspace Key</button>
         </div>
       </div>
-      <p style="margin:0;font-size:0.78rem;color:var(--mid);line-height:1.65;">For sensitive actions (vault export, key rotation, share/invite), require MFA challenge before continuing.</p>
+      <p style="margin:0;font-size:0.78rem;color:var(--mid);line-height:1.65;">For sensitive actions (workspace export, key rotation, share/invite), require MFA challenge before continuing.</p>
     </div>
   </div>
   </div>
@@ -17925,7 +18480,7 @@ renderTeamTracker();
       <p>Here's what we've recorded. Confirm and we'll set up your CasePath account with this information ready to go.</p>
       <div id="review-content"></div>
       <div class="ob-complete-note">
-        <strong>What happens next:</strong> Your case profile will be saved to your account. The AI assistant will use these details to give you more specific answers, and relevant forms will be highlighted in the Forms Centre.
+        <strong>What happens next:</strong> Your case profile will be saved to your account. Case Assistant (when you use it) can use these details alongside <strong>Your Case</strong> for preparation workflows, and relevant forms will be highlighted in the Forms Centre. For general questions anytime, use <strong>Ask a Question</strong> (⚖️).
       </div>
     </div>
 
@@ -19086,7 +19641,7 @@ function printAffidavit() {
 </style>
 
 <!-- Trigger button -->
-<button id="cr-bot-trigger" onclick="toggleBot()" aria-label="Open legal assistant">
+<button id="cr-bot-trigger" onclick="toggleBot()" aria-label="Open Ask a Question — general family law guidance">
   <span class="bot-label-wrap" style="display:flex;align-items:center;gap:0.5rem;">
     <span class="bot-icon">⚖️</span>
     <span class="bot-label">Ask a Question</span>
@@ -19095,12 +19650,12 @@ function printAffidavit() {
 </button>
 
 <!-- Bot panel -->
-<div id="cr-bot-panel" role="dialog" aria-label="Ask a Question">
+<div id="cr-bot-panel" role="dialog" aria-label="Ask a Question — general guidance">
   <div id="cr-bot-header">
     <div class="cr-bot-avatar">⚖️</div>
     <div>
       <div class="cr-bot-title">Ask a Question</div>
-      <div class="cr-bot-sub">Australian family law · Free · No account needed</div>
+      <div class="cr-bot-sub">General guidance · Glossary-connected · Not case-specific</div>
     </div>
     <div class="cr-bot-header-actions">
       <button class="cr-bot-hbtn" onclick="clearBotChat()">🗑 Clear</button>
@@ -19119,9 +19674,9 @@ function printAffidavit() {
   <div class="cr-tab-panel active" id="cr-panel-chat" style="flex-direction:column;">
     <div id="cr-bot-messages">
       <div class="bot-msg">
-        <div class="bot-msg-avatar">CR</div>
+        <div class="bot-msg-avatar">CP</div>
         <div class="bot-msg-bubble">
-          Hi! I can help you understand Australian family law — parenting orders, property, AVOs, court process, and more. Answers are drawn from our <strong><a onclick="showPage('glossary');toggleBot();" style="color:var(--sage);cursor:pointer;text-decoration:underline;text-decoration-style:dotted;">525-term Glossary</a></strong> and Australian legislation. Ask anything below, or browse the <strong>Suggested</strong> and <strong>Topics</strong> tabs.
+          Hi! I am here for <strong>general Australian family law guidance</strong> — processes, terminology, parenting arrangements, and court procedures. Answers draw from our <strong><a onclick="showPage('glossary');toggleBot();" style="color:var(--sage);cursor:pointer;text-decoration:underline;text-decoration-style:dotted;">525-term Glossary</a></strong> and legislation. This is <strong>not</strong> for drafting your affidavits or managing your private workspace — use <strong>Case Assistant</strong> from the menu (when available) together with <strong>Your Case</strong> for that preparation layer.<br><br>Ask below, or browse <strong>Suggested</strong> and <strong>Topics</strong>.
           <div class="bot-disclaimer">ℹ️ Legal information only — not advice about your specific situation.</div>
         </div>
       </div>
@@ -19129,7 +19684,7 @@ function printAffidavit() {
     <div id="cr-bot-input-row">
       <div id="cr-bot-counter" style="display:none;font-size:0.7rem;padding:0.3rem 0.85rem 0;color:var(--soft);"></div>
       <div style="display:flex;gap:0.5rem;align-items:center;padding:0.7rem 0.85rem 0.7rem;">
-        <input type="text" id="cr-bot-input" placeholder="Ask a family law question…" onkeydown="if(event.key==='Enter') botSend()">
+        <input type="text" id="cr-bot-input" placeholder="e.g. What is an interim order? What happens at a first return date?" onkeydown="if(event.key==='Enter') botSend()">
         <button id="cr-bot-send" onclick="botSend()" aria-label="Send">↑</button>
       </div>
     </div>
@@ -19277,15 +19832,21 @@ function toggleBot() {
 
 function switchBotTab(tab, btn) {
   activeBotTab = tab;
-  document.querySelectorAll('.cr-tab').forEach(function(b) { b.classList.remove('active'); });
-  document.querySelectorAll('.cr-tab-panel').forEach(function(p) { p.classList.remove('active'); });
-  btn.classList.add('active');
-  document.getElementById('cr-panel-' + tab).classList.add('active');
+  document.querySelectorAll('#cr-bot-tabs .cr-tab').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('#cr-bot-panel .cr-tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  var panel = document.getElementById('cr-panel-' + tab);
+  if (btn && btn.classList) btn.classList.add('active');
+  else {
+    var fallback = document.querySelector('#cr-bot-tabs .cr-tab');
+    if (fallback && fallback.classList) fallback.classList.add('active');
+  }
+  if (panel && panel.classList) panel.classList.add('active');
 }
 
 function botTabAsk(btn) {
   var q = btn.textContent.trim();
-  switchBotTab('chat', document.querySelector('.cr-tab'));
+  var chatTabBtn = document.querySelector('#cr-bot-tabs .cr-tab');
+  switchBotTab('chat', chatTabBtn);
   setTimeout(function() {
     document.getElementById('cr-bot-input').value = q;
     botSend();
@@ -19293,7 +19854,8 @@ function botTabAsk(btn) {
 }
 
 function botTabAsk2(q) {
-  switchBotTab('chat', document.querySelector('.cr-tab'));
+  var chatTabBtn = document.querySelector('#cr-bot-tabs .cr-tab');
+  switchBotTab('chat', chatTabBtn);
   setTimeout(function() {
     document.getElementById('cr-bot-input').value = q;
     botSend();
@@ -19321,11 +19883,7 @@ function botSend() {
     return;
   }
 
-  if (!DEV_ACCESS_BYPASS && typeof crSupabaseAuthed === 'function' && !crSupabaseAuthed()) {
-    try { sessionStorage.setItem('cr_pending_page', 'ai-assistant'); } catch (e) {}
-    if (typeof openAuth === 'function') openAuth('signin');
-    return;
-  }
+  // Anonymous users get BOT_FREE_LIMIT questions; signed-in users unlimited (see below).
 
   // Check login wall — allow if logged in OR under free limit
   if (!currentUser && botQuestionCount >= BOT_FREE_LIMIT) {
@@ -19412,7 +19970,7 @@ function botAddMsg(text, role) {
   div.className = 'bot-msg' + (role === 'user' ? ' user' : '');
   var avatar = document.createElement('div');
   avatar.className = 'bot-msg-avatar';
-  avatar.textContent = role === 'user' ? 'You' : 'CR';
+  avatar.textContent = role === 'user' ? 'You' : 'CP';
   var bubble = document.createElement('div');
   bubble.className = 'bot-msg-bubble';
   if (role === 'ai') bubble.innerHTML = renderSafeRichText(text);
@@ -19474,7 +20032,7 @@ function botGlossaryScoreToken(nameLc, hay, token) {
 function botBuildLocalFallbackReply(question) {
   var q = String(question || '').toLowerCase().trim();
   if (!q) {
-    return 'I could not reach the live assistant right now, but you can open the Glossary for definitions and court-process guidance. ℹ️ This is legal information only — not advice about your specific situation.';
+    return 'I could not reach Ask a Question right now, but you can open the Glossary for definitions and court-process guidance. ℹ️ This is legal information only — not advice about your specific situation.';
   }
 
   var aliases = {
@@ -19517,10 +20075,10 @@ function botBuildLocalFallbackReply(question) {
   }
 
   if (!matches.length) {
-    return 'I could not reach the live assistant right now. I could not find a close Glossary match for that wording. Try the **Glossary** tab, the **AVO Centre** for protection orders, or shorter phrases (for example: **contravention**, **interim orders**, **affidavit**, **ADVO**, **parenting order**). ℹ️ This is legal information only — not advice about your specific situation.';
+    return 'I could not reach Ask a Question right now. I could not find a close Glossary match for that wording. Try the **Glossary** tab, the **AVO Centre** for protection orders, or shorter phrases (for example: **contravention**, **interim orders**, **affidavit**, **ADVO**, **parenting order**). ℹ️ This is legal information only — not advice about your specific situation.';
   }
 
-  var lead = 'I could not reach the live assistant, but here is local Glossary guidance for "' + q + '":';
+  var lead = 'Ask a Question is offline, but here is local Glossary guidance for "' + q + '":';
   var lines = matches.map(function(m) {
     return '• ' + m.name + ': ' + m.def;
   });
@@ -19532,12 +20090,13 @@ async function botRunAI() {
   var msgs = document.getElementById('cr-bot-messages');
   var typingDiv = document.createElement('div');
   typingDiv.className = 'bot-msg'; typingDiv.id = 'bot-typing';
-  typingDiv.innerHTML = '<div class="bot-msg-avatar">CR</div><div class="bot-msg-bubble"><div class="bot-typing"><span></span><span></span><span></span></div></div>';
+  typingDiv.innerHTML = '<div class="bot-msg-avatar">CP</div><div class="bot-msg-bubble"><div class="bot-typing"><span></span><span></span><span></span></div></div>';
   msgs.appendChild(typingDiv); msgs.scrollTop = msgs.scrollHeight;
   var caseData = {};
   try { caseData = JSON.parse(localStorage.getItem('cr_case') || '{}'); } catch(e) {}
   var caseCtx = caseData.caseType ? 'The user\'s case type is: ' + caseData.caseType + '.' : '';
-  var systemPrompt = 'You are CasePath, a legal information assistant specialising in Australian family law (Federal Circuit and Family Court of Australia). ' + caseCtx + ' Provide clear, accurate legal INFORMATION (not personal legal advice). Cite specific Acts and sections where relevant (e.g. Family Law Act 1975 s 60CC). Keep responses concise — 3-6 sentences unless complexity requires more. Use plain English. Always end with: "ℹ️ This is legal information only — not advice about your specific situation."';
+  // TODO(production-gating): align Ask a Question rate limits / optional auth with billing when live.
+  var systemPrompt = 'You are CasePath "Ask a Question" — the free, educational, glossary-connected guidance layer for Australian family law (FCFCOA). Stay general: processes, terminology, parenting arrangements, court procedure, and navigation help. Do not position yourself as a private workspace or affidavit-drafting tool; if the user needs structured preparation tied to their matter, briefly point them to Case Assistant + Your Case when appropriate. ' + caseCtx + ' Provide clear, accurate legal INFORMATION (not personal legal advice). Cite specific Acts and sections where relevant (e.g. Family Law Act 1975 s 60CC). Keep responses concise — 3-6 sentences unless complexity requires more. Use plain English. Always end with: "ℹ️ This is legal information only — not advice about your specific situation."';
   try {
     var messages = botConversationHistory.slice(-10);
     var prompt = '';
@@ -20194,7 +20753,7 @@ function poCopyOrders() {
 function clearBotChat() {
   botConversationHistory = [];
   var msgs = document.getElementById('cr-bot-messages');
-  msgs.innerHTML = '<div class="bot-msg"><div class="bot-msg-avatar">CR</div><div class="bot-msg-bubble">Hi! I can help you understand Australian family law — parenting orders, property, AVOs, court process, and more. Answers are drawn from our <strong><a onclick="showPage(\'glossary\');toggleBot();" style="color:var(--sage);cursor:pointer;text-decoration:underline;text-decoration-style:dotted;">525-term Glossary</a></strong> and Australian legislation. Ask anything below, or browse the <strong>Suggested</strong> and <strong>Topics</strong> tabs.<div class="bot-disclaimer">ℹ️ Legal information only — not advice about your specific situation.</div></div></div>';
+  msgs.innerHTML = '<div class="bot-msg"><div class="bot-msg-avatar">CP</div><div class="bot-msg-bubble">Hi! I am here for <strong>general Australian family law guidance</strong> — processes, terminology, parenting arrangements, and court procedures. Answers draw from our <strong><a onclick="showPage(\'glossary\');toggleBot();" style="color:var(--sage);cursor:pointer;text-decoration:underline;text-decoration-style:dotted;">525-term Glossary</a></strong> and legislation. This is <strong>not</strong> for drafting your affidavits or managing your private workspace — use <strong>Case Assistant</strong> from the menu (when available) together with <strong>Your Case</strong> for that preparation layer.<br><br>Ask below, or browse <strong>Suggested</strong> and <strong>Topics</strong>.<div class="bot-disclaimer">ℹ️ Legal information only — not advice about your specific situation.</div></div></div>';
   // Re-enable input if it was locked (user might have logged in)
   if (currentUser) botUnlockAfterLogin();
 }
@@ -20239,7 +20798,7 @@ function scSelectOpt(q, val, btn) {
   }
 }
 
-function scComplete() {
+async function scComplete() {
   if (!scAnswers.q1 || !scAnswers.q2 || !scAnswers.q3) return;
   var caseData = {
     caseType: scCaseTypeLabels[scAnswers.q1] || scAnswers.q1,
@@ -20249,6 +20808,12 @@ function scComplete() {
     createdAt: new Date().toISOString()
   };
   try { localStorage.setItem('cr_case', JSON.stringify(caseData)); } catch(e) {}
+  await initializeWorkspaceScaffold(scAnswers.q1 || null);
+  await persistWorkspaceMemberState({
+    onboarding_completed: true,
+    workspace_initialized: true,
+    primary_case_type: scAnswers.q1 || null
+  });
   scAnswers = { q1:null, q2:null, q3:null };
   ['sc-q2-block','sc-q3-block'].forEach(function(id){ document.getElementById(id).classList.add('sc-hidden'); });
   document.querySelectorAll('.sc-opt-btn').forEach(function(b){ b.classList.remove('sc-selected'); });
@@ -21066,7 +21631,7 @@ function cdPrePopulateChron() {
         <div style="position:absolute;bottom:-60px;left:30%;width:300px;height:300px;border-radius:50%;background:rgba(200,169,110,0.05);pointer-events:none;"></div>
         <div class="lawyer-portal-footer-desktop-eyebrow" style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(200,169,110,0.8);margin-bottom:0.5rem;">For Family Lawyers</div>
         <h2 style="font-family:'Lora',serif;font-size:1.6rem;color:white;margin:0 0 0.5rem;line-height:1.3;">CasePath Lawyer Portal <span style="color:#c8a96e;">$699.99 / year</span></h2>
-        <p style="color:rgba(255,255,255,0.65);font-size:0.875rem;line-height:1.7;max-width:620px;margin:0 0 1.75rem;">Your clients are already using CasePath to understand their case. Now you can join their team — seeing exactly what they see, reviewing their timeline and evidence vault, and communicating through the platform. One subscription. Unlimited client connections.</p>
+        <p style="color:rgba(255,255,255,0.65);font-size:0.875rem;line-height:1.7;max-width:620px;margin:0 0 1.75rem;">Your clients are already using CasePath to understand their case. Now you can join their team — seeing exactly what they see, reviewing chronology and supporting evidence, and communicating through the platform. One subscription. Unlimited client connections.</p>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.75rem;margin-bottom:1.75rem;">
           <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:1rem 1.1rem;">
             <div style="font-size:1.4rem;margin-bottom:0.4rem;">📂</div>
@@ -21116,9 +21681,9 @@ function cdPrePopulateChron() {
           <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.45rem;">
             <li><a onclick="showPage('legislation')" style="font-size:0.98rem;color:rgba(255,255,255,0.6);cursor:pointer;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">Legislation Library</a></li>
             <li><a onclick="showPage('forms')" style="font-size:0.98rem;color:rgba(255,255,255,0.6);cursor:pointer;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">Forms Centre</a></li>
-            <li><a onclick="showPage('doc-helper')" style="font-size:0.98rem;color:rgba(255,255,255,0.6);cursor:pointer;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">Document Helper</a></li>
+            <li><a onclick="showPage('doc-helper')" style="font-size:0.98rem;color:rgba(255,255,255,0.6);cursor:pointer;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">Output Workflows</a></li>
             <li><a onclick="showPage('glossary')" style="font-size:0.98rem;color:rgba(255,255,255,0.6);cursor:pointer;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">Glossary</a></li>
-            <li><a href="/index.html" onclick="if(typeof showPage==='function'){showPage('glossary');return false;}" style="font-size:0.98rem;color:rgba(255,255,255,0.6);cursor:pointer;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">Ask a Question</a></li>
+            <li><a href="/index.html" onclick="if(typeof showPage==='function'){showPage('qa');return false;}" style="font-size:0.98rem;color:rgba(255,255,255,0.6);cursor:pointer;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">Ask a Question</a></li>
           </ul>
         </div>
         <div>
@@ -21827,6 +22392,9 @@ function sectionHead(title) {
 }
 
 function runDocHelper() {
+  if (window.CasePathAuth && typeof window.CasePathAuth.guardDocumentGeneration === 'function') {
+    if (!window.CasePathAuth.guardDocumentGeneration()) return;
+  }
   // All output must be written in clear, formal Australian English suitable for court use.
   // Do not translate into other languages under any circumstance.
   var raw = document.getElementById('dh-input').value.trim();
@@ -22663,8 +23231,9 @@ if (navGrid && links.length) {
 </div>
 
 <script src="/assets/js/translations.js"></script>
-<script src="/assets/js/nav-link-fallback.js"></script>
-<script src="/assets/js/app.js?v=20260511f"></script>
+<script src="/assets/js/nav-link-fallback.js?v=20260511p3"></script>
+<script src="/assets/js/app.js?v=20260511p3"></script>
+<script src="/assets/js/case-workspace.js?v=20260511p1"></script>
 <script>
 function cpIsAuthed() {
   try {
@@ -22706,7 +23275,9 @@ async function cpHandleRouting() {
     "support-tools",
     "mission",
     "glossary",
-    "avo"
+    "avo",
+    "pricing",
+    "qa"
   ];
   if (!knownGoto.includes(goto)) return;
 
@@ -22736,7 +23307,7 @@ async function cpHandleRouting() {
     return;
   }
 
-  if (goto === "your-team" || goto === "kids") {
+  if (goto === "your-team" || goto === "kids" || goto === "avo") {
     const isAuthed = await cpRequireAuth();
     if (!isAuthed) {
       try {
@@ -22863,7 +23434,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const lang = this.value;
 
     // Save preference
-    localStorage.setItem("siteLanguage", lang);
+    if (window.casepathSiteLanguageSet) window.casepathSiteLanguageSet(lang);
+    else localStorage.setItem("siteLanguage", lang);
 
     // Trigger Google Translate
     const interval = setInterval(() => {
@@ -22877,7 +23449,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Load saved language
-  const savedLang = localStorage.getItem("siteLanguage");
+  const savedLang = window.casepathSiteLanguageGet ? window.casepathSiteLanguageGet() : localStorage.getItem("siteLanguage");
   if (savedLang) {
     langSelect.value = savedLang;
     const interval = setInterval(() => {
@@ -22970,14 +23542,14 @@ function hydrateVaultHeader() {
   if (window.currentUser && typeof window.currentUser.name === "string") {
     name = window.currentUser.name.trim();
   }
-  title.textContent = name ? (name + "'s Vault") : "Your Vault";
+  title.textContent = name ? (name + "'s Case Workspace") : "Your Case Workspace";
   var rows = document.querySelectorAll("#vault-files-list .file-row");
   var count = rows.length;
   if (count === 1) {
     var firstName = rows[0].querySelector(".file-name");
     if (firstName && /no encrypted files yet/i.test((firstName.textContent || "").trim())) count = 0;
   }
-  sub.textContent = count > 0 ? (count + " file" + (count === 1 ? "" : "s")) : "No files yet";
+  sub.textContent = count > 0 ? (count + " evidence item" + (count === 1 ? "" : "s")) : "No evidence yet";
 }
 
 document.addEventListener("DOMContentLoaded", function () {

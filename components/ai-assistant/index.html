@@ -1,45 +1,15 @@
 <div class="page-hero">
   <div class="page-hero-inner">
-    <div class="page-eyebrow">Here to Help</div>
-    <h1>AI <em>Assistant</em></h1>
-    <p>Your personal family law assistant — remembers your case details and gives answers grounded in Australian legislation</p>
+    <div class="page-eyebrow">Your Case · Workspace</div>
+    <h1>Case Assistant <em>(coming soon)</em></h1>
+    <p>Structured preparation tied to <strong>Your Case</strong> — chronology, evidence, and drafting workflows — is on the roadmap. The interactive assistant is not enabled in this production release.</p>
   </div>
 </div>
-<p style="margin-top:10px;">Or go straight to → <a onclick="cdBuildDashboard();showPage('vault')" style="cursor:pointer;color:var(--sage);font-weight:600;">Your Case</a></p>
-<div class="ai-assistant-layout">
-    <div class="ai-sidebar">
-      <div class="ai-case-card" id="ai-case-summary">
-        <div class="ai-case-header">📁 Your Case</div>
-        <div id="ai-case-body"><p style="font-size:0.8rem;color:var(--mid);font-style:italic;">No case set up yet — start building now → <button onclick="openOnboarding()" style="background:none;border:none;color:var(--sage);cursor:pointer;font-weight:600;padding:0;font-size:0.8rem;">Set up →</button></p></div>
-      </div>
-      <div class="ai-topics">
-        <div class="ai-topics-header">Quick topics</div>
-        <button class="ai-topic-btn" onclick="askAI('What are the key steps to file a parenting application?')">📋 Filing a parenting application</button>
-        <button class="ai-topic-btn" onclick="askAI('What is required before filing — do I need mediation?')">🤝 Pre-filing requirements</button>
-        <button class="ai-topic-btn" onclick="askAI('How does property division work after separation?')">🏠 Property settlement</button>
-        <button class="ai-topic-btn" onclick="askAI('How do I apply for an AVO or protection order?')">🛡️ Protection orders</button>
-        <button class="ai-topic-btn" onclick="askAI('What is an affidavit and how do I write one?')">📄 Writing an affidavit</button>
-        <button class="ai-topic-btn" onclick="askAI('What happens if the other party breaches orders?')">⚖️ Breaching orders</button>
-        <button class="ai-topic-btn" onclick="askAI('How does the court decide parenting arrangements?')">👶 Best interests of the child</button>
-        <button class="ai-topic-btn" onclick="askAI('What is subpoena and how do I use it?')">📬 Subpoenas</button>
-      </div>
-      <button class="ai-clear-btn" onclick="clearAIChat()">🗑 Clear conversation</button>
-    </div>
-    <div class="ai-main">
-      <div class="ai-info-bar">🤖 <strong>AI Assistant</strong> — Answers are based on Australian family law legislation. Always cite the specific section. Not legal advice.</div>
-      <div class="chat-window" id="ai-chat-window">
-        <div class="qmsg">
-          <div class="qmsg-avatar">CR</div>
-          <div>
-            <div class="qmsg-bubble">Hello. I'm your CasePath AI Assistant. I have access to your case details and can give you more tailored legal information than the general Q&amp;A.<br><br>Ask me anything about your family law matter — parenting, property, divorce, AVOs, court procedure, forms, or strategy.
-              <div class="msg-disclaimer">ℹ️ Legal information only — not advice about your specific situation.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="chat-input-row">
-        <input type="text" id="ai-chat-input" placeholder="Ask your AI assistant about your case…" onkeydown="if(event.key==='Enter') sendAIMessage()">
-        <button class="send-btn" onclick="sendAIMessage()">↑</button>
-      </div>
-    </div>
+<p style="margin-top:10px;">In the meantime, use <a onclick="showPage('vault')" style="cursor:pointer;color:var(--sage);font-weight:600;">Your Case</a> for your workspace, <a onclick="showPage('qa')" style="cursor:pointer;color:var(--sage);font-weight:600;">Ask a Question</a> for general guidance, or the <a onclick="showPage('glossary')" style="cursor:pointer;color:var(--sage);font-weight:600;">Glossary</a>.</p>
+<div class="ai-assistant-layout" style="grid-template-columns:1fr;max-width:42rem;margin-top:1.5rem;">
+  <div class="ai-main" style="border:1px solid var(--border);border-radius:16px;padding:1.75rem;background:var(--cream);">
+    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--sage);margin-bottom:0.75rem;">Coming soon</div>
+    <p style="margin:0 0 1rem;line-height:1.55;color:var(--charcoal);">The Case Assistant chat and topic shortcuts are disabled until the service is fully launched. No data is sent to AI endpoints from this screen.</p>
+    <p style="margin:0;font-size:0.85rem;color:var(--mid);line-height:1.5;">Architecture for this area remains in the codebase for a future release.</p>
   </div>
+</div>

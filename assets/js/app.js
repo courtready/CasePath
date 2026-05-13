@@ -17,8 +17,39 @@ if (window.location.protocol === "file:") {
 }
 
 console.log("CasePath version: NEW BUILD");
-const DEV_MODE = false;
+function crLocalDevHost() {
+  try {
+    return /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(window.location.hostname || "");
+  } catch (e) {
+    return false;
+  }
+}
+
+const DEV_MODE =
+  crLocalDevHost() &&
+  (window.CASEPATH_ENV === "development" || window.CASEPATH_ENABLE_DEV_ENTITLEMENTS === true);
 window.DEV_MODE = DEV_MODE;
+
+function normalizeCasePathEntitlements(member) {
+  member = member || {};
+  return Object.freeze({
+    source: member.id ? "members" : null,
+    plan: typeof member.plan === "string" ? member.plan : null,
+    docCredits: Number.isFinite(Number(member.doc_credits)) ? Number(member.doc_credits) : 0,
+  });
+}
+
+function setCasePathEntitlements(member) {
+  window.CasePathEntitlements = normalizeCasePathEntitlements(member);
+  return window.CasePathEntitlements;
+}
+
+function getCasePathEntitlements() {
+  return window.CasePathEntitlements || setCasePathEntitlements(null);
+}
+
+setCasePathEntitlements(null);
+window.getCasePathEntitlements = getCasePathEntitlements;
 
 /*
 CREATE TABLE vault_items (
@@ -119,6 +150,7 @@ console.log("Component system starting");
 const initialised = {};
 
 function initAI() {
+  if (typeof window === "undefined" || window.CASEPATH_ENABLE_AI_ASSISTANT !== true) return;
   const input = document.getElementById("ai-input") || document.getElementById("ai-chat-input");
   const btn = document.getElementById("ai-send");
   if (!input || !btn) return;
@@ -218,8 +250,8 @@ const NAV_LABELS = {
   "nav-your-team": "Your Family Team",
   "nav-avo": "AVO Centre",
   "nav-parenting-orders": "Parenting Orders",
-  "nav-doc-helper": "Document Centre",
-  "nav-ai-assistant": "AI Assistant",
+  "nav-doc-helper": "Output Workflows",
+  "nav-ai-assistant": "Case Assistant",
   "nav-referrals": "Referrals",
   "nav-pricing": "Pricing",
   "nav-your-case-pulse": "Your Case",
@@ -237,15 +269,30 @@ function applyNavLabels() {
 function checkoutReturnDetected() {
   if (typeof window === "undefined" || !window.location) return false;
   const params = new URLSearchParams(window.location.search || "");
+  if (params.get("checkout") === "success") return true;
+  if (params.get("checkout") === "cancel") return true;
   if (params.get("success") === "true") return true;
   if (params.has("session_id")) return true;
-  return (window.location.search || "").includes("success");
+  const q = window.location.search || "";
+  return q.includes("checkout=success") || q.includes("success");
+}
+
+/** Stripe success_url only — avoids treating ?checkout=cancel as a paid return. */
+function checkoutSuccessReturnDetected() {
+  if (typeof window === "undefined" || !window.location) return false;
+  const params = new URLSearchParams(window.location.search || "");
+  if (params.get("checkout") === "cancel") return false;
+  if (params.get("checkout") === "success") return true;
+  if (params.has("session_id")) return true;
+  if (params.get("success") === "true") return true;
+  const q = window.location.search || "";
+  return q.includes("checkout=success");
 }
 
 function clearCheckoutReturnParamsFromUrl() {
   if (typeof window === "undefined" || !window.location || !window.history) return;
   const url = new URL(window.location.href);
-  const keys = ["success", "session_id", "canceled", "cancelled"];
+  const keys = ["success", "session_id", "canceled", "cancelled", "checkout"];
   let changed = false;
   keys.forEach(function (key) {
     if (url.searchParams.has(key)) {
@@ -344,7 +391,7 @@ async function updateAuthUI() {
 window.updateAuthUI = updateAuthUI;
 
 async function verifyCheckoutEntitlementsAfterReturn() {
-  if (!checkoutReturnDetected()) return;
+  if (!checkoutSuccessReturnDetected()) return;
   if (!DEV_MODE && !crSupabaseAuthedSafe()) {
     console.warn("Stripe return detected but no auth session yet.");
     return;
@@ -356,9 +403,9 @@ async function verifyCheckoutEntitlementsAfterReturn() {
 
   for (let i = 0; i < attempts; i++) {
     await syncUser();
-    const user = window.currentUser || {};
+    const entitlements = getCasePathEntitlements();
     const hasEntitlements = !!(
-      user.plan || (typeof user.docCredits === "number" && user.docCredits > 0)
+      entitlements.plan || (typeof entitlements.docCredits === "number" && entitlements.docCredits > 0)
     );
     if (hasEntitlements) {
       verified = true;
@@ -417,6 +464,11 @@ function crSupabaseAuthedSafe() {
 window.crSupabaseAuthedSafe = crSupabaseAuthedSafe;
 
 function isAuthenticated() {
+  try {
+    if (window.__crAuthHydrated && window.authState && window.authState.isAuthenticated) return true;
+  } catch (e) {
+    /* ignore */
+  }
   return (
     window.currentUser &&
     window.currentUser.loggedIn === true &&
@@ -600,11 +652,12 @@ function updateCreditDisplay() {
     return;
   }
 
-  if (window.currentUser.plan === "pro") {
+  const entitlements = getCasePathEntitlements();
+  if (entitlements.plan === "pro") {
     el.innerHTML = "Pro Plan";
     el.style.color = "";
   } else {
-    const c = typeof window.currentUser.docCredits === "number" ? window.currentUser.docCredits : 0;
+    const c = typeof entitlements.docCredits === "number" ? entitlements.docCredits : 0;
     const docWord = c === 1 ? "document" : "documents";
     el.innerHTML =
       `Credits: ${c}<span style="display:block;font-size:13px;margin:2px 0 0;font-weight:400;">Enough for ${c} ${docWord}</span>`;
@@ -613,7 +666,7 @@ function updateCreditDisplay() {
       pricingNav.style.fontWeight = "700";
     }
   }
-  console.log("User credits:", window.currentUser?.docCredits);
+  console.log("User credits:", entitlements.docCredits);
   updateBuilderCreditsNote();
 }
 window.updateCreditDisplay = updateCreditDisplay;
@@ -626,11 +679,12 @@ function updateBuilderCreditsNote() {
     el.innerHTML = "";
     return;
   }
-  if (window.currentUser.plan === "pro") {
+  const entitlements = getCasePathEntitlements();
+  if (entitlements.plan === "pro") {
     el.textContent = "Unlimited access";
     return;
   }
-  const n = window.currentUser.docCredits || 0;
+  const n = entitlements.docCredits || 0;
   let html = `You have ${n} credits remaining`;
   if (n <= 2) {
     html += "<br><span style=\"color:#b00020;\">You're almost out of credits</span>";
@@ -643,8 +697,8 @@ function checkLowCredits() {
   if (
     window.currentUser &&
     window.currentUser.loggedIn &&
-    window.currentUser.plan !== "pro" &&
-    window.currentUser.docCredits <= 2
+    getCasePathEntitlements().plan !== "pro" &&
+    getCasePathEntitlements().docCredits <= 2
   ) {
     console.warn("Low credits");
   }
@@ -666,30 +720,54 @@ window.useCredit = async function useCredit() {
     if (u.source !== "supabase") {
       throw new Error("Not signed in");
     }
-    if (u.plan === "pro") {
-      return { remaining: typeof u.docCredits === "number" ? u.docCredits : 0 };
-    }
-    if (typeof isPromoEssentialEnabled === "function" && isPromoEssentialEnabled()) {
-      const rem = typeof u.docCredits === "number" ? u.docCredits : 0;
-      return { remaining: rem };
-    }
-    const credits = typeof u.docCredits === "number" ? u.docCredits : 0;
-    if (credits <= 0) {
-      alert("You've run out of credits. Upgrade to continue.");
-      throw new Error("No credits");
-    }
-    if (credits === 1) {
-      console.log("Upgrade trigger");
-      alert("You're about to use your last credit. Upgrade for uninterrupted access.");
+    if (DEV_MODE) {
+      return { remaining: getCasePathEntitlements().docCredits || 0 };
     }
     if (!window.supabaseClient || !u.id) {
       throw new Error("No client");
     }
-    const next = credits - 1;
-    const { error } = await window.supabaseClient.from("members").update({ doc_credits: next }).eq("id", u.id);
-    if (error) {
-      throw error;
+    const baseUrl = (typeof window !== "undefined" && window.SUPABASE_PROJECT_URL) || "";
+    const anon = typeof window !== "undefined" ? window.SUPABASE_ANON_KEY : "";
+    if (!baseUrl) {
+      throw new Error("No client");
     }
+    const { data: sess } = await window.supabaseClient.auth.getSession();
+    const token = sess?.session?.access_token;
+    if (!token) {
+      throw new Error("Not signed in");
+    }
+    const entitlements = getCasePathEntitlements();
+    if (entitlements.plan !== "pro" && entitlements.docCredits === 1) {
+      console.log("Upgrade trigger");
+      alert("You're about to use your last credit. Upgrade for uninterrupted access.");
+    }
+    let res;
+    try {
+      res = await fetch(baseUrl.replace(/\/$/, "") + "/functions/v1/consume-doc-credit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+          apikey: anon || "",
+        },
+        body: JSON.stringify({}),
+      });
+    } catch (err) {
+      console.error("useCredit fetch:", err);
+      throw err;
+    }
+    const payload = await res.json().catch(function () {
+      return {};
+    });
+    if (!res.ok) {
+      if (res.status === 402) {
+        alert("You've run out of credits. Upgrade to continue.");
+        throw new Error("No credits");
+      }
+      throw new Error((payload && payload.error && String(payload.error)) || res.statusText || "Debit failed");
+    }
+    const remaining =
+      typeof payload.remaining === "number" ? payload.remaining : Number(payload.remaining);
     if (typeof window.syncUser === "function") {
       await window.syncUser();
     }
@@ -698,14 +776,10 @@ window.useCredit = async function useCredit() {
     } catch (e) {
       /* ignore */
     }
-    const rem =
-      window.currentUser && typeof window.currentUser.docCredits === "number"
-        ? window.currentUser.docCredits
-        : next;
     if (typeof checkLowCredits === "function") {
       checkLowCredits();
     }
-    return { remaining: rem };
+    return { remaining: Number.isFinite(remaining) ? remaining : 0 };
   } finally {
     updateCreditDisplay();
   }
@@ -720,17 +794,14 @@ window.debugAuth = function debugAuth() {
 };
 
 function ensureCurrentUserPurchaseDefaults() {
-  if (window.currentUser) {
-    if (window.currentUser.docCredits == null || window.currentUser.docCredits === "") {
-      window.currentUser.docCredits = 0;
-    }
-  }
+  if (!window.CasePathEntitlements) setCasePathEntitlements(null);
 }
 window.ensureCurrentUserPurchaseDefaults = ensureCurrentUserPurchaseDefaults;
 
 /** Resolve Stripe Price IDs from window at click time (not at script parse — avoids stale empty maps). */
 function resolveStripePriceId(planKey) {
   var table = {
+    starter_monthly: "STRIPE_PRICE_STARTER_MONTHLY",
     pro_monthly: "STRIPE_PRICE_PRO_MONTHLY",
     essential: "STRIPE_PRICE_ESSENTIAL",
     credits_1: "STRIPE_PRICE_CREDITS_1",
@@ -758,15 +829,279 @@ window.debugBilling = () => {
   console.log("User:", window.currentUser);
 };
 
+var EARLY_ACCESS_FEATURE_PAGE = {
+  document_builder: "doc-helper",
+  parenting_orders: "parenting-orders",
+  ai_assistant: "ai-assistant",
+  vault: "vault",
+  vault_basic: "vault",
+  case_management: "vault",
+  your_case_assistant: "vault",
+};
+
+function normalizeEarlyAccessFeature(feature) {
+  var key = String(feature || "").trim();
+  if (!key) return "";
+  if (key === "vault_basic" || key === "case_management" || key === "your_case_assistant") return "vault";
+  return key;
+}
+
+function isEarlyAccessFeature(feature) {
+  var key = normalizeEarlyAccessFeature(feature);
+  return (
+    key === "document_builder" ||
+    key === "parenting_orders" ||
+    key === "ai_assistant" ||
+    key === "vault"
+  );
+}
+
+function earlyAccessStoreKey(feature) {
+  return "casepath_early_access_" + normalizeEarlyAccessFeature(feature);
+}
+
+function markEarlyAccessAccepted(feature) {
+  if (!isEarlyAccessFeature(feature)) return;
+  var key = earlyAccessStoreKey(feature);
+  if (!key) return;
+  try {
+    sessionStorage.setItem(key, "1");
+  } catch (e) {}
+}
+
+function hasEarlyAccessAccepted(feature) {
+  if (!isEarlyAccessFeature(feature)) return false;
+  var key = earlyAccessStoreKey(feature);
+  if (!key) return false;
+  try {
+    return sessionStorage.getItem(key) === "1";
+  } catch (e) {
+    return false;
+  }
+}
+
+function routeEarlyAccessFeature(feature) {
+  var key = normalizeEarlyAccessFeature(feature);
+  var page = EARLY_ACCESS_FEATURE_PAGE[key];
+  if (!page) {
+    if (
+      window.CasePathAuth &&
+      window.CasePathAuth.redirect &&
+      typeof window.CasePathAuth.redirect.safeAssignHref === "function"
+    ) {
+      window.CasePathAuth.redirect.safeAssignHref("/index.html");
+      return true;
+    }
+    window.location.href = "/index.html";
+    return false;
+  }
+  if (typeof showPage === "function") {
+    showPage(page);
+    return true;
+  }
+  if (
+    window.CasePathAuth &&
+    window.CasePathAuth.redirect &&
+    typeof window.CasePathAuth.redirect.safeAssignHref === "function"
+  ) {
+    window.CasePathAuth.redirect.safeAssignHref("/index.html");
+  } else {
+    window.location.href = "/index.html";
+  }
+  return false;
+}
+
+function showPlannedPricingPage() {
+  if (typeof showPage === "function") {
+    showPage("pricing");
+    return;
+  }
+  if (
+    window.CasePathAuth &&
+    window.CasePathAuth.redirect &&
+    typeof window.CasePathAuth.redirect.safeAssignHref === "function"
+  ) {
+    window.CasePathAuth.redirect.safeAssignHref("/pricing.html");
+    return;
+  }
+  window.location.href = "/pricing.html";
+}
+
+function setEarlyAccessModalError(msg) {
+  var err = document.getElementById("casepath-early-access-error");
+  if (!err) return;
+  if (!msg) {
+    err.style.display = "none";
+    err.textContent = "";
+    return;
+  }
+  err.textContent = String(msg);
+  err.style.display = "";
+}
+
+function hideEarlyAccessModal() {
+  var overlay = document.getElementById("casepath-early-access-modal");
+  if (!overlay) return;
+  overlay.classList.remove("show");
+  overlay.setAttribute("aria-hidden", "true");
+  try {
+    var authEl = document.getElementById("auth-modal");
+    if (!authEl || !authEl.classList.contains("show")) {
+      document.documentElement.style.overflow = "";
+    }
+  } catch (e) {}
+}
+
+function ensureEarlyAccessModal() {
+  if (typeof document === "undefined" || typeof document.body === "undefined") return;
+  if (document.getElementById("casepath-early-access-modal")) return;
+
+  var style = document.createElement("style");
+  style.id = "casepath-early-access-style";
+  style.textContent =
+    "#casepath-early-access-modal{display:none;position:fixed;inset:0;background:rgba(20,36,28,0.7);z-index:100070;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(6px);}"+
+    "#casepath-early-access-modal.show{display:flex;}"+
+    "#casepath-early-access-modal .casepath-early-access-card{background:var(--warm-white,#faf9f6);border-radius:24px;padding:1.5rem 1.5rem 1.25rem;width:100%;max-width:540px;box-shadow:0 32px 80px rgba(20,36,28,0.25);position:relative;}"+
+    "#casepath-early-access-modal .casepath-early-access-close{position:absolute;top:0.85rem;right:0.85rem;width:40px;height:40px;border:none;border-radius:999px;background:var(--cream);color:var(--soft);font-size:1rem;cursor:pointer;}"+
+    "#casepath-early-access-modal .casepath-early-access-badge{display:inline-flex;align-items:center;border:1px solid var(--border,#d8d7cf);border-radius:999px;padding:0.2rem 0.55rem;font-size:0.72rem;font-weight:600;color:var(--mid);margin-bottom:0.7rem;}"+
+    "#casepath-early-access-modal h2{font-family:\"Lora\",serif;font-size:1.45rem;font-weight:700;color:var(--charcoal);margin:0 0 0.45rem;}"+
+    "#casepath-early-access-modal p{font-size:0.9rem;color:var(--soft);line-height:1.5;margin:0 0 0.7rem;}"+
+    "#casepath-early-access-modal .casepath-early-access-secondary{font-size:0.83rem;margin-bottom:0.95rem;}"+
+    "#casepath-early-access-modal .casepath-early-access-actions{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:0.6rem;}"+
+    "#casepath-early-access-modal .casepath-early-access-primary,#casepath-early-access-modal .casepath-early-access-secondary-btn{flex:1 1 220px;min-height:44px;border-radius:10px;border:none;padding:0.8rem 0.9rem;font-size:0.92rem;font-weight:600;font-family:inherit;cursor:pointer;}"+
+    "#casepath-early-access-modal .casepath-early-access-primary{background:var(--sage);color:#fff;}"+
+    "#casepath-early-access-modal .casepath-early-access-primary:hover{background:var(--sage-light);}"+
+    "#casepath-early-access-modal .casepath-early-access-secondary-btn{background:transparent;color:var(--charcoal);border:1px solid var(--border,#d8d7cf);}"+
+    "#casepath-early-access-modal #casepath-early-access-error{display:none;background:#fef2f2;border:1px solid #fca5a5;color:#b91c1c;font-size:0.8rem;padding:0.65rem 0.85rem;border-radius:8px;margin-top:0.75rem;}"+
+    "@media (max-width:700px){#casepath-early-access-modal{align-items:flex-end;padding:0;}#casepath-early-access-modal .casepath-early-access-card{max-width:none;border-radius:20px 20px 0 0;padding:1.2rem 1rem 1rem;max-height:92dvh;overflow:auto;}#casepath-early-access-modal .casepath-early-access-primary,#casepath-early-access-modal .casepath-early-access-secondary-btn{flex:1 1 100%;}}";
+  document.head.appendChild(style);
+
+  var overlay = document.createElement("div");
+  overlay.id = "casepath-early-access-modal";
+  overlay.className = "modal-overlay";
+  overlay.setAttribute("aria-hidden", "true");
+  overlay.innerHTML =
+    '<div class="casepath-early-access-card" role="dialog" aria-modal="true" aria-labelledby="casepath-early-access-title">' +
+    '<button type="button" class="casepath-early-access-close" aria-label="Close">&times;</button>' +
+    '<span class="casepath-early-access-badge">Early Access</span>' +
+    '<h2 id="casepath-early-access-title">Start Free Early Access</h2>' +
+    '<p>Access guided parenting order workflows, chronology tools, secure case workspace features and court-ready document assistance during the Early Access period.</p>' +
+    '<p class="casepath-early-access-secondary">Pricing shown on the site reflects the intended launch structure. Early access users can explore and help shape the platform while development continues.</p>' +
+    '<div class="casepath-early-access-actions">' +
+    '<button type="button" class="casepath-early-access-primary" data-early-access-action="start">Start Free Early Access</button>' +
+    '<button type="button" class="casepath-early-access-secondary-btn" data-early-access-action="pricing">View Planned Pricing</button>' +
+    "</div>" +
+    '<div id="casepath-early-access-error" role="status" aria-live="polite"></div>' +
+    "</div>";
+  document.body.appendChild(overlay);
+
+  overlay.addEventListener("click", function (ev) {
+    if (ev.target === overlay) hideEarlyAccessModal();
+  });
+  var closeBtn = overlay.querySelector(".casepath-early-access-close");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", function () {
+      hideEarlyAccessModal();
+    });
+  }
+  overlay.addEventListener("click", function (ev) {
+    var t = ev.target;
+    if (!t || !t.getAttribute) return;
+    var action = t.getAttribute("data-early-access-action");
+    if (!action) return;
+    ev.preventDefault();
+    var feature = String(overlay.getAttribute("data-feature") || "");
+    setEarlyAccessModalError("");
+    if (action === "pricing") {
+      hideEarlyAccessModal();
+      showPlannedPricingPage();
+      return;
+    }
+    if (action !== "start") return;
+    if (!feature || !isEarlyAccessFeature(feature)) {
+      setEarlyAccessModalError("We could not open that workflow right now. Returning to the homepage.");
+      routeEarlyAccessFeature("");
+      hideEarlyAccessModal();
+      return;
+    }
+    markEarlyAccessAccepted(feature);
+    window.pendingFeature = feature;
+    if (typeof crSupabaseAuthed === "function" && crSupabaseAuthed()) {
+      hideEarlyAccessModal();
+      routeEarlyAccessFeature(feature);
+      window.pendingFeature = null;
+      return;
+    }
+    if (typeof openAuth === "function") {
+      hideEarlyAccessModal();
+      try {
+        openAuth("signup");
+      } catch (e2) {
+        setEarlyAccessModalError("We could not open sign up. Please refresh and try again.");
+      }
+      return;
+    }
+    setEarlyAccessModalError("Sign up is not available right now. Please try again shortly.");
+  });
+}
+
+function showEarlyAccessModal(feature) {
+  ensureEarlyAccessModal();
+  var overlay = document.getElementById("casepath-early-access-modal");
+  if (!overlay) return;
+  overlay.setAttribute("data-feature", normalizeEarlyAccessFeature(feature));
+  setEarlyAccessModalError("");
+  overlay.classList.add("show");
+  overlay.setAttribute("aria-hidden", "false");
+  try {
+    document.documentElement.style.overflow = "hidden";
+  } catch (e) {}
+}
+document.addEventListener("keydown", function (ev) {
+  if (!ev || ev.key !== "Escape") return;
+  var overlay = document.getElementById("casepath-early-access-modal");
+  if (!overlay || !overlay.classList.contains("show")) return;
+  hideEarlyAccessModal();
+});
+
 function requireAuth(feature) {
   if (DEV_MODE) return true;
+  feature = normalizeEarlyAccessFeature(feature);
   if (typeof crSupabaseAuthed === "function" && crSupabaseAuthed()) {
+    if (isEarlyAccessFeature(feature) && hasEarlyAccessAccepted(feature)) {
+      return true;
+    }
+    var needsEmail =
+      feature === "vault" ||
+      feature === "vault_basic" ||
+      feature === "document_builder" ||
+      feature === "parenting_orders" ||
+      feature === "lawyer_portal" ||
+      feature === "ai_assistant";
+    if (
+      needsEmail &&
+      typeof window.CasePathAuth !== "undefined" &&
+      typeof window.CasePathAuth.isEmailVerified === "function" &&
+      !window.CasePathAuth.isEmailVerified()
+    ) {
+      if (typeof openAuth === "function") openAuth("signin");
+      var se = document.getElementById("signin-error");
+      if (se) {
+        se.textContent =
+          "Please verify your email before using this feature. Check your inbox and spam folder, or use “Resend confirmation email”.";
+        se.style.display = "";
+      }
+      return false;
+    }
     if (typeof hasAccess === "function" && hasAccess(feature)) return true;
     if (feature === "vault" && typeof hasAccess === "function" && hasAccess("vault_basic")) return true;
   }
 
   window.pendingFeature = feature;
-
+  if (isEarlyAccessFeature(feature)) {
+    showEarlyAccessModal(feature);
+    return false;
+  }
   if (typeof crSupabaseAuthed === "function" && crSupabaseAuthed()) {
     if (typeof showPage === "function") showPage("pricing");
     try {
@@ -788,84 +1123,21 @@ function requireAuth(feature) {
 }
 window.requireAuth = requireAuth;
 
-function isPromoUnlockAllEnabled() {
-  try {
-    if (typeof window !== "undefined" && window.__promoUnlockAll === true) return true;
-    if (typeof localStorage !== "undefined") return localStorage.getItem("cr_unlock_all_code") === "1";
-  } catch (e) {
-    return false;
-  }
-  return false;
-}
-window.isPromoUnlockAllEnabled = isPromoUnlockAllEnabled;
-
-function setPromoUnlockAll(enabled) {
-  const on = !!enabled;
-  try {
-    if (typeof window !== "undefined") window.__promoUnlockAll = on;
-    if (typeof localStorage !== "undefined") {
-      if (on) {
-        localStorage.setItem("cr_unlock_all_code", "1");
-        localStorage.removeItem("cr_promo_essential");
-        if (typeof window !== "undefined") window.__promoEssential = false;
-      } else {
-        localStorage.removeItem("cr_unlock_all_code");
-      }
-    }
-  } catch (e) {
-    /* ignore */
-  }
-  if (typeof updateGates === "function") updateGates();
-}
-window.setPromoUnlockAll = setPromoUnlockAll;
-
-/** Promo code “cat123” (pricing UI): Essential-tier gates incl. Document Helper (nav + export without debiting credits); not vault / AI / parenting pack. */
-function isPromoEssentialEnabled() {
-  try {
-    if (typeof window !== "undefined" && window.__promoEssential === true) return true;
-    if (typeof localStorage !== "undefined") return localStorage.getItem("cr_promo_essential") === "1";
-  } catch (e) {
-    /* ignore */
-  }
-  return false;
-}
-window.isPromoEssentialEnabled = isPromoEssentialEnabled;
-
-function setPromoEssential(enabled) {
-  const on = !!enabled;
-  try {
-    if (typeof window !== "undefined") window.__promoEssential = on;
-    if (typeof localStorage !== "undefined") {
-      if (on) {
-        localStorage.setItem("cr_promo_essential", "1");
-        localStorage.removeItem("cr_unlock_all_code");
-        if (typeof window !== "undefined") window.__promoUnlockAll = false;
-      } else {
-        localStorage.removeItem("cr_promo_essential");
-      }
-    }
-  } catch (e) {
-    /* ignore */
-  }
-  if (typeof updateGates === "function") updateGates();
-}
-window.setPromoEssential = setPromoEssential;
-
 function hasAccess(feature) {
   if (DEV_MODE) return true;
-  if (isPromoUnlockAllEnabled()) return true;
-  const u = window.currentUser || {};
-  const plan = String(u.plan || "").toLowerCase();
-  const credits = typeof u.docCredits === "number" ? u.docCredits : 0;
+  const entitlements = getCasePathEntitlements();
+  const plan = String(entitlements.plan || "").toLowerCase();
 
   if (plan === "pro") return true;
+
+  // TODO(production-gating): align starter vs essential vs pro with Stripe entitlements and fair-use caps.
+  const starterOrEssential = plan === "essential" || plan === "starter";
 
   const baseFree = new Set([
     "home",
     "glossary",
     "mental_health",
     "kids",
-    "avo",
     "forms",
     "legislation",
     "your_family_team",
@@ -877,7 +1149,7 @@ function hasAccess(feature) {
     feature === "qa" ||
     feature === "ask_bot"
   ) {
-    return plan === "essential" || isPromoEssentialEnabled();
+    return starterOrEssential;
   }
 
   if (feature === "document_builder") {
@@ -885,7 +1157,7 @@ function hasAccess(feature) {
   }
 
   if (feature === "parenting_orders") {
-    return plan === "casepack" || plan === "parenting_pack";
+    return plan === "casepack" || plan === "parenting_pack" || plan === "starter";
   }
 
   if (feature === "lawyer_portal") {
@@ -899,6 +1171,7 @@ function hasAccess(feature) {
     feature === "ai_assistant" ||
     feature === "your_case_assistant"
   ) {
+    // TODO(production-gating): return true for Case Assistant only when entitlements include paid workspace tier.
     return false;
   }
 
@@ -920,28 +1193,26 @@ function clearNavStripeAttrs(el) {
 }
 
 function navStripeSignedIn() {
-  if (typeof window.crSupabaseAuthed === "function" && window.crSupabaseAuthed()) return true;
   try {
-    var raw = localStorage.getItem("cr_user") || localStorage.getItem("courtready_user");
-    if (!raw) return false;
-    var u = JSON.parse(raw);
-    return !!(u && u.source === "supabase" && u.id && u.loggedIn !== false);
+    if (window.__crAuthHydrated && window.authState && window.authState.isAuthenticated) return true;
   } catch (e) {
-    return false;
+    /* ignore */
   }
+  if (typeof window.crSupabaseAuthed === "function" && window.crSupabaseAuthed()) return true;
+  return false;
 }
 
-/** Rollout badges only; live public sections (e.g. AVO Centre) are omitted so they stay unbadged until gated later. */
+/** Rollout badges only; account-gated sections use kind "account". */
 function navStripeTargets() {
   return [
-    { selector: "#nav-parenting-orders", kind: "soon" },
-    { selector: "#nav-ai-assistant", kind: "soon" },
-    { selector: "#nav-pricing", kind: "soon" },
+    { selector: "#nav-ai-assistant", kind: "soon", title: "Case Assistant — coming soon (interactive assistant not enabled yet)." },
+    { selector: "#nav-parenting-orders", kind: "soon", title: "Parenting Orders draft generator — coming soon." },
     { selector: "#nav-referrals", kind: "soon" },
     { selector: "#nav-lawyer-portal", kind: "soon" },
     { selector: "#nav-mental-health", kind: "account" },
     { selector: "#nav-kids", kind: "account" },
     { selector: "#nav-your-team", kind: "account" },
+    { selector: "#nav-avo", kind: "account" },
     { selector: "#nav-new-item", kind: "account" },
   ];
 }
@@ -956,7 +1227,7 @@ function updateGates() {
     clearNavStripeAttrs(el);
     if (cfg.kind === "soon") {
       el.setAttribute("data-cr-nav-badge", "soon");
-      el.setAttribute("title", "Coming soon — this section is under development.");
+      el.setAttribute("title", cfg.title || "Coming soon — this section is under development.");
       return;
     }
     if (cfg.kind === "account") {
@@ -987,7 +1258,7 @@ function updateGates() {
       yc.setAttribute("data-cr-nav-tier", "vault");
       yc.setAttribute(
         "title",
-        "Your Case rolls out in stages — open plans when you are ready for the full vault."
+        "Your Case is your chronology source of truth. Upgrade to unlock full workspace access."
       );
       yc.classList.remove("nav-mission-pulse");
     } else {
@@ -1035,100 +1306,187 @@ document.addEventListener(
   true
 );
 
-function isConfiguredStripePriceId(priceId) {
-  const id = String(priceId || "").trim();
-  return !!(id && id !== "price_xxx");
+/**
+ * Navigate to the pricing page and apply highlight for a plan / pack (hero CTAs, deep links).
+ * Does not start Stripe — use openPricingCheckout for that.
+ */
+function openPricing(highlightContext) {
+  var ctx = String(highlightContext || "").trim() || "parenting_orders";
+  try {
+    window.__pricingHighlightPending = ctx;
+  } catch (e) {
+    /* ignore */
+  }
+  if (typeof showPage === "function") {
+    showPage("pricing");
+  }
+  [0, 120, 350, 900].forEach(function (ms) {
+    setTimeout(function () {
+      if (typeof window.__flushPricingHighlightPending === "function") {
+        window.__flushPricingHighlightPending();
+      }
+    }, ms);
+  });
+}
+window.openPricing = openPricing;
+
+var CASEPATH_CHECKOUT_SKUS = [
+  "starter_monthly",
+  "pro_monthly",
+  "essential",
+  "credits_1",
+  "credits_5",
+  "credits_10",
+  "parenting_pack",
+  "lawyer_portal",
+];
+
+function casepathIsStripeHostedCheckoutUrl(u) {
+  try {
+    var x = new URL(String(u || "").trim());
+    if (x.protocol !== "https:") return false;
+    var h = x.hostname.toLowerCase();
+    return h === "stripe.com" || h.slice(-11) === ".stripe.com";
+  } catch (e) {
+    return false;
+  }
+}
+
+function casepathAlertCheckout(msg) {
+  try {
+    alert(String(msg || "Checkout could not start."));
+  } catch (e) {
+    console.error("[checkout]", msg);
+  }
+}
+
+function casepathCheckoutMessageForResponse(status, data) {
+  var code = data && data.code ? String(data.code) : "";
+  var err = data && data.error ? String(data.error) : "";
+  var errLower = err.toLowerCase();
+  if (status === 401 || code === "UNAUTHORIZED") {
+    return "Please sign in to continue to checkout.";
+  }
+  if (status === 403 || code === "CORS_FORBIDDEN") {
+    return (
+      "This page origin is not allowed to start checkout (CORS). Ask the site operator to add your origin to Supabase Edge secrets CASEPATH_ALLOWED_ORIGINS (or set SITE_URL to your https site)."
+    );
+  }
+  if (code === "PRICE_NOT_CONFIGURED" || code === "UNKNOWN_SKU") {
+    var miss = data && data.missing_env;
+    if (miss && miss.length) {
+      return (
+        "That plan is not available for checkout yet (Stripe price IDs not set on the server). Configure these Supabase Edge secrets: " +
+        miss.join(", ") +
+        "."
+      );
+    }
+    return "That plan is not available for checkout yet. Choose another option or contact support.";
+  }
+  if (
+    status === 400 &&
+    (errLower.indexOf("missing priceid") !== -1 || errLower.indexOf("missing price_id") !== -1)
+  ) {
+    return (
+      "Checkout server returned an outdated error (missing price). Deploy the latest create-checkout-session Edge function from the repo (SKU-based checkout) and set STRIPE_PRICE_* secrets for each plan in Supabase."
+    );
+  }
+  if (code === "MISSING_CONFIGURATION" || code === "INVALID_SITE_URL") {
+    var miss2 = data && data.missing_env;
+    if (miss2 && miss2.length) {
+      return (
+        "Payments are not fully configured on the server yet. Missing: " +
+        miss2.join(", ") +
+        ". Add these in Supabase → Edge Functions → Secrets, then try again."
+      );
+    }
+    return "Payments are not fully configured on the server yet. Please try again later.";
+  }
+  if (code === "STRIPE_ERROR" || status === 502) {
+    return "Stripe is temporarily unavailable. Please wait a moment and try again.";
+  }
+  if (status === 500) {
+    return "The checkout server hit an error. Please try again shortly.";
+  }
+  if (status === 400) {
+    if (code === "CLIENT_PRICE_FORBIDDEN") {
+      return "Invalid checkout request (client price fields are not accepted). Refresh the page and try again.";
+    }
+    if (code === "MALFORMED_JSON") {
+      return "The checkout server returned an unreadable response. Please refresh and try again.";
+    }
+    return err || "Checkout could not start (invalid request).";
+  }
+  if (err) return err;
+  return "Checkout could not start (" + status + ").";
 }
 
 async function openPricingCheckout(plan) {
-  const planAliases = {
+  var planAliases = {
     doconce: "credits_1",
     doc_single: "credits_1",
     doc_five: "credits_5",
     full: "pro_monthly",
     pro: "pro_monthly",
+    starter: "starter_monthly",
     casepack: "parenting_pack",
     lawyer: "lawyer_portal",
     lawyer_portal_access: "lawyer_portal",
   };
-  const planKey = planAliases[plan] || plan;
-  const priceId = resolveStripePriceId(planKey);
-  console.log("Checkout type:", planKey);
-  console.log("Price ID:", priceId);
+  var planKey = planAliases[plan] || plan;
+  console.info("[CasePath checkout] requested SKU:", planKey, "(raw:", plan, ")");
 
-  const featureMap = {
-    parenting_pack: "parenting_orders",
-    credits_1: "document_builder",
-    credits_5: "document_builder",
-    pro_monthly: "subscription",
-    essential: "subscription",
-    credits_10: "document_builder",
-    lawyer_portal: "lawyer_portal",
-  };
-
-  const typeMap = {
-    parenting_pack: "one_time",
-    credits_1: "doc_credit",
-    credits_5: "doc_credit",
-    pro_monthly: "subscription",
-    essential: "subscription",
-    credits_10: "one_time",
-    lawyer_portal: "one_time",
-  };
-
-  const planMap = {
-    pro_monthly: "pro",
-    essential: "essential",
-    lawyer_portal: "lawyer_portal_access",
-  };
-
-  const baseUrl = (typeof window !== "undefined" && window.SUPABASE_PROJECT_URL) || "";
+  var baseUrl = (typeof window !== "undefined" && window.SUPABASE_PROJECT_URL) || "";
   if (!baseUrl || !window.supabaseClient) {
     console.error("openPricingCheckout: missing Supabase client / URL");
-    alert(
+    casepathAlertCheckout(
       "Payments are not connected yet (missing Supabase client). Check that supabase.js loaded and refresh."
     );
     return;
   }
 
-  const { data: sess } = await window.supabaseClient.auth.getSession();
-  const token = sess?.session?.access_token;
+  var checkoutEndpoint =
+    String(baseUrl).replace(/\/$/, "") + "/functions/v1/create-checkout-session";
+  console.info("[CasePath checkout] request start →", checkoutEndpoint);
+
+  var sess = null;
+  try {
+    var sessRes = await window.supabaseClient.auth.getSession();
+    sess = sessRes && sessRes.data ? sessRes.data.session : null;
+  } catch (e) {
+    console.warn("openPricingCheckout: getSession failed", e);
+  }
+  var token = sess && sess.access_token ? sess.access_token : "";
   if (!token && !DEV_MODE) {
     console.warn("openPricingCheckout: sign in required");
     if (typeof openAuth === "function") openAuth("signup");
-    else alert("Please create an account or sign in to continue to checkout.");
+    else casepathAlertCheckout("Please create an account or sign in to continue to checkout.");
     return;
   }
 
-  const sessionUser = sess?.session?.user;
-  const userId = sessionUser?.id || (window.currentUser && window.currentUser.id) || "";
-  const email =
-    sessionUser?.email || (window.currentUser && window.currentUser.email) || "";
+  var sessionUser = sess && sess.user ? sess.user : null;
+  if (
+    !DEV_MODE &&
+    sessionUser &&
+    !(sessionUser.email_confirmed_at || sessionUser.new_email_confirmed_at)
+  ) {
+    console.warn("openPricingCheckout: email not verified");
+    casepathAlertCheckout(
+      "Please verify your email before purchasing. Check your inbox and spam folder, then try again."
+    );
+    if (typeof openAuth === "function") openAuth("signin");
+    return;
+  }
 
-  const anon = typeof window !== "undefined" ? window.SUPABASE_ANON_KEY : "";
-  const returnPath =
+  var anon = typeof window !== "undefined" ? window.SUPABASE_ANON_KEY : "";
+  var returnPath =
     typeof window !== "undefined" && window.location && window.location.pathname
       ? window.location.pathname
       : "/";
 
-  if (!isConfiguredStripePriceId(priceId)) {
-    console.error("Missing priceId for checkout:", planKey);
-    alert(
-      'Stripe Price ID missing for "' +
-        planKey +
-        "\". In index.html, set the matching window.STRIPE_PRICE_* string (after supabase.js) to your Stripe Dashboard price id (starts with price_)."
-    );
-    return;
-  }
-
-  console.log("Starting checkout:", {
-    user: window.currentUser?.id,
-    priceId: priceId,
-  });
-
-  let res;
+  var res;
   try {
-    res = await fetch(baseUrl.replace(/\/$/, "") + "/functions/v1/create-checkout-session", {
+    res = await fetch(checkoutEndpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -1136,42 +1494,169 @@ async function openPricingCheckout(plan) {
         apikey: anon || "",
       },
       body: JSON.stringify({
-        userId,
-        email,
-        priceId,
-        feature: featureMap[planKey],
-        purchase_type: typeMap[planKey],
-        plan: planMap[planKey] ?? null,
+        sku: planKey,
         return_path: returnPath,
       }),
     });
   } catch (err) {
     console.error("openPricingCheckout fetch:", err);
-    alert(
+    try {
+      window.__casepathLastCheckout = {
+        at: new Date().toISOString(),
+        sku: planKey,
+        status: 0,
+        error: "network",
+      };
+    } catch (e2) {}
+    casepathAlertCheckout(
       "Could not reach the checkout server. Check your connection, disable strict blockers for this site, and try again."
     );
     return;
   }
 
-  const data = await res.json().catch(function () {
-    return {};
-  });
+  console.info("[CasePath checkout] fetch response status:", res.status);
 
-  if (!data.url) {
-    console.error("Checkout failed:", res.status, data);
-    var detail =
-      (data && data.error && String(data.error)) || res.statusText || "Unknown error";
-    alert("Checkout could not start (" + res.status + "): " + detail);
+  var rawText = "";
+  try {
+    rawText = await res.text();
+  } catch (e3) {
+    rawText = "";
+  }
+  var data = {};
+  if (rawText) {
+    try {
+      data = JSON.parse(rawText);
+    } catch (e4) {
+      data = { error: "Malformed JSON from checkout server", code: "MALFORMED_JSON" };
+    }
+  }
+
+  try {
+    window.__casepathLastCheckout = {
+      at: new Date().toISOString(),
+      sku: planKey,
+      status: res.status,
+      code: data && data.code,
+      error: data && data.error,
+    };
+  } catch (e5) {}
+
+  if (res.ok && data && data.code === "MALFORMED_JSON") {
+    console.error("Checkout: 200 with unreadable JSON body");
+    casepathAlertCheckout(
+      "Checkout could not start: the payment server returned an unexpected response. Please refresh and try again."
+    );
     return;
   }
 
-  window.location.href = data.url;
+  if (!res.ok) {
+    console.error("Checkout failed:", res.status, data);
+    casepathAlertCheckout(casepathCheckoutMessageForResponse(res.status, data));
+    return;
+  }
+
+  var checkoutUrl = data && data.url ? String(data.url).trim() : "";
+  console.info("[CasePath checkout] returned checkout URL host:", (function () {
+    try {
+      return new URL(checkoutUrl).hostname;
+    } catch (e6) {
+      return "(invalid)";
+    }
+  })());
+
+  if (!casepathIsStripeHostedCheckoutUrl(checkoutUrl)) {
+    console.error("Checkout returned unexpected URL (rejecting redirect):", checkoutUrl);
+    casepathAlertCheckout(
+      "Checkout could not start: the payment server returned an invalid redirect. Please try again or contact support."
+    );
+    return;
+  }
+
+  console.info("[CasePath checkout] redirect attempt → stripe hosted page");
+  window.location.href = checkoutUrl;
 }
 window.openPricingCheckout = openPricingCheckout;
+
+window.casepathStripeDebug = function casepathStripeDebug() {
+  var origin = "";
+  try {
+    origin = window.location.origin;
+  } catch (e) {
+    origin = "";
+  }
+  var siteUrlHint =
+    "Set Supabase Edge secret SITE_URL to your canonical https origin (production default: https://casepath.com.au). Current browser origin: " +
+    origin;
+  var auth = {
+    hasSession: false,
+    userId: null,
+    emailVerified: null,
+  };
+  try {
+    if (window.__crAuthHydrated && window.authState) {
+      auth.hasSession = !!window.authState.isAuthenticated;
+    }
+  } catch (e2) {}
+  try {
+    if (typeof crSupabaseAuthed === "function") {
+      auth.hasSession = !!crSupabaseAuthed();
+    }
+  } catch (e3) {}
+  try {
+    if (window.currentUser) {
+      auth.userId = window.currentUser.id || null;
+      auth.emailVerified = window.currentUser.emailVerified;
+    }
+  } catch (e4) {}
+  var baseUrl = (typeof window !== "undefined" && window.SUPABASE_PROJECT_URL) || "";
+  var checkoutEp = baseUrl
+    ? String(baseUrl).replace(/\/$/, "") + "/functions/v1/create-checkout-session"
+    : "(missing SUPABASE_PROJECT_URL)";
+  var last = window.__casepathLastCheckout || null;
+  var out = {
+    currentOrigin: origin,
+    siteUrlExpectation: siteUrlHint,
+    auth: auth,
+    enabledCheckoutSkus: CASEPATH_CHECKOUT_SKUS,
+    checkoutEndpointUrl: checkoutEp,
+    lastCheckoutAttempt: last,
+    stripeRedirectRule: "https only; hostname must be stripe.com or *.stripe.com",
+  };
+  console.log("[casepathStripeDebug]", out);
+  return out;
+};
+
+window.casepathStripeDebugAsync = async function casepathStripeDebugAsync() {
+  var base = window.casepathStripeDebug();
+  try {
+    if (window.supabaseClient && window.supabaseClient.auth) {
+      var r = await window.supabaseClient.auth.getSession();
+      var s = r && r.data ? r.data.session : null;
+      var u = s && s.user ? s.user : null;
+      base.auth = base.auth || {};
+      base.auth.hasSession = !!(s && s.access_token);
+      base.auth.userId = u && u.id ? u.id : base.auth.userId;
+      base.auth.emailVerified = u
+        ? !!(u.email_confirmed_at || u.new_email_confirmed_at)
+        : base.auth.emailVerified;
+      base.auth.email = u && u.email ? u.email : null;
+    }
+  } catch (e) {
+    base.authSessionError = String(e && e.message ? e.message : e);
+  }
+  console.log("[casepathStripeDebugAsync]", base);
+  return base;
+};
 
 window.highlightPlan = function highlightPlan(feature) {
   let targetPlan = null;
   let oneTime = null;
+
+  document.querySelectorAll(".pricing-plan-card").forEach(function (el) {
+    el.classList.remove("highlight-plan");
+  });
+  var lawyerTeaserPre = document.getElementById("pricing-lawyer-teaser");
+  if (lawyerTeaserPre) lawyerTeaserPre.classList.remove("highlight-plan");
 
   switch (feature) {
     case "casepack":
@@ -1180,8 +1665,8 @@ window.highlightPlan = function highlightPlan(feature) {
       break;
 
     case "document_builder":
-      oneTime = "doc_single";
-      targetPlan = "essential";
+      oneTime = "credits_1";
+      targetPlan = "starter";
       break;
 
     case "ai_assistant":
@@ -1193,11 +1678,19 @@ window.highlightPlan = function highlightPlan(feature) {
     case "vault_basic":
       targetPlan = "pro";
       break;
-  }
 
-  document.querySelectorAll(".pricing-plan-card").forEach(function (el) {
-    el.classList.remove("highlight-plan");
-  });
+    case "lawyer_portal": {
+      var lawyerEl = document.getElementById("pricing-lawyer-teaser");
+      if (lawyerEl) {
+        lawyerEl.classList.add("highlight-plan");
+        lawyerEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      return;
+    }
+
+    default:
+      break;
+  }
 
   if (targetPlan) {
     const planEl = document.querySelector('[data-plan="' + targetPlan + '"]');
@@ -1229,8 +1722,14 @@ window.__flushPricingHighlightPending = function __flushPricingHighlightPending(
 };
 
 function maybePostLoginPendingFeatureRedirect() {
-  // Disabled
-  return;
+  var feature = normalizeEarlyAccessFeature(window.pendingFeature);
+  if (!feature) return false;
+  if (!isEarlyAccessFeature(feature)) return false;
+  if (!(typeof crSupabaseAuthed === "function" && crSupabaseAuthed())) return false;
+  if (!hasEarlyAccessAccepted(feature)) return false;
+  window.pendingFeature = null;
+  routeEarlyAccessFeature(feature);
+  return true;
 }
 window.maybePostLoginPendingFeatureRedirect = maybePostLoginPendingFeatureRedirect;
 
@@ -1628,6 +2127,319 @@ function downloadDocx() {
 }
 window.downloadDocx = downloadDocx;
 
+const VAULT_ALLOWED_FILE_EXTENSIONS = new Set(["pdf", "jpg", "jpeg", "png", "txt", "docx", "zip"]);
+const VAULT_BLOCKED_EXTENSIONS = new Set(["exe", "js", "php", "html", "htm", "svg"]);
+const VAULT_ALLOWED_MIME_TYPES = new Set([
+  "application/pdf",
+  "image/jpeg",
+  "image/png",
+  "text/plain",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/zip",
+  "application/x-zip-compressed",
+]);
+const VAULT_MAX_FILE_SIZE_BYTES = 15 * 1024 * 1024;
+const VAULT_INDEXED_DB = "casepath_vault_local";
+const VAULT_AUTOSAVE_STORE = "autosave";
+const VAULT_PENDING_STORE = "pending";
+
+// Canonical vault category allow-list. Must stay in sync with:
+//   - supabase/functions/vault-signed-url/index.ts (ALLOWED_CATEGORIES)
+//   - supabase/migrations/20260511180000_phase33_storage_vault_security.sql
+//     (casepath_storage_object_allowed_path + storage object naming `vault/<uid>/<category>/...`)
+const VAULT_ALLOWED_CATEGORIES = new Set([
+  "court-orders",
+  "affidavits",
+  "evidence",
+  "documents",
+  "communications",
+  "parenting",
+  "financial",
+  "medical",
+  "school",
+  "tasks",
+]);
+const VAULT_DEFAULT_CATEGORY = "evidence";
+
+// Single source of truth mapping chronology event_type values
+// (see case_chronology_events_type_check in
+//  supabase/migrations/20260511190000_phase34_event_centric_chronology.sql)
+// onto the vault storage categories above. Every raw event_type entering
+// the vault upload pipeline MUST be resolved through mapEventTypeToVaultCategory.
+const CHRONOLOGY_EVENT_TO_VAULT_CATEGORY = Object.freeze({
+  incident: "evidence",
+  court: "court-orders",
+  avo: "court-orders",
+  breach: "evidence",
+  communication: "communications",
+  parenting: "parenting",
+  financial: "financial",
+  medical: "medical",
+  wellbeing: "medical",
+  school: "school",
+  task: "tasks",
+  agreement: "documents",
+});
+
+function mapEventTypeToVaultCategory(eventType) {
+  const normalized = String(eventType == null ? "" : eventType).trim().toLowerCase();
+  if (!normalized) {
+    console.warn(
+      "[vault] missing chronology event_type; falling back to '" + VAULT_DEFAULT_CATEGORY + "'"
+    );
+    return VAULT_DEFAULT_CATEGORY;
+  }
+  const mapped = CHRONOLOGY_EVENT_TO_VAULT_CATEGORY[normalized];
+  if (!mapped || !VAULT_ALLOWED_CATEGORIES.has(mapped)) {
+    console.warn(
+      "[vault] unknown chronology event_type '" + normalized +
+      "' has no canonical vault category; falling back to '" + VAULT_DEFAULT_CATEGORY + "'"
+    );
+    return VAULT_DEFAULT_CATEGORY;
+  }
+  return mapped;
+}
+window.mapEventTypeToVaultCategory = mapEventTypeToVaultCategory;
+window.VAULT_ALLOWED_CATEGORIES = VAULT_ALLOWED_CATEGORIES;
+window.VAULT_DEFAULT_CATEGORY = VAULT_DEFAULT_CATEGORY;
+
+function vaultGetExtension(name) {
+  const n = String(name || "");
+  const idx = n.lastIndexOf(".");
+  return idx < 0 ? "" : n.slice(idx + 1).toLowerCase();
+}
+
+function vaultValidateFileMeta(file) {
+  if (!file || !file.name) return "No file selected.";
+  const ext = vaultGetExtension(file.name);
+  if (!ext || !VAULT_ALLOWED_FILE_EXTENSIONS.has(ext)) {
+    return "Unsupported file type. Allowed: PDF, JPG, PNG, TXT, DOCX, ZIP.";
+  }
+  if (VAULT_BLOCKED_EXTENSIONS.has(ext)) {
+    return "This file type is blocked for security reasons.";
+  }
+  if (file.size > VAULT_MAX_FILE_SIZE_BYTES) {
+    return "File exceeds 15MB limit.";
+  }
+  const mime = String(file.type || "").toLowerCase().trim();
+  if (!mime || !VAULT_ALLOWED_MIME_TYPES.has(mime)) {
+    return "Unsupported content type for secure upload.";
+  }
+  return "";
+}
+
+function vaultReadTextSnippet(file, limitBytes) {
+  return new Promise(function (resolve, reject) {
+    try {
+      const blob = file.slice(0, limitBytes || 8192);
+      const reader = new FileReader();
+      reader.onload = function () {
+        resolve(String(reader.result || ""));
+      };
+      reader.onerror = function () {
+        reject(reader.error || new Error("Could not read file."));
+      };
+      reader.readAsText(blob);
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+async function vaultValidateFileContent(file) {
+  const ext = vaultGetExtension(file.name);
+  if (ext === "svg" || ext === "html" || ext === "htm") {
+    return "SVG/HTML uploads are blocked.";
+  }
+  if (ext === "txt") {
+    try {
+      const snippet = (await vaultReadTextSnippet(file, 16384)).toLowerCase();
+      if (
+        snippet.includes("<script") ||
+        snippet.includes("javascript:") ||
+        snippet.includes("<iframe") ||
+        snippet.includes("<object")
+      ) {
+        return "Text file appears to contain active script markup.";
+      }
+    } catch (e) {
+      return "Could not inspect text file safely.";
+    }
+  }
+  return "";
+}
+
+function openVaultDb() {
+  return new Promise(function (resolve, reject) {
+    if (typeof indexedDB === "undefined") {
+      reject(new Error("IndexedDB unavailable"));
+      return;
+    }
+    const req = indexedDB.open(VAULT_INDEXED_DB, 1);
+    req.onupgradeneeded = function () {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(VAULT_AUTOSAVE_STORE)) {
+        db.createObjectStore(VAULT_AUTOSAVE_STORE, { keyPath: "key" });
+      }
+      if (!db.objectStoreNames.contains(VAULT_PENDING_STORE)) {
+        db.createObjectStore(VAULT_PENDING_STORE, { autoIncrement: true });
+      }
+    };
+    req.onsuccess = function () {
+      resolve(req.result);
+    };
+    req.onerror = function () {
+      reject(req.error || new Error("IndexedDB open failed"));
+    };
+  });
+}
+
+async function putVaultAutosaveSnapshot(uid, payload) {
+  const db = await openVaultDb();
+  await new Promise(function (resolve, reject) {
+    const tx = db.transaction([VAULT_AUTOSAVE_STORE], "readwrite");
+    tx.objectStore(VAULT_AUTOSAVE_STORE).put({
+      key: "latest:" + uid,
+      payload: payload,
+      savedAt: new Date().toISOString(),
+    });
+    tx.oncomplete = resolve;
+    tx.onerror = function () {
+      reject(tx.error || new Error("autosave write failed"));
+    };
+  });
+  db.close();
+}
+
+async function queuePendingVaultWrite(uid, type, payload) {
+  const db = await openVaultDb();
+  await new Promise(function (resolve, reject) {
+    const tx = db.transaction([VAULT_PENDING_STORE], "readwrite");
+    tx.objectStore(VAULT_PENDING_STORE).add({
+      uid: uid,
+      type: type,
+      payload: payload,
+      createdAt: new Date().toISOString(),
+    });
+    tx.oncomplete = resolve;
+    tx.onerror = function () {
+      reject(tx.error || new Error("pending queue write failed"));
+    };
+  });
+  db.close();
+}
+
+async function flushPendingVaultWrites() {
+  if (!window.supabaseClient || !window.currentUser || !window.currentUser.id) return;
+  const uid = window.currentUser.id;
+  const db = await openVaultDb();
+  const rows = await new Promise(function (resolve, reject) {
+    const tx = db.transaction([VAULT_PENDING_STORE], "readonly");
+    const store = tx.objectStore(VAULT_PENDING_STORE);
+    const out = [];
+    const cursorReq = store.openCursor();
+    cursorReq.onsuccess = function (ev) {
+      const cursor = ev.target && ev.target.result;
+      if (!cursor) {
+        resolve(out);
+        return;
+      }
+      const value = cursor.value || {};
+      out.push({ key: cursor.key, value: value });
+      cursor.continue();
+    };
+    cursorReq.onerror = function () {
+      reject(cursorReq.error || new Error("pending queue read failed"));
+    };
+  });
+  const processedKeys = [];
+  for (const row of rows) {
+    if (!row || !row.value || row.value.uid !== uid) continue;
+    const { error } = await window.supabaseClient.from("vault_items").insert({
+      user_id: uid,
+      type: row.value.type || "document",
+      payload: row.value.payload,
+    });
+    if (error) {
+      console.warn("flushPendingVaultWrites", error);
+      continue;
+    }
+    processedKeys.push(row.key);
+  }
+  await new Promise(function (resolve, reject) {
+    const tx = db.transaction([VAULT_PENDING_STORE], "readwrite");
+    const store = tx.objectStore(VAULT_PENDING_STORE);
+    processedKeys.forEach(function (k) {
+      store.delete(k);
+    });
+    tx.oncomplete = resolve;
+    tx.onerror = function () {
+      reject(tx.error || new Error("pending queue cleanup failed"));
+    };
+  });
+  db.close();
+}
+
+async function logVaultEvent(action, target, status, detail) {
+  if (!window.supabaseClient || !window.currentUser || !window.currentUser.id) return;
+  try {
+    await window.supabaseClient.rpc("log_vault_event", {
+      p_action: String(action || ""),
+      p_target: target == null ? null : String(target),
+      p_status: String(status || "ok"),
+      p_detail: detail == null ? null : detail,
+    });
+  } catch (e) {
+    console.warn("logVaultEvent failed", e);
+  }
+}
+window.logVaultEvent = logVaultEvent;
+
+async function requestVaultSignedUpload(file, category) {
+  if (!window.supabaseClient) throw new Error("Supabase client not available");
+  const baseUrl = (typeof window !== "undefined" && window.SUPABASE_PROJECT_URL) || "";
+  const anon = typeof window !== "undefined" ? window.SUPABASE_ANON_KEY : "";
+  const { data: sess } = await window.supabaseClient.auth.getSession();
+  const token = sess?.session?.access_token;
+  if (!baseUrl || !token) throw new Error("Signed upload unavailable");
+
+  // Defence in depth: ensure only allow-listed categories reach the
+  // vault-signed-url edge function / storage RLS path policy. Callers
+  // SHOULD already pass a value produced by mapEventTypeToVaultCategory,
+  // but never trust a raw string here.
+  const requested = String(category == null ? "" : category).trim().toLowerCase();
+  const safeCategory = VAULT_ALLOWED_CATEGORIES.has(requested) ? requested : VAULT_DEFAULT_CATEGORY;
+  if (requested && requested !== safeCategory) {
+    console.warn(
+      "[vault] '" + requested + "' is not an allowed vault category; using '" + safeCategory + "'"
+    );
+  }
+
+  const res = await fetch(baseUrl.replace(/\/$/, "") + "/functions/v1/vault-signed-url", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+      apikey: anon || "",
+    },
+    body: JSON.stringify({
+      action: "upload",
+      category: safeCategory,
+      filename: file.name,
+    }),
+  });
+  const body = await res.json().catch(function () {
+    return {};
+  });
+  if (!res.ok || !body.signed || !body.object_path) {
+    throw new Error((body && body.error) || "Could not obtain signed upload URL");
+  }
+  return body;
+}
+window.requestVaultSignedUpload = requestVaultSignedUpload;
+window.vaultValidateFileMeta = vaultValidateFileMeta;
+window.vaultValidateFileContent = vaultValidateFileContent;
+
 window.saveToVault = async function saveToVault(type, data) {
   if ((!DEV_MODE && !crSupabaseAuthed()) || !window.supabaseClient) return;
   const uid = window.currentUser.id;
@@ -1637,13 +2449,28 @@ window.saveToVault = async function saveToVault(type, data) {
   }
   await Vault.init(window.currentUser);
   const encrypted = await Vault.encrypt(data);
+  if (type === "document") {
+    try {
+      await putVaultAutosaveSnapshot(uid, encrypted);
+    } catch (e) {
+      console.warn("putVaultAutosaveSnapshot", e);
+    }
+  }
 
   const { error } = await window.supabaseClient.from("vault_items").insert({
     user_id: uid,
     type,
     payload: encrypted,
   });
-  if (error) console.warn("saveToVault", error);
+  if (error) {
+    console.warn("saveToVault", error);
+    await logVaultEvent("vault_insert", type, "error", { message: error.message || String(error) });
+    await queuePendingVaultWrite(uid, type, encrypted).catch(function (e) {
+      console.warn("queuePendingVaultWrite", e);
+    });
+    return;
+  }
+  await logVaultEvent("vault_insert", type, "ok", { hasPayload: !!encrypted });
 };
 
 window.loadVault = async function loadVault() {
@@ -1686,39 +2513,21 @@ window.loadVault = async function loadVault() {
     el.className = "vault-item";
     el.textContent = line;
 
-    const shareBtn = document.createElement("button");
-    shareBtn.type = "button";
-    shareBtn.textContent = "Copy share link";
-    shareBtn.onclick = async function () {
-      try {
-        const url = await window.createShareLink(item);
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(url);
-        }
-        window.prompt("Share link (copy):", url);
-      } catch (err) {
-        console.warn("createShareLink", err);
-        alert(err && err.message ? err.message : String(err));
-      }
-    };
-    el.appendChild(shareBtn);
+    // Share-link UI is intentionally disabled until the recipient access flow is
+    // implemented end-to-end. The vault_shares table is preserved for future work.
     container.appendChild(el);
   }
 };
 
-window.createShareLink = async function createShareLink(item) {
-  if (!window.supabaseClient) throw new Error("Supabase client not available");
-  const token = crypto.randomUUID();
-
-  const { error } = await window.supabaseClient.from("vault_shares").insert({
-    token,
-    payload: item.payload,
-  });
-  if (error) throw error;
-
-  const u = new URL("share.html", window.location.href);
-  u.searchParams.set("token", token);
-  return u.toString();
+// Disabled at launch: recipient access flow is not implemented, so we must not
+// generate share URLs that would point recipients at a dead-end share page or
+// write speculative tokens into vault_shares. The function is kept (rather than
+// removed) so any caller fails loudly with a clear message instead of silently
+// constructing a misleading URL. Re-enable once the recipient flow ships.
+window.createShareLink = async function createShareLink(_item) {
+  const err = new Error("Sharing is not available yet.");
+  err.code = "share_disabled";
+  throw err;
 };
 
 window.collectDocHelperFormData = function collectDocHelperFormData() {
@@ -1769,21 +2578,66 @@ function wireCaseVaultUi() {
       const file = e.target.files && e.target.files[0];
       e.target.value = "";
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = async function () {
-        try {
-          if (typeof requireAuth === "function" && !requireAuth("vault")) return;
-          const base64 = reader.result;
-          await window.saveToVault("file", {
-            name: file.name,
-            data: base64,
-          });
-          await window.loadVault();
-        } catch (err) {
-          console.warn("vault file upload", err);
+      const metaErr = vaultValidateFileMeta(file);
+      if (metaErr) {
+        alert(metaErr);
+        await logVaultEvent("vault_upload_rejected", file.name || "unknown", "error", {
+          reason: metaErr,
+          size: file.size || 0,
+          type: file.type || "",
+        });
+        return;
+      }
+      const contentErr = await vaultValidateFileContent(file);
+      if (contentErr) {
+        alert(contentErr);
+        await logVaultEvent("vault_upload_rejected", file.name || "unknown", "error", {
+          reason: contentErr,
+          size: file.size || 0,
+          type: file.type || "",
+        });
+        return;
+      }
+      try {
+        if (typeof requireAuth === "function" && !requireAuth("vault")) return;
+        const signed = await requestVaultSignedUpload(file, "evidence");
+        const uploadUrl = signed.signed && signed.signed.signedUrl;
+        const uploadToken = signed.signed && signed.signed.token;
+        if (!uploadUrl || !uploadToken) throw new Error("Invalid signed upload payload");
+        const putRes = await fetch(uploadUrl, {
+          method: "PUT",
+          headers: {
+            "Content-Type": file.type || "application/octet-stream",
+            "x-upsert": "false",
+          },
+          body: file,
+        });
+        if (!putRes.ok) {
+          throw new Error("Signed upload failed (" + putRes.status + ")");
         }
-      };
-      reader.readAsDataURL(file);
+        await window.saveToVault("file", {
+          name: file.name,
+          size: file.size,
+          mimeType: file.type || "",
+          uploadedAt: new Date().toISOString(),
+          storageBucket: "casepath-vault",
+          objectPath: signed.object_path,
+          uploadToken: uploadToken,
+        });
+        await logVaultEvent("vault_upload", file.name || "unknown", "ok", {
+          size: file.size,
+          type: file.type || "",
+          objectPath: signed.object_path,
+        });
+        await window.loadVault();
+      } catch (err) {
+        console.warn("vault file upload", err);
+        await logVaultEvent("vault_upload", file.name || "unknown", "error", {
+          message: err && err.message ? err.message : String(err),
+          size: file.size || 0,
+          type: file.type || "",
+        });
+      }
     };
   }
 }
@@ -1813,6 +2667,9 @@ async function initCaseVaultSession() {
   }
   try {
     await Vault.init(window.currentUser);
+    await flushPendingVaultWrites().catch(function (e) {
+      console.warn("flushPendingVaultWrites", e);
+    });
     await window.loadVault();
   } catch (e) {
     console.warn("initCaseVaultSession", e);
@@ -1839,7 +2696,7 @@ async function syncUser() {
       const cuNoClient = window.currentUser;
       if (cuNoClient && cuNoClient.source === "legacy") {
         cuNoClient.loggedIn = false;
-        ensureCurrentUserPurchaseDefaults();
+        setCasePathEntitlements(null);
         try {
           currentUser = window.currentUser;
         } catch (e) {
@@ -1847,6 +2704,7 @@ async function syncUser() {
         }
       } else {
         window.currentUser = null;
+        setCasePathEntitlements(null);
         try {
           currentUser = null;
         } catch (e) {
@@ -1867,15 +2725,12 @@ async function syncUser() {
         email: authUser.email,
         loggedIn: true,
         source: "supabase",
+        emailVerified: !!(authUser.email_confirmed_at || authUser.new_email_confirmed_at),
         name:
           meta.full_name ||
           meta.name ||
           (authUser.email || "").split("@")[0] ||
           "User",
-        plan: null,
-        planLabel: null,
-        planDate: null,
-        docCredits: 0,
         postcode: metaPost || null,
       };
 
@@ -1893,13 +2748,23 @@ async function syncUser() {
           console.log("Member data:", member);
           if (memErr) {
             console.warn("syncUser members:", memErr.message);
+            setCasePathEntitlements(null);
           } else if (member) {
-            window.currentUser.plan = member.plan;
-            window.currentUser.docCredits = member.doc_credits || 0;
+            setCasePathEntitlements(member);
+            window.currentUser.onboardingCompleted = !!member.onboarding_completed;
+            window.currentUser.workspaceInitialized = !!member.workspace_initialized;
+            window.currentUser.primaryCaseType = member.primary_case_type || null;
+            window.currentUser.firstIncidentCreatedAt = member.first_incident_created_at || null;
+            window.currentUser.workspaceLastOpenedAt = member.workspace_last_opened_at || null;
+          } else {
+            setCasePathEntitlements(null);
           }
         } catch (e) {
           console.warn("syncUser members fetch", e);
+          setCasePathEntitlements(null);
         }
+      } else {
+        setCasePathEntitlements(null);
       }
 
       ensureCurrentUserPurchaseDefaults();
@@ -1908,7 +2773,7 @@ async function syncUser() {
       const cu = window.currentUser;
       if (cu && cu.source === "legacy") {
         cu.loggedIn = false;
-        ensureCurrentUserPurchaseDefaults();
+        setCasePathEntitlements(null);
         try {
           currentUser = window.currentUser;
         } catch (e) {
@@ -1916,6 +2781,7 @@ async function syncUser() {
         }
       } else {
         window.currentUser = null;
+        setCasePathEntitlements(null);
         try {
           currentUser = null;
         } catch (e) {
@@ -1926,6 +2792,7 @@ async function syncUser() {
   } catch (error) {
     console.error("syncUser failed:", error);
     window.currentUser = null;
+    setCasePathEntitlements(null);
     try {
       currentUser = null;
     } catch (e) {
@@ -1951,16 +2818,10 @@ async function syncUser() {
     const email = authUser.email || "";
     const meta = authUser.user_metadata || {};
     const name = meta.full_name || meta.name || "";
-    const plan = meta.plan != null ? meta.plan : null;
-    const planLabel = meta.planLabel != null ? meta.planLabel : null;
-    const planDate = meta.planDate != null ? meta.planDate : null;
     const ui = {
       id: authUser.id,
       email,
       name: name || (email.includes("@") ? email.split("@")[0] : "") || "User",
-      plan,
-      planLabel,
-      planDate,
       loggedIn: true,
     };
     if (meta.profile != null) ui.profile = meta.profile;
@@ -1971,6 +2832,9 @@ async function syncUser() {
   window.syncCurrentUserFromSupabase = syncUser;
 
   window.signOutFromSupabaseAndSync = async function signOutFromSupabaseAndSync() {
+    if (window.CasePathAuth && window.CasePathAuth.session && typeof window.CasePathAuth.session.clearPendingRedirects === "function") {
+      window.CasePathAuth.session.clearPendingRedirects();
+    }
     await logout();
     if (typeof window.crSetSignedInFlag === "function") {
       try {
@@ -1979,8 +2843,13 @@ async function syncUser() {
         /* ignore */
       }
     }
+    if (typeof window.CasePathAuth !== "undefined" && typeof window.CasePathAuth.clearAuthState === "function") {
+      window.CasePathAuth.clearAuthState("SIGNED_OUT");
+    }
     await pushAuthStateToUi();
-    if (typeof showPage === "function") showPage("home");
+    if (window.CasePathAuth && window.CasePathAuth.redirect && typeof window.CasePathAuth.redirect.safe === "function") {
+      window.CasePathAuth.redirect.safe("/");
+    } else if (typeof showPage === "function") showPage("home");
   };
 
   function flushInlineAuthUi() {
@@ -2005,7 +2874,17 @@ async function syncUser() {
 
   async function initSessionBeforeRender() {
     try {
-      await window.supabaseClient.auth.getSession();
+      if (window.supabaseClient && window.supabaseClient.auth) {
+        const { data } = await window.supabaseClient.auth.getSession();
+        if (window.CasePathAuth && typeof window.CasePathAuth.applySession === "function") {
+          window.CasePathAuth.applySession(data && data.session, "INITIAL_SESSION");
+        }
+        try {
+          window.__crAuthHydrated = true;
+        } catch (e0) {
+          /* ignore */
+        }
+      }
       await syncUser();
     } catch (error) {
       console.error("initSessionBeforeRender", error);
@@ -2125,7 +3004,11 @@ async function syncUser() {
           maybePostLoginPendingFeatureRedirect();
         }
         // Force a clean post-login state sync in maintenance mode.
-        window.location.href = "/";
+        if (window.CasePathAuth && window.CasePathAuth.redirect && typeof window.CasePathAuth.redirect.safe === "function") {
+          window.CasePathAuth.redirect.safe("/");
+        } else {
+          window.location.href = "/";
+        }
       } catch (error) {
         err.textContent = (error && error.message) || "Unable to sign in right now. Please try again.";
         err.style.display = "";
@@ -2249,8 +3132,12 @@ async function syncUser() {
         if (typeof maybePostLoginPendingFeatureRedirect === "function") {
           maybePostLoginPendingFeatureRedirect();
         }
-        if (!hadPending && typeof showPage === "function") showPage("start-case");
-        if (!hadPending && typeof startOnboarding === "function") setTimeout(startOnboarding, 350);
+        if (!hadPending && typeof showPage === "function") showPage("vault");
+        if (!hadPending && typeof window.resolveCaseWorkspaceEntry === "function") {
+          setTimeout(function () {
+            void window.resolveCaseWorkspaceEntry();
+          }, 220);
+        }
         await initCaseVaultSession();
       } catch (error) {
         console.error("Signup failed:", error);
@@ -2275,6 +3162,28 @@ async function syncUser() {
       window.__authListenerAttached = true;
 
       window.supabaseClient.auth.onAuthStateChange(async (event, session) => {
+        if (window.CasePathAuth && typeof window.CasePathAuth.applySession === "function") {
+          if (event === "SIGNED_OUT" || !session) {
+            window.CasePathAuth.clearAuthState(event);
+          } else {
+            window.CasePathAuth.applySession(session, event);
+          }
+        }
+        try {
+          window.__crAuthHydrated = true;
+        } catch (e0) {
+          /* ignore */
+        }
+        if (
+          event === "TOKEN_REFRESHED" &&
+          !session &&
+          window.CasePathAuth &&
+          window.CasePathAuth.session &&
+          typeof window.CasePathAuth.session.handleRefreshFailure === "function"
+        ) {
+          await window.CasePathAuth.session.handleRefreshFailure();
+          return;
+        }
         await syncUser();
         await updateAuthUI();
 
@@ -2355,6 +3264,7 @@ async function syncUser() {
       if (typeof prevShowPage !== "function" || prevShowPage._vaultRefreshHook) return;
       var pageFeatureGateMap = {
         "doc-helper": "document_builder",
+        // TODO(production-gating): enforce subscription / plan for Case Assistant (ai_assistant) before routing to page.
         "ai-assistant": "ai_assistant",
         "vault": "vault",
         "parenting-orders": "parenting_orders",
@@ -2443,6 +3353,502 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Rewritten for court tone");
     });
   }
+});
+
+function cpDhEsc(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function cpDhNorm(v) {
+  return String(v == null ? "" : v).trim().toLowerCase();
+}
+
+function cpDhYmd(d) {
+  if (!d) return "";
+  const raw = String(d).trim();
+  const m = raw.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (m) return m[1];
+  const dd = new Date(raw);
+  if (Number.isNaN(dd.getTime())) return "";
+  return dd.toISOString().slice(0, 10);
+}
+
+function cpDhDateInRange(dateStr, from, to) {
+  const d = cpDhYmd(dateStr);
+  if (!d) return false;
+  if (from && d < from) return false;
+  if (to && d > to) return false;
+  return true;
+}
+
+function cpDhDocMap(assemblyType) {
+  const key = cpDhNorm(assemblyType);
+  const map = {
+    chronology_export: "affidavit",
+    affidavit_scaffold: "affidavit",
+    parenting_orders_draft: "consent",
+    case_summary: "initiating",
+    incident_summary: "response",
+    communication_summary: "response",
+    financial_chronology: "financial",
+  };
+  return map[key] || "affidavit";
+}
+
+function cpDhTitle(assemblyType) {
+  const key = cpDhNorm(assemblyType);
+  const map = {
+    chronology_export: "Chronology Export",
+    affidavit_scaffold: "Affidavit Scaffold",
+    parenting_orders_draft: "Parenting Orders Draft",
+    case_summary: "Case Summary",
+    incident_summary: "Incident Summary",
+    communication_summary: "Communication Summary",
+    financial_chronology: "Financial Chronology",
+  };
+  return map[key] || "Chronology Draft";
+}
+
+function cpDhAsArray(v) {
+  if (Array.isArray(v)) return v;
+  if (typeof v === "string" && v.trim()) return v.split(",").map(function (x) { return x.trim(); }).filter(Boolean);
+  return [];
+}
+
+window.casepathDocAssemblyState = window.casepathDocAssemblyState || {
+  loaded: false,
+  loading: false,
+  threads: [],
+  events: [],
+  evidence: [],
+  filteredEvents: [],
+  selectedEventIds: new Set(),
+  wireDone: false,
+  mounted: false,
+};
+
+async function cpDhLoadAssemblySources() {
+  const st = window.casepathDocAssemblyState;
+  if (!window.supabaseClient || !window.currentUser || !window.currentUser.id) {
+    return { ok: false, message: "Sign in to load chronology sources." };
+  }
+  if (st.loading) return { ok: false, message: "Loading chronology sources..." };
+  st.loading = true;
+  try {
+    const uid = window.currentUser.id;
+    const threadsQ = window.supabaseClient
+      .from("case_incident_threads")
+      .select("id,title,category,status,affidavit_relevant,chronology_visible,deleted_at")
+      .eq("user_id", uid);
+    const eventsQ = window.supabaseClient
+      .from("case_chronology_events")
+      .select(
+        "id,title,description,event_date,category,event_status,affidavit_relevant,importance,notes,tags,incident_thread_id,visibility,deleted_at,created_at"
+      )
+      .eq("user_id", uid);
+    const evidenceQ = window.supabaseClient
+      .from("vault_items")
+      .select("*")
+      .eq("user_id", uid);
+    const [threadsRes, eventsRes, evidenceRes] = await Promise.all([threadsQ, eventsQ, evidenceQ]);
+    if (threadsRes.error) throw threadsRes.error;
+    if (eventsRes.error) throw eventsRes.error;
+    if (evidenceRes.error) throw evidenceRes.error;
+
+    st.threads = (threadsRes.data || []).filter(function (r) { return !r.deleted_at; });
+    st.events = (eventsRes.data || []).filter(function (r) { return !r.deleted_at; });
+    st.evidence = (evidenceRes.data || []).filter(function (r) { return !r.deleted_at; });
+    st.loaded = true;
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, message: e && e.message ? e.message : String(e) };
+  } finally {
+    st.loading = false;
+  }
+}
+
+function cpDhEvidenceForEvent(eventId) {
+  const st = window.casepathDocAssemblyState;
+  const target = String(eventId || "");
+  if (!target) return [];
+  const keys = [
+    "chronology_event_id",
+    "linked_event_id",
+    "case_chronology_event_id",
+    "event_id",
+    "linked_chronology_event_id",
+  ];
+  return (st.evidence || []).filter(function (row) {
+    for (let i = 0; i < keys.length; i++) {
+      const v = row && row[keys[i]];
+      if (v != null && String(v) === target) return true;
+    }
+    return false;
+  });
+}
+
+function cpDhApplyAssemblyFilters() {
+  const st = window.casepathDocAssemblyState;
+  const threadEl = document.getElementById("dh-assembly-thread");
+  const catEl = document.getElementById("dh-assembly-category");
+  const statusEl = document.getElementById("dh-assembly-status");
+  const affEl = document.getElementById("dh-assembly-aff");
+  const fromEl = document.getElementById("dh-assembly-from");
+  const toEl = document.getElementById("dh-assembly-to");
+
+  const threadId = threadEl ? String(threadEl.value || "") : "";
+  const category = cpDhNorm(catEl ? catEl.value : "");
+  const status = cpDhNorm(statusEl ? statusEl.value : "");
+  const aff = cpDhNorm(affEl ? affEl.value : "any");
+  const from = cpDhYmd(fromEl ? fromEl.value : "");
+  const to = cpDhYmd(toEl ? toEl.value : "");
+
+  const filtered = (st.events || [])
+    .filter(function (ev) {
+      if (threadId && String(ev.incident_thread_id || "") !== threadId) return false;
+      if (category && cpDhNorm(ev.category) !== category) return false;
+      if (status && cpDhNorm(ev.event_status) !== status) return false;
+      if (!cpDhDateInRange(ev.event_date || ev.created_at, from, to)) return false;
+      if (aff === "yes" && !ev.affidavit_relevant) return false;
+      if (aff === "no" && !!ev.affidavit_relevant) return false;
+      return true;
+    })
+    .sort(function (a, b) {
+      const ad = cpDhYmd(a.event_date || a.created_at) || "";
+      const bd = cpDhYmd(b.event_date || b.created_at) || "";
+      if (ad < bd) return -1;
+      if (ad > bd) return 1;
+      return String(a.title || "").localeCompare(String(b.title || ""));
+    });
+
+  st.filteredEvents = filtered;
+  const nextSet = new Set();
+  filtered.forEach(function (ev) {
+    const id = String(ev.id);
+    if (st.selectedEventIds.has(id)) nextSet.add(id);
+  });
+  if (!nextSet.size) {
+    filtered.forEach(function (ev) {
+      nextSet.add(String(ev.id));
+    });
+  }
+  st.selectedEventIds = nextSet;
+}
+
+function cpDhRenderAssemblyEvents() {
+  const st = window.casepathDocAssemblyState;
+  const host = document.getElementById("dh-assembly-events");
+  if (!host) return;
+  const rows = st.filteredEvents || [];
+  if (!rows.length) {
+    host.innerHTML =
+      '<div style="font-size:0.82rem;color:var(--soft);padding:0.5rem 0;">No chronology events match these filters.</div>';
+    return;
+  }
+  let html = "";
+  rows.forEach(function (ev) {
+    const id = String(ev.id);
+    const checked = st.selectedEventIds.has(id) ? " checked" : "";
+    const dt = cpDhYmd(ev.event_date || ev.created_at) || "No date";
+    html +=
+      '<label style="display:block;border:1px solid var(--border);border-radius:8px;padding:0.55rem 0.65rem;margin-bottom:0.45rem;background:white;">' +
+      '<div style="display:flex;gap:0.55rem;align-items:flex-start;">' +
+      '<input type="checkbox" data-dh-ev="' + cpDhEsc(id) + '"' + checked + ' style="margin-top:0.2rem;">' +
+      '<div style="min-width:0;">' +
+      '<div style="font-size:0.8rem;color:var(--soft);margin-bottom:0.1rem;">' +
+      cpDhEsc(dt) +
+      " · " +
+      cpDhEsc(ev.category || "incident") +
+      " · " +
+      cpDhEsc(ev.event_status || "active") +
+      "</div>" +
+      '<div style="font-size:0.87rem;color:var(--charcoal);font-weight:600;">' +
+      cpDhEsc(ev.title || "Untitled event") +
+      "</div>" +
+      "</div></div></label>";
+  });
+  host.innerHTML = html;
+}
+
+function cpDhRenderAssemblyPreview() {
+  const st = window.casepathDocAssemblyState;
+  const host = document.getElementById("dh-assembly-preview");
+  const countEl = document.getElementById("dh-assembly-count");
+  if (!host) return;
+  const selected = (st.filteredEvents || []).filter(function (ev) {
+    return st.selectedEventIds.has(String(ev.id));
+  });
+  if (countEl) countEl.textContent = selected.length + " selected";
+  if (!selected.length) {
+    host.innerHTML = '<div style="font-size:0.82rem;color:var(--soft);">Select one or more chronology events to build a structured preview.</div>';
+    return;
+  }
+  const threadMap = {};
+  (st.threads || []).forEach(function (t) { threadMap[String(t.id)] = t; });
+  const groups = {};
+  selected.forEach(function (ev) {
+    const tid = String(ev.incident_thread_id || "none");
+    if (!groups[tid]) groups[tid] = [];
+    groups[tid].push(ev);
+  });
+  const keys = Object.keys(groups).sort(function (a, b) {
+    const at = threadMap[a] && threadMap[a].title ? threadMap[a].title : "Unthreaded";
+    const bt = threadMap[b] && threadMap[b].title ? threadMap[b].title : "Unthreaded";
+    return String(at).localeCompare(String(bt));
+  });
+  let html = "";
+  keys.forEach(function (k) {
+    const threadTitle = threadMap[k] && threadMap[k].title ? threadMap[k].title : "Unthreaded Events";
+    html += '<div style="margin-bottom:0.6rem;"><div style="font-weight:700;color:var(--charcoal);font-size:0.86rem;">' + cpDhEsc(threadTitle) + "</div>";
+    html += '<div style="margin-top:0.25rem;padding-left:0.75rem;border-left:2px solid var(--border);">';
+    groups[k].forEach(function (ev) {
+      const evDate = cpDhYmd(ev.event_date || ev.created_at) || "No date";
+      html += '<div style="font-size:0.82rem;color:var(--mid);line-height:1.55;">';
+      html += "&#8226; " + cpDhEsc(evDate) + " — " + cpDhEsc(ev.title || "Untitled event");
+      html += "</div>";
+    });
+    html += "</div></div>";
+  });
+  host.innerHTML = html;
+}
+
+function cpDhAssembleStructuredNotes() {
+  const st = window.casepathDocAssemblyState;
+  const typeEl = document.getElementById("dh-assembly-type");
+  const includeEvidenceEl = document.getElementById("dh-assembly-evidence");
+  const includeEvidence = !includeEvidenceEl || !!includeEvidenceEl.checked;
+  const selectedType = typeEl ? String(typeEl.value || "chronology_export") : "chronology_export";
+  const selected = (st.filteredEvents || []).filter(function (ev) {
+    return st.selectedEventIds.has(String(ev.id));
+  });
+  const lines = [];
+  lines.push(cpDhTitle(selectedType));
+  lines.push("");
+  lines.push("This draft is assembled from selected chronology events.");
+  lines.push("");
+
+  const threadMap = {};
+  (st.threads || []).forEach(function (t) { threadMap[String(t.id)] = t; });
+  const groups = {};
+  selected.forEach(function (ev) {
+    const key = String(ev.incident_thread_id || "none");
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(ev);
+  });
+  Object.keys(groups).forEach(function (k) {
+    groups[k].sort(function (a, b) {
+      const ad = cpDhYmd(a.event_date || a.created_at) || "";
+      const bd = cpDhYmd(b.event_date || b.created_at) || "";
+      return ad.localeCompare(bd);
+    });
+  });
+  const orderedKeys = Object.keys(groups).sort(function (a, b) {
+    const at = threadMap[a] && threadMap[a].title ? threadMap[a].title : "Unthreaded Events";
+    const bt = threadMap[b] && threadMap[b].title ? threadMap[b].title : "Unthreaded Events";
+    return String(at).localeCompare(String(bt));
+  });
+
+  orderedKeys.forEach(function (k) {
+    const threadTitle = threadMap[k] && threadMap[k].title ? threadMap[k].title : "Unthreaded Events";
+    lines.push(threadTitle + ":");
+    groups[k].forEach(function (ev) {
+      const d = cpDhYmd(ev.event_date || ev.created_at) || "No date";
+      lines.push("- " + d + " — " + String(ev.title || "Untitled event"));
+      if (ev.description) lines.push("  Summary: " + String(ev.description));
+      if (ev.notes) lines.push("  Notes: " + String(ev.notes));
+      const tags = cpDhAsArray(ev.tags);
+      if (tags.length) lines.push("  Tags: " + tags.join(", "));
+      if (includeEvidence) {
+        const evEvidence = cpDhEvidenceForEvent(ev.id);
+        if (evEvidence.length) {
+          lines.push("  Supporting Evidence:");
+          evEvidence.forEach(function (item) {
+            const nm = item.name || item.filename || item.original_filename || item.object_path || "Evidence item";
+            lines.push("  - " + String(nm));
+          });
+        }
+      }
+      lines.push("");
+    });
+  });
+  return lines.join("\n").trim();
+}
+
+function cpDhWireAssemblyEvents() {
+  const st = window.casepathDocAssemblyState;
+  if (st.wireDone) return;
+  const root = document.getElementById("dh-assembly-root");
+  if (!root) return;
+  root.addEventListener("change", function (e) {
+    const t = e.target;
+    if (!t) return;
+    if (t.matches("[data-dh-ev]")) {
+      const id = String(t.getAttribute("data-dh-ev") || "");
+      if (!id) return;
+      if (t.checked) st.selectedEventIds.add(id);
+      else st.selectedEventIds.delete(id);
+      cpDhRenderAssemblyPreview();
+      return;
+    }
+    if (
+      t.id === "dh-assembly-thread" ||
+      t.id === "dh-assembly-category" ||
+      t.id === "dh-assembly-status" ||
+      t.id === "dh-assembly-aff" ||
+      t.id === "dh-assembly-from" ||
+      t.id === "dh-assembly-to"
+    ) {
+      cpDhApplyAssemblyFilters();
+      cpDhRenderAssemblyEvents();
+      cpDhRenderAssemblyPreview();
+      return;
+    }
+    if (t.id === "dh-assembly-type") {
+      const targetDoc = cpDhDocMap(t.value);
+      const docSel = document.getElementById("dh-type-select");
+      if (docSel && docSel.value !== targetDoc && typeof window.selectDocTypeByValue === "function") {
+        window.selectDocTypeByValue(targetDoc);
+      }
+      cpDhRenderAssemblyPreview();
+      return;
+    }
+    if (t.id === "dh-assembly-evidence") {
+      cpDhRenderAssemblyPreview();
+    }
+  });
+  st.wireDone = true;
+}
+
+function cpDhRenderAssemblyUi() {
+  const st = window.casepathDocAssemblyState;
+  const root = document.getElementById("dh-assembly-root");
+  if (!root) return;
+  const threadOptions = ['<option value="">All threads</option>']
+    .concat(
+      (st.threads || []).map(function (t) {
+        return '<option value="' + cpDhEsc(t.id) + '">' + cpDhEsc(t.title || "Untitled thread") + "</option>";
+      })
+    )
+    .join("");
+
+  const categories = {};
+  (st.events || []).forEach(function (ev) {
+    const c = cpDhNorm(ev.category);
+    if (c) categories[c] = true;
+  });
+  const categoryOptions = ['<option value="">All categories</option>']
+    .concat(
+      Object.keys(categories)
+        .sort()
+        .map(function (k) {
+          return '<option value="' + cpDhEsc(k) + '">' + cpDhEsc(k) + "</option>";
+        })
+    )
+    .join("");
+
+  root.innerHTML =
+    '<div style="display:flex;gap:0.65rem;flex-wrap:wrap;margin-bottom:0.75rem;">' +
+    '<label style="font-size:0.78rem;color:var(--mid);">Document model<br><select id="dh-assembly-type" style="margin-top:0.25rem;padding:0.45rem 0.55rem;border:1px solid var(--border);border-radius:8px;">' +
+    '<option value="chronology_export">Chronology Export</option>' +
+    '<option value="affidavit_scaffold">Affidavit Scaffold</option>' +
+    '<option value="parenting_orders_draft">Parenting Orders Draft</option>' +
+    '<option value="case_summary">Case Summary</option>' +
+    '<option value="incident_summary">Incident Summary</option>' +
+    '<option value="communication_summary">Communication Summary</option>' +
+    '<option value="financial_chronology">Financial Chronology</option>' +
+    "</select></label>" +
+    '<label style="font-size:0.78rem;color:var(--mid);">Thread<br><select id="dh-assembly-thread" style="margin-top:0.25rem;padding:0.45rem 0.55rem;border:1px solid var(--border);border-radius:8px;">' +
+    threadOptions +
+    "</select></label>" +
+    '<label style="font-size:0.78rem;color:var(--mid);">Category<br><select id="dh-assembly-category" style="margin-top:0.25rem;padding:0.45rem 0.55rem;border:1px solid var(--border);border-radius:8px;">' +
+    categoryOptions +
+    "</select></label>" +
+    '<label style="font-size:0.78rem;color:var(--mid);">Status<br><select id="dh-assembly-status" style="margin-top:0.25rem;padding:0.45rem 0.55rem;border:1px solid var(--border);border-radius:8px;">' +
+    '<option value="">All statuses</option><option value="draft">draft</option><option value="active">active</option><option value="archived">archived</option><option value="affidavit-linked">affidavit-linked</option><option value="disputed">disputed</option><option value="exported">exported</option>' +
+    "</select></label>" +
+    '<label style="font-size:0.78rem;color:var(--mid);">Affidavit relevance<br><select id="dh-assembly-aff" style="margin-top:0.25rem;padding:0.45rem 0.55rem;border:1px solid var(--border);border-radius:8px;"><option value="any">Any</option><option value="yes">Yes</option><option value="no">No</option></select></label>' +
+    '<label style="font-size:0.78rem;color:var(--mid);">From<br><input id="dh-assembly-from" type="date" style="margin-top:0.25rem;padding:0.42rem 0.55rem;border:1px solid var(--border);border-radius:8px;"></label>' +
+    '<label style="font-size:0.78rem;color:var(--mid);">To<br><input id="dh-assembly-to" type="date" style="margin-top:0.25rem;padding:0.42rem 0.55rem;border:1px solid var(--border);border-radius:8px;"></label>' +
+    "</div>" +
+    '<div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;margin-bottom:0.4rem;">' +
+    '<div style="font-size:0.8rem;color:var(--charcoal);font-weight:600;">Source events <span id="dh-assembly-count" style="color:var(--soft);font-weight:500;">0 selected</span></div>' +
+    '<label style="font-size:0.78rem;color:var(--mid);display:flex;align-items:center;gap:0.35rem;"><input id="dh-assembly-evidence" type="checkbox" checked> Include evidence references</label>' +
+    "</div>" +
+    '<div id="dh-assembly-events" style="max-height:210px;overflow:auto;background:#fafafa;border:1px solid var(--border);border-radius:10px;padding:0.55rem;"></div>' +
+    '<div style="margin-top:0.75rem;font-size:0.8rem;color:var(--charcoal);font-weight:600;">Structure preview</div>' +
+    '<div id="dh-assembly-preview" style="margin-top:0.35rem;background:#fafafa;border:1px solid var(--border);border-radius:10px;padding:0.65rem;min-height:70px;"></div>' +
+    '<div style="margin-top:0.55rem;font-size:0.77rem;color:var(--soft);">Assembled sections remain editable in the notes field before generation.</div>';
+}
+
+async function cpDhInitAssemblyMode() {
+  const st = window.casepathDocAssemblyState;
+  const root = document.getElementById("dh-assembly-root");
+  if (!root || st.mounted) return;
+  st.mounted = true;
+  root.innerHTML = '<div style="font-size:0.82rem;color:var(--soft);">Loading chronology sources...</div>';
+  const loaded = await cpDhLoadAssemblySources();
+  if (!loaded.ok) {
+    root.innerHTML =
+      '<div style="font-size:0.82rem;color:#7c3d0a;background:#fff8f0;border:1px solid #f0a060;border-radius:8px;padding:0.6rem 0.75rem;">' +
+      cpDhEsc(loaded.message || "Could not load chronology sources.") +
+      "</div>";
+    return;
+  }
+  cpDhRenderAssemblyUi();
+  cpDhWireAssemblyEvents();
+  cpDhApplyAssemblyFilters();
+  cpDhRenderAssemblyEvents();
+  cpDhRenderAssemblyPreview();
+}
+
+function cpDhWrapRunDocHelper() {
+  if (window.__cpDhAssemblyPatched) return;
+  const original = window.runDocHelper;
+  if (typeof original !== "function") {
+    setTimeout(cpDhWrapRunDocHelper, 300);
+    return;
+  }
+  window.runDocHelper = async function wrappedRunDocHelper() {
+    if (window.CasePathAuth && typeof window.CasePathAuth.guardDocumentGeneration === "function") {
+      if (!window.CasePathAuth.guardDocumentGeneration()) return;
+    }
+    if (typeof window.useCredit === "function") {
+      try {
+        await window.useCredit();
+      } catch (e) {
+        console.warn("Document generation blocked:", e && e.message ? e.message : e);
+        return;
+      }
+    }
+    try {
+      const root = document.getElementById("dh-assembly-root");
+      const ta = document.getElementById("dh-input");
+      const st = window.casepathDocAssemblyState;
+      if (root && ta && st && st.filteredEvents && st.filteredEvents.length) {
+        const assembled = cpDhAssembleStructuredNotes();
+        if (assembled && assembled.length > 20) {
+          ta.value = assembled;
+          if (typeof window.updateCharCount === "function") window.updateCharCount();
+          if (typeof window.checkOpinionWords === "function") window.checkOpinionWords();
+        }
+      }
+    } catch (e) {
+      console.warn("cpDhWrapRunDocHelper:", e);
+    }
+    return original.apply(this, arguments);
+  };
+  window.__cpDhAssemblyPatched = true;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  setTimeout(function () {
+    void cpDhInitAssemblyMode();
+    cpDhWrapRunDocHelper();
+  }, 120);
 });
 
 if (DEV_MODE) {

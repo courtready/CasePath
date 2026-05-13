@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="/assets/js/maintenance-mode.js"></script>
   <meta name="robots" content="noindex" />
   <meta name="description" content="Build a support team around your family law matter — lawyers, counselling, school, health, and community. CasePath overview with a link to the full in-app guide." />
   <title>CasePath — Your Family Team</title>
@@ -40,15 +41,22 @@
           <a href="/avo-centre.html" id="nav-avo" class="nav-avo-centre" data-row="1">AVO Centre</a>
           </div>
           <div class="nav-row-platform">
+          <div class="nav-platform-group nav-platform-group--live">
+          <span class="nav-platform-eyebrow">Live now</span>
+          <div class="nav-platform-tray">
+          <a href="/document-centre.html" id="nav-doc-helper" data-row="2">Document Centre</a>
+          <a href="/index.html" id="nav-your-case-pulse" data-row="2">Your Case</a>
+          <a href="/index.html" id="nav-pricing" data-row="2">Pricing</a>
+          </div>
+          </div>
+          <div class="nav-platform-group nav-platform-group--soon">
           <span class="nav-platform-eyebrow">Coming Soon</span>
           <div class="nav-platform-tray">
-          <a href="/index.html" id="nav-parenting-orders" data-row="2">Parenting Orders</a>
-          <a href="/document-centre.html" id="nav-doc-helper" data-row="2">Document Centre</a>
-          <a href="/index.html" id="nav-ai-assistant" data-row="2">AI Assistant</a>
-          <a href="/index.html" id="nav-pricing" data-row="2">Pricing</a>
+          <a href="/index.html" id="nav-parenting-orders" class="parenting-orders nav-parenting-centre" data-row="2">Parenting Orders</a>
+          <a href="/index.html" id="nav-ai-assistant" data-row="2">Case Assistant</a>
           <a href="/index.html" id="nav-referrals" data-row="2">Referrals</a>
-          <a href="/index.html" id="nav-your-case-pulse" data-row="2">Your Case</a>
           <a href="/index.html" id="nav-lawyer-portal" data-row="2">Lawyer Portal</a>
+          </div>
           </div>
           </div>
         </div>
@@ -72,12 +80,21 @@
 <script>
 window.openAuth = function (mode) {
   var m = mode === "signin" ? "signin" : "signup";
+  if (
+    window.CasePathAuth &&
+    window.CasePathAuth.redirect &&
+    typeof window.CasePathAuth.redirect.safeAssignHref === "function"
+  ) {
+    window.CasePathAuth.redirect.safeAssignHref("/index.html?auth=" + m);
+    return;
+  }
   window.location.href = "/index.html?auth=" + m;
 };
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4/dist/umd/supabase.js" integrity="sha384-7SfFUrg31wOnGWBLLniKFCNmCSguYA5wI1WPDOt7kP/mom4R9/0pwghVEnv0uwYP" crossorigin="anonymous"></script>
 <script src="/assets/js/supabase.js"></script>
-<script src="/assets/js/casepath-nav-access.js?v=20260511f"></script>
+<script src="/auth/redirect.js?v=20260511p3"></script>
+<script src="/assets/js/casepath-nav-access.js?v=20260511p3"></script>
 <script src="/assets/js/public-static-nav.js"></script>
 </body>
 </html>
