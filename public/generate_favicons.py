@@ -1,4 +1,4 @@
-"""One-off generator for CasePath favicon PNG/ICO from brand colours (#6F8F72, white F). Run from App/public."""
+"""One-off generator for CasePath favicon PNG/ICO from brand colours (#6F8F72, white CP monogram). Run from App/public."""
 from __future__ import annotations
 
 import os
@@ -15,17 +15,17 @@ GREEN = (0x6F, 0x8F, 0x72, 255)
 WHITE = (255, 255, 255, 255)
 
 
-def render_f_icon(size: int) -> Image.Image:
+def render_cp_icon(size: int) -> Image.Image:
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     dr = ImageDraw.Draw(img)
     rx = max(2, int(round(18 * size / 100)))
     dr.rounded_rectangle((0, 0, size - 1, size - 1), radius=rx, fill=GREEN)
 
-    font_size = int(round(52 * size / 100))
+    font_size = int(round(42 * size / 100))
     if size <= 16:
-        font_size = max(font_size, 11)
+        font_size = max(font_size, 9)
     elif size <= 32:
-        font_size = max(font_size, 18)
+        font_size = max(font_size, 14)
 
     font = None
     font_paths = [
@@ -47,7 +47,7 @@ def render_f_icon(size: int) -> Image.Image:
     if font is None:
         font = ImageFont.load_default()
 
-    txt = "F"
+    txt = "CP"
     bbox = dr.textbbox((0, 0), txt, font=font)
     tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
     x = (size - tw) // 2 - bbox[0]
@@ -66,12 +66,12 @@ def main() -> None:
         ("android-chrome-512x512.png", 512),
     )
     for name, s in targets:
-        im = render_f_icon(s)
+        im = render_cp_icon(s)
         im.save(name, "PNG", optimize=True)
         print(name, os.path.getsize(name), "bytes")
 
-    i32 = render_f_icon(32)
-    i16 = render_f_icon(16)
+    i32 = render_cp_icon(32)
+    i16 = render_cp_icon(16)
     i32.save("favicon.ico", format="ICO", append_images=[i16])
     print("favicon.ico", os.path.getsize("favicon.ico"), "bytes")
 

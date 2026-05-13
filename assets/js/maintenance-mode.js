@@ -2,8 +2,9 @@
  * CasePath — Production Maintenance Mode (temporary).
  *
  * SINGLE SOURCE OF TRUTH for the in-app maintenance toggle.
- * To DISABLE maintenance mode, change the boolean below to `false`.
- * No other code edits are required to restore normal service.
+ * Maintenance is OFF automatically on localhost / 127.0.0.1 / ::1 / file
+ * (empty hostname). To turn it off everywhere, set the production branch
+ * below to `false`.
  *
  * When enabled:
  *  - Public informational pages still render (see ALLOWED_PATHS below).
@@ -18,11 +19,31 @@
 (function () {
   "use strict";
 
-  // ── SINGLE TOGGLE ────────────────────────────────────────────────────────
-  window.CASEPATH_MAINTENANCE_MODE = true;
+  // ── TOGGLE: off on local dev, on in production ─────────────────────────
+  function casepathIsLocalMaintenanceBypassHost(hostname) {
+    var h = String(hostname || "").toLowerCase().trim();
+    if (!h) return true; /* file:// and similar */
+    if (h === "localhost" || h === "127.0.0.1") return true;
+    /* IPv6 loopback: browsers may report [::1] or ::1 */
+    if (h === "[::1]" || h === "::1") return true;
+    return false;
+  }
+
+  window.CASEPATH_MAINTENANCE_MODE = (function () {
+    try {
+      var h = (window.location && window.location.hostname) || "";
+      if (casepathIsLocalMaintenanceBypassHost(h)) return false;
+    } catch (e) { /* ignore */ }
+    return true;
+  })();
   // ─────────────────────────────────────────────────────────────────────────
 
-  if (!window.CASEPATH_MAINTENANCE_MODE) return;
+  if (!window.CASEPATH_MAINTENANCE_MODE) {
+    try {
+      console.log("[CasePath] Localhost detected — maintenance mode bypassed");
+    } catch (e) { /* ignore */ }
+    return;
+  }
 
   var ALLOWED_PATHS = [
     "/",

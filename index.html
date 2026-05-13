@@ -14805,6 +14805,7 @@ window.casepathTrack = function(eventName, props = {}) {
             oldScript.parentNode.replaceChild(s, oldScript);
           });
           setTimeout(function () {
+            if (typeof initPricing === "function") initPricing();
             if (typeof window.__flushPricingHighlightPending === "function") {
               window.__flushPricingHighlightPending();
             }
@@ -15484,7 +15485,7 @@ window.casepathTrack = function(eventName, props = {}) {
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4/dist/umd/supabase.js" integrity="sha384-7SfFUrg31wOnGWBLLniKFCNmCSguYA5wI1WPDOt7kP/mom4R9/0pwghVEnv0uwYP" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/argon2-browser@1.18.0/dist/argon2-bundled.min.js" integrity="sha384-XOR3aNvHciLPIf6r+2glkrmbBbLmIJ1EChMXjw8eBKBf8gE0rDq1TyUNuRdorOqi" crossorigin="anonymous"></script>
-<script src="/assets/js/supabase.js?v=20260427d"></script>
+<script src="/assets/js/supabase.js?v=20260514a"></script>
 <script>
 (function () {
   /*
@@ -15526,7 +15527,7 @@ window.casepathTrack = function(eventName, props = {}) {
 <script src="/auth/session.js?v=20260511p3"></script>
 <script src="/auth/routeGuard.js?v=20260511p3"></script>
 <script src="/auth/mfa-foundation.js?v=20260511p3"></script>
-<script src="/assets/js/auth.js?v=20260511p3"></script>
+<script src="/assets/js/auth.js?v=20260514a"></script>
 <script src="/assets/js/casepath-nav-access.js?v=20260511p3"></script>
 <script src="/assets/js/vaultCrypto.js?v=20260427d"></script>
 <script>
@@ -16290,37 +16291,81 @@ async function doSignIn() {
   const email = document.getElementById('signin-email').value.trim();
   const pass  = document.getElementById('signin-pass').value;
   const err   = document.getElementById('signin-error');
-  if (window.CasePathAuth && window.CasePathAuth.rateLimit && typeof window.CasePathAuth.rateLimit.allow === 'function') {
-    var rlSignin = window.CasePathAuth.rateLimit.allow('login');
-    if (!rlSignin.ok) {
-      var waitS = rlSignin.retryAfterMs ? Math.ceil(rlSignin.retryAfterMs / 1000) : 60;
-      err.textContent = 'Too many sign-in attempts. Please wait ' + waitS + ' seconds and try again.';
-      err.style.display = '';
-      return;
-    }
-  }
-  if (!email || !pass) { err.textContent = 'Please enter your email and password.'; err.style.display = ''; return; }
-  err.style.display = 'none';
-  const result = await login(email, pass);
-  if (!result || !result.user) {
-    var authMsg = window.__crLastAuthError || '';
-    if (authMsg && authMsg.toLowerCase().indexOf('email not confirmed') !== -1) {
-      err.textContent = 'Please confirm your email first. Check your inbox (and spam), then sign in again.';
-    } else {
-      err.textContent = authMsg || 'Unable to sign in. Check your details and try again.';
-    }
-    err.style.display = '';
+  const submitBtn = document.querySelector('#auth-signin .btn-full');
+  const originalText = submitBtn ? submitBtn.textContent : 'Sign In';
+  if (!email || !pass) {
+    if (err) { err.textContent = 'Please enter your email and password.'; err.style.display = ''; }
     return;
   }
-  crMarkHasAccount();
-  crSetSignedInFlag(true);
-  if (typeof syncUser === 'function') await syncUser();
-  closeAuth();
-  updateNav();
-  updateGates();
-  if (typeof botUnlockAfterLogin === 'function') botUnlockAfterLogin();
-  if (typeof crConsumePostAuthRedirect === 'function' && crConsumePostAuthRedirect()) return;
-  if (typeof crFlushPendingPageAfterAuth === 'function') crFlushPendingPageAfterAuth();
+  if (err) err.style.display = 'none';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Signing in...';
+  }
+  var result = null;
+  try {
+    if (window.CasePathAuth && window.CasePathAuth.rateLimit && typeof window.CasePathAuth.rateLimit.allow === 'function') {
+      var rlSignin = window.CasePathAuth.rateLimit.allow('login');
+      if (!rlSignin.ok) {
+        var waitS = rlSignin.retryAfterMs ? Math.ceil(rlSignin.retryAfterMs / 1000) : 60;
+        if (err) {
+          err.textContent = 'Too many sign-in attempts. Please wait ' + waitS + ' seconds and try again.';
+          err.style.display = '';
+        }
+        return;
+      }
+    }
+    var sb = window.supabaseClient || window.casepathSupabase;
+    if (!sb || !sb.auth) {
+      console.error('[AUTH] doSignIn: Supabase client missing after init');
+      if (err) {
+        err.textContent = 'Sign-in is not ready yet. Please refresh the page and try again.';
+        err.style.display = '';
+      }
+      alert('Sign-in is not ready yet. Please refresh the page and try again.');
+      return;
+    }
+    result = await login(email, pass);
+    if (!result || !result.user) {
+      var authMsg = window.__crLastAuthError || '';
+      if (err) {
+        if (authMsg && authMsg.toLowerCase().indexOf('email not confirmed') !== -1) {
+          err.textContent = 'Please confirm your email first. Check your inbox (and spam), then sign in again.';
+        } else {
+          err.textContent = authMsg || 'Unable to sign in. Check your details and try again.';
+        }
+        err.style.display = '';
+      }
+      return;
+    }
+  } catch (eSignin) {
+    console.error('[CasePath] doSignIn', eSignin);
+    if (err) {
+      err.textContent = (eSignin && eSignin.message) ? eSignin.message : 'Unable to sign in right now. Please try again.';
+      err.style.display = '';
+    }
+    alert((eSignin && eSignin.message) ? eSignin.message : 'Unable to sign in right now. Please try again.');
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
+  }
+  if (!result || !result.user) return;
+  try {
+    crMarkHasAccount();
+    crSetSignedInFlag(true);
+    if (typeof syncUser === 'function') await syncUser();
+    closeAuth();
+    updateNav();
+    updateGates();
+    if (typeof botUnlockAfterLogin === 'function') botUnlockAfterLogin();
+    if (typeof crConsumePostAuthRedirect === 'function' && crConsumePostAuthRedirect()) return;
+    if (typeof crFlushPendingPageAfterAuth === 'function') crFlushPendingPageAfterAuth();
+  } catch (ePost) {
+    console.error('[CasePath] doSignIn post-login', ePost);
+    alert((ePost && ePost.message) ? ePost.message : 'Signed in, but something went wrong finishing setup. Try refreshing the page.');
+  }
 }
 
 async function doPasswordReset() {
@@ -18200,8 +18245,15 @@ function addAIChatMsg(text, role) {
   const div = document.createElement('div');
   div.className = role === 'user' ? 'qmsg qmsg-user' : 'qmsg';
   const avatar = document.createElement('div');
-  avatar.className = 'qmsg-avatar';
-  avatar.textContent = role === 'user' ? 'You' : 'CP';
+  if (role === 'user') {
+    avatar.className = 'qmsg-avatar';
+    avatar.textContent = 'You';
+  } else {
+    avatar.className = 'cp-monogram';
+    avatar.setAttribute('role', 'img');
+    avatar.setAttribute('aria-label', 'CasePath');
+    avatar.textContent = 'CP';
+  }
   const outer = document.createElement('div');
   const bubble = document.createElement('div');
   bubble.className = 'qmsg-bubble';
@@ -18224,7 +18276,7 @@ async function runAIAssistant(question) {
   if (!cw) return;
   const typing = document.createElement('div');
   typing.className = 'qmsg'; typing.id = 'ai-typing-indicator';
-  typing.innerHTML = `<div class="qmsg-avatar">CP</div><div><div class="qmsg-bubble typing"><span></span><span></span><span></span></div></div>`;
+  typing.innerHTML = `<div class="cp-monogram" role="img" aria-label="CasePath">CP</div><div><div class="qmsg-bubble typing"><span></span><span></span><span></span></div></div>`;
   cw.appendChild(typing); cw.scrollTop = cw.scrollHeight;
   
   const caseData = JSON.parse(localStorage.getItem('cr_case') || '{}');
@@ -18265,7 +18317,7 @@ function clearAIChat() {
   }
   const cw = document.getElementById('ai-chat-window');
   if (!cw) return;
-  cw.innerHTML = `<div class="qmsg"><div class="qmsg-avatar">CP</div><div><div class="qmsg-bubble">Conversation cleared. Ask about preparation for your matter — chronology, evidence, drafting steps, or what to gather next.<div class="msg-disclaimer">ℹ️ Legal information only — not advice about your specific situation.</div></div></div></div>`;
+  cw.innerHTML = `<div class="qmsg"><div class="cp-monogram" role="img" aria-label="CasePath">CP</div><div><div class="qmsg-bubble">Conversation cleared. Ask about preparation for your matter — chronology, evidence, drafting steps, or what to gather next.<div class="msg-disclaimer">ℹ️ Legal information only — not advice about your specific situation.</div></div></div></div>`;
 }
 
 // Initial URL routing runs after syncUser (billing bootstrap) so session state is correct before showPage gates.
@@ -19523,13 +19575,13 @@ function printAffidavit() {
 }
 .bot-msg { display: flex; gap: 0.5rem; align-items: flex-start; max-width: 90%; }
 .bot-msg.user { flex-direction: row-reverse; align-self: flex-end; }
+/* User bubble only — assistant uses .cp-monogram (styles.css) */
 .bot-msg-avatar {
   width: 26px; height: 26px; border-radius: 50%;
-  background: var(--sage-pale); border: 1px solid rgba(74,124,89,0.2);
+  background: var(--sage); border: 1px solid var(--sage);
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.62rem; font-weight: 700; color: var(--sage); flex-shrink: 0;
+  font-size: 0.62rem; font-weight: 700; color: white; flex-shrink: 0;
 }
-.bot-msg.user .bot-msg-avatar { background: var(--sage); color: white; border-color: var(--sage); }
 .bot-msg-bubble {
   background: var(--sage-pale); border-radius: 14px; border-bottom-left-radius: 4px;
   padding: 0.6rem 0.85rem; font-size: 0.82rem; line-height: 1.6; color: var(--charcoal);
@@ -19674,7 +19726,7 @@ function printAffidavit() {
   <div class="cr-tab-panel active" id="cr-panel-chat" style="flex-direction:column;">
     <div id="cr-bot-messages">
       <div class="bot-msg">
-        <div class="bot-msg-avatar">CP</div>
+        <div class="cp-monogram" role="img" aria-label="CasePath">CP</div>
         <div class="bot-msg-bubble">
           Hi! I am here for <strong>general Australian family law guidance</strong> — processes, terminology, parenting arrangements, and court procedures. Answers draw from our <strong><a onclick="showPage('glossary');toggleBot();" style="color:var(--sage);cursor:pointer;text-decoration:underline;text-decoration-style:dotted;">525-term Glossary</a></strong> and legislation. This is <strong>not</strong> for drafting your affidavits or managing your private workspace — use <strong>Case Assistant</strong> from the menu (when available) together with <strong>Your Case</strong> for that preparation layer.<br><br>Ask below, or browse <strong>Suggested</strong> and <strong>Topics</strong>.
           <div class="bot-disclaimer">ℹ️ Legal information only — not advice about your specific situation.</div>
@@ -19969,8 +20021,15 @@ function botAddMsg(text, role) {
   var div = document.createElement('div');
   div.className = 'bot-msg' + (role === 'user' ? ' user' : '');
   var avatar = document.createElement('div');
-  avatar.className = 'bot-msg-avatar';
-  avatar.textContent = role === 'user' ? 'You' : 'CP';
+  if (role === 'user') {
+    avatar.className = 'bot-msg-avatar';
+    avatar.textContent = 'You';
+  } else {
+    avatar.className = 'cp-monogram';
+    avatar.setAttribute('role', 'img');
+    avatar.setAttribute('aria-label', 'CasePath');
+    avatar.textContent = 'CP';
+  }
   var bubble = document.createElement('div');
   bubble.className = 'bot-msg-bubble';
   if (role === 'ai') bubble.innerHTML = renderSafeRichText(text);
@@ -20090,7 +20149,7 @@ async function botRunAI() {
   var msgs = document.getElementById('cr-bot-messages');
   var typingDiv = document.createElement('div');
   typingDiv.className = 'bot-msg'; typingDiv.id = 'bot-typing';
-  typingDiv.innerHTML = '<div class="bot-msg-avatar">CP</div><div class="bot-msg-bubble"><div class="bot-typing"><span></span><span></span><span></span></div></div>';
+  typingDiv.innerHTML = '<div class="cp-monogram" role="img" aria-label="CasePath">CP</div><div class="bot-msg-bubble"><div class="bot-typing"><span></span><span></span><span></span></div></div>';
   msgs.appendChild(typingDiv); msgs.scrollTop = msgs.scrollHeight;
   var caseData = {};
   try { caseData = JSON.parse(localStorage.getItem('cr_case') || '{}'); } catch(e) {}
@@ -20721,7 +20780,7 @@ function poGenerateOrders() {
   lines.push('');
   lines.push('═'.repeat(60));
   lines.push('');
-  lines.push('DRAFT ONLY — NOT FILED — GENERATED BY CASEREADY');
+  lines.push('DRAFT ONLY — NOT FILED — GENERATED BY CASEPATH');
   lines.push('Date generated: ' + new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }));
 
   document.getElementById('po-output').textContent = lines.join('\n');
@@ -20753,7 +20812,7 @@ function poCopyOrders() {
 function clearBotChat() {
   botConversationHistory = [];
   var msgs = document.getElementById('cr-bot-messages');
-  msgs.innerHTML = '<div class="bot-msg"><div class="bot-msg-avatar">CP</div><div class="bot-msg-bubble">Hi! I am here for <strong>general Australian family law guidance</strong> — processes, terminology, parenting arrangements, and court procedures. Answers draw from our <strong><a onclick="showPage(\'glossary\');toggleBot();" style="color:var(--sage);cursor:pointer;text-decoration:underline;text-decoration-style:dotted;">525-term Glossary</a></strong> and legislation. This is <strong>not</strong> for drafting your affidavits or managing your private workspace — use <strong>Case Assistant</strong> from the menu (when available) together with <strong>Your Case</strong> for that preparation layer.<br><br>Ask below, or browse <strong>Suggested</strong> and <strong>Topics</strong>.<div class="bot-disclaimer">ℹ️ Legal information only — not advice about your specific situation.</div></div></div>';
+  msgs.innerHTML = '<div class="bot-msg"><div class="cp-monogram" role="img" aria-label="CasePath">CP</div><div class="bot-msg-bubble">Hi! I am here for <strong>general Australian family law guidance</strong> — processes, terminology, parenting arrangements, and court procedures. Answers draw from our <strong><a onclick="showPage(\'glossary\');toggleBot();" style="color:var(--sage);cursor:pointer;text-decoration:underline;text-decoration-style:dotted;">525-term Glossary</a></strong> and legislation. This is <strong>not</strong> for drafting your affidavits or managing your private workspace — use <strong>Case Assistant</strong> from the menu (when available) together with <strong>Your Case</strong> for that preparation layer.<br><br>Ask below, or browse <strong>Suggested</strong> and <strong>Topics</strong>.<div class="bot-disclaimer">ℹ️ Legal information only — not advice about your specific situation.</div></div></div>';
   // Re-enable input if it was locked (user might have logged in)
   if (currentUser) botUnlockAfterLogin();
 }
@@ -23232,7 +23291,7 @@ if (navGrid && links.length) {
 
 <script src="/assets/js/translations.js"></script>
 <script src="/assets/js/nav-link-fallback.js?v=20260511p3"></script>
-<script src="/assets/js/app.js?v=20260511p3"></script>
+<script src="/assets/js/app.js?v=20260514a"></script>
 <script src="/assets/js/case-workspace.js?v=20260511p1"></script>
 <script>
 function cpIsAuthed() {

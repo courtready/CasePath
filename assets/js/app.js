@@ -19,7 +19,13 @@ if (window.location.protocol === "file:") {
 console.log("CasePath version: NEW BUILD");
 function crLocalDevHost() {
   try {
-    return /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(window.location.hostname || "");
+    var h = String(window.location.hostname || "")
+      .toLowerCase()
+      .trim();
+    if (!h) return true;
+    if (h === "localhost" || h === "127.0.0.1") return true;
+    if (h === "[::1]" || h === "::1") return true;
+    return false;
   } catch (e) {
     return false;
   }
@@ -172,7 +178,14 @@ function initNav() {
   if (nav) nav.style.display = "block";
 }
 
-function initPricing() {}
+function initPricing() {
+  if (typeof casepathBindPricingCheckoutDelegation === "function") {
+    casepathBindPricingCheckoutDelegation();
+  }
+  if (typeof window.__flushPricingHighlightPending === "function") {
+    window.__flushPricingHighlightPending();
+  }
+}
 function initLawyer() {}
 
 function initComponent(id) {
@@ -1352,15 +1365,108 @@ function casepathIsStripeHostedCheckoutUrl(u) {
   }
 }
 
+function casepathShowCheckoutErrorToast(message) {
+  var text = String(message || "Checkout could not start.").trim() || "Checkout could not start.";
+  var id = "casepath-checkout-error-toast";
+  try {
+    var prev = document.getElementById(id);
+    if (prev) prev.remove();
+  } catch (e0) {}
+  var wrap = document.createElement("div");
+  wrap.id = id;
+  wrap.setAttribute("role", "alert");
+  wrap.style.cssText =
+    "position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);max-width:min(28rem,calc(100% - 2rem));z-index:2147483647;" +
+    "background:#1e2420;color:#fffef9;padding:1rem 1.15rem 0.85rem;border-radius:12px;" +
+    "box-shadow:0 12px 40px rgba(0,0,0,0.35);font-family:'DM Sans',system-ui,-apple-system,sans-serif;font-size:0.9rem;line-height:1.5;";
+  var p = document.createElement("p");
+  p.style.margin = "0 0 0.65rem";
+  p.textContent = text;
+  var btn = document.createElement("button");
+  btn.type = "button";
+  btn.textContent = "Dismiss";
+  btn.style.cssText =
+    "display:block;width:100%;background:#4a7c59;color:#fff;border:none;border-radius:8px;padding:0.45rem 0.6rem;font:inherit;font-weight:600;cursor:pointer;";
+  btn.addEventListener("click", function () {
+    try {
+      wrap.remove();
+    } catch (e1) {}
+  });
+  wrap.appendChild(p);
+  wrap.appendChild(btn);
+  var host = document.body || document.documentElement;
+  host.appendChild(wrap);
+  setTimeout(function () {
+    try {
+      if (wrap.parentNode) wrap.remove();
+    } catch (e2) {}
+  }, 14000);
+}
+
+function casepathCheckoutFailLogged(dataSnapshot, userMessage) {
+  try {
+    console.error(
+      "[CasePath checkout] request failed",
+      dataSnapshot != null ? JSON.stringify(dataSnapshot) : "{}"
+    );
+  } catch (e) {
+    console.error("[CasePath checkout] request failed", dataSnapshot);
+  }
+  casepathShowCheckoutErrorToast(userMessage);
+}
+
 function casepathAlertCheckout(msg) {
   try {
-    alert(String(msg || "Checkout could not start."));
+    casepathShowCheckoutErrorToast(msg);
   } catch (e) {
-    console.error("[checkout]", msg);
+    try {
+      console.error("[checkout]", msg);
+    } catch (e2) {}
+    try {
+      alert(String(msg || "Checkout could not start."));
+    } catch (e3) {}
   }
 }
 
-function casepathCheckoutMessageForResponse(status, data) {
+function casepathCheckoutDiagnosticsEnabled() {
+  try {
+    return crLocalDevHost() || DEV_MODE;
+  } catch (e) {
+    return false;
+  }
+}
+
+function casepathBindPricingCheckoutDelegation() {
+  if (window.__casepathPricingCheckoutDelegationBound) return;
+  window.__casepathPricingCheckoutDelegationBound = true;
+  document.addEventListener(
+    "click",
+    function (ev) {
+      var t = ev.target;
+      if (!t || typeof t.closest !== "function") return;
+      var btn = t.closest("[data-cp-checkout-sku]");
+      if (!btn) return;
+      if (btn.getAttribute("data-casepath-maintenance-disabled") === "1") return;
+      if (btn.disabled === true || btn.getAttribute("aria-disabled") === "true") return;
+      var sku = btn.getAttribute("data-cp-checkout-sku");
+      if (!sku) return;
+      sku = String(sku).trim();
+      if (!sku) return;
+      ev.preventDefault();
+      if (typeof window.openPricingCheckout !== "function") {
+        casepathCheckoutFailLogged(
+          { code: "CLIENT_CHECKOUT_UNAVAILABLE" },
+          "Checkout is not ready yet. Refresh the page and try again."
+        );
+        return;
+      }
+      void window.openPricingCheckout(sku);
+    },
+    false
+  );
+}
+
+function casepathCheckoutMessageForResponse(status, data, requestedSku) {
   var code = data && data.code ? String(data.code) : "";
   var err = data && data.error ? String(data.error) : "";
   var errLower = err.toLowerCase();
@@ -1373,6 +1479,30 @@ function casepathCheckoutMessageForResponse(status, data) {
     );
   }
   if (code === "PRICE_NOT_CONFIGURED" || code === "UNKNOWN_SKU") {
+    var diag = casepathCheckoutDiagnosticsEnabled();
+    var sk = String((data && data.sku) || requestedSku || "").trim();
+    if (diag && sk) {
+      if (code === "UNKNOWN_SKU") {
+        return (
+          "Stripe plan mapping missing for: " +
+          sk +
+          " (SKU not in server whitelist). Allowed: " +
+          CASEPATH_CHECKOUT_SKUS.join(", ") +
+          "."
+        );
+      }
+      var missDiag = data && data.missing_env;
+      if (missDiag && missDiag.length) {
+        return (
+          "Stripe plan mapping missing for: " +
+          sk +
+          ". Set one of these Supabase Edge secrets to a live Stripe price_… ID: " +
+          missDiag.join(", ") +
+          "."
+        );
+      }
+      return "Stripe plan mapping missing for: " + sk + ".";
+    }
     var miss = data && data.missing_env;
     if (miss && miss.length) {
       return (
@@ -1427,19 +1557,21 @@ async function openPricingCheckout(plan) {
     doc_single: "credits_1",
     doc_five: "credits_5",
     full: "pro_monthly",
+    full_access: "pro_monthly",
     pro: "pro_monthly",
     starter: "starter_monthly",
+    essential_monthly: "essential",
     casepack: "parenting_pack",
     lawyer: "lawyer_portal",
     lawyer_portal_access: "lawyer_portal",
   };
   var planKey = planAliases[plan] || plan;
-  console.info("[CasePath checkout] requested SKU:", planKey, "(raw:", plan, ")");
 
   var baseUrl = (typeof window !== "undefined" && window.SUPABASE_PROJECT_URL) || "";
   if (!baseUrl || !window.supabaseClient) {
     console.error("openPricingCheckout: missing Supabase client / URL");
-    casepathAlertCheckout(
+    casepathCheckoutFailLogged(
+      { code: "MISSING_SUPABASE_CLIENT", sku: planKey },
       "Payments are not connected yet (missing Supabase client). Check that supabase.js loaded and refresh."
     );
     return;
@@ -1447,7 +1579,6 @@ async function openPricingCheckout(plan) {
 
   var checkoutEndpoint =
     String(baseUrl).replace(/\/$/, "") + "/functions/v1/create-checkout-session";
-  console.info("[CasePath checkout] request start →", checkoutEndpoint);
 
   var sess = null;
   try {
@@ -1459,8 +1590,8 @@ async function openPricingCheckout(plan) {
   var token = sess && sess.access_token ? sess.access_token : "";
   if (!token && !DEV_MODE) {
     console.warn("openPricingCheckout: sign in required");
+    casepathShowCheckoutErrorToast("Please create an account or sign in to continue to checkout.");
     if (typeof openAuth === "function") openAuth("signup");
-    else casepathAlertCheckout("Please create an account or sign in to continue to checkout.");
     return;
   }
 
@@ -1471,7 +1602,7 @@ async function openPricingCheckout(plan) {
     !(sessionUser.email_confirmed_at || sessionUser.new_email_confirmed_at)
   ) {
     console.warn("openPricingCheckout: email not verified");
-    casepathAlertCheckout(
+    casepathShowCheckoutErrorToast(
       "Please verify your email before purchasing. Check your inbox and spam folder, then try again."
     );
     if (typeof openAuth === "function") openAuth("signin");
@@ -1483,6 +1614,14 @@ async function openPricingCheckout(plan) {
     typeof window !== "undefined" && window.location && window.location.pathname
       ? window.location.pathname
       : "/";
+
+  console.info("[CasePath checkout] request start");
+
+  if (casepathCheckoutDiagnosticsEnabled()) {
+    try {
+      console.log("[CasePath checkout] payload", { sku: planKey, return_path: returnPath });
+    } catch (eLog) {}
+  }
 
   var res;
   try {
@@ -1508,13 +1647,12 @@ async function openPricingCheckout(plan) {
         error: "network",
       };
     } catch (e2) {}
-    casepathAlertCheckout(
+    casepathCheckoutFailLogged(
+      { error: "network", sku: planKey, message: String(err && err.message ? err.message : err) },
       "Could not reach the checkout server. Check your connection, disable strict blockers for this site, and try again."
     );
     return;
   }
-
-  console.info("[CasePath checkout] fetch response status:", res.status);
 
   var rawText = "";
   try {
@@ -1543,39 +1681,34 @@ async function openPricingCheckout(plan) {
 
   if (res.ok && data && data.code === "MALFORMED_JSON") {
     console.error("Checkout: 200 with unreadable JSON body");
-    casepathAlertCheckout(
+    casepathCheckoutFailLogged(
+      data,
       "Checkout could not start: the payment server returned an unexpected response. Please refresh and try again."
     );
     return;
   }
 
   if (!res.ok) {
-    console.error("Checkout failed:", res.status, data);
-    casepathAlertCheckout(casepathCheckoutMessageForResponse(res.status, data));
+    casepathCheckoutFailLogged(data, casepathCheckoutMessageForResponse(res.status, data, planKey));
     return;
   }
 
   var checkoutUrl = data && data.url ? String(data.url).trim() : "";
-  console.info("[CasePath checkout] returned checkout URL host:", (function () {
-    try {
-      return new URL(checkoutUrl).hostname;
-    } catch (e6) {
-      return "(invalid)";
-    }
-  })());
 
   if (!casepathIsStripeHostedCheckoutUrl(checkoutUrl)) {
     console.error("Checkout returned unexpected URL (rejecting redirect):", checkoutUrl);
-    casepathAlertCheckout(
+    casepathCheckoutFailLogged(
+      Object.assign({}, data, { rejected_url: checkoutUrl }),
       "Checkout could not start: the payment server returned an invalid redirect. Please try again or contact support."
     );
     return;
   }
 
-  console.info("[CasePath checkout] redirect attempt → stripe hosted page");
+  console.info("[CasePath checkout] request success");
   window.location.href = checkoutUrl;
 }
 window.openPricingCheckout = openPricingCheckout;
+casepathBindPricingCheckoutDelegation();
 
 window.casepathStripeDebug = function casepathStripeDebug() {
   var origin = "";
@@ -2661,7 +2794,8 @@ function wireDocHelperVaultAutosave() {
 async function initCaseVaultSession() {
   const list = document.getElementById("vault-list");
   if (!list) return;
-  if (!DEV_MODE && (!crSupabaseAuthed() || !window.currentUser.id)) {
+  var cu = window.currentUser;
+  if (!DEV_MODE && (!crSupabaseAuthed() || !cu || !cu.id)) {
     list.innerHTML = "";
     return;
   }
@@ -2847,8 +2981,14 @@ async function syncUser() {
       window.CasePathAuth.clearAuthState("SIGNED_OUT");
     }
     await pushAuthStateToUi();
-    if (window.CasePathAuth && window.CasePathAuth.redirect && typeof window.CasePathAuth.redirect.safe === "function") {
-      window.CasePathAuth.redirect.safe("/");
+    if (
+      window.CasePathAuth &&
+      window.CasePathAuth.redirect &&
+      typeof window.CasePathAuth.redirect.safeStableShell === "function"
+    ) {
+      window.CasePathAuth.redirect.safeStableShell();
+    } else if (window.CasePathAuth && window.CasePathAuth.redirect && typeof window.CasePathAuth.redirect.safe === "function") {
+      window.CasePathAuth.redirect.safe("/index.html");
     } else if (typeof showPage === "function") showPage("home");
   };
 
@@ -2882,7 +3022,7 @@ async function syncUser() {
         try {
           window.__crAuthHydrated = true;
         } catch (e0) {
-          /* ignore */
+          console.warn("[AUTH] initSessionBeforeRender __crAuthHydrated set failed", e0);
         }
       }
       await syncUser();
@@ -2891,7 +3031,7 @@ async function syncUser() {
       try {
         await syncUser();
       } catch (e) {
-        /* ignore */
+        console.warn("[AUTH] initSessionBeforeRender syncUser fallback failed", e);
       }
     }
   }
@@ -2967,33 +3107,89 @@ async function syncUser() {
     window.initSignupTermsGate = initSignupTermsGate;
 
     window.doSignIn = async function () {
+      if (typeof initSupabaseClient === "function") initSupabaseClient();
       const email = document.getElementById("signin-email").value.trim();
       const password = document.getElementById("signin-pass").value;
       const err = document.getElementById("signin-error");
       const submitBtn = document.querySelector("#auth-signin .btn-full");
       if (!email || !password) {
-        err.textContent = "Please enter your email and password.";
-        err.style.display = "";
+        if (err) {
+          err.textContent = "Please enter your email and password.";
+          err.style.display = "";
+        }
         return;
       }
-      err.style.display = "none";
+      if (err) err.style.display = "none";
       const originalText = submitBtn ? submitBtn.textContent : "Sign In";
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.textContent = "Signing in...";
       }
+
+      let data = null;
       try {
-        const data = await login(email, password);
-        if (!data) {
-          const authMsg = window.__crLastAuthError || "";
-          if (authMsg && authMsg.toLowerCase().includes("email not confirmed")) {
-            err.textContent = "Please confirm your email first. Check your inbox (and spam), then sign in again.";
-          } else {
-            err.textContent = authMsg || "Unable to sign in. Check your details and try again.";
+        if (window.CasePathAuth && window.CasePathAuth.rateLimit && typeof window.CasePathAuth.rateLimit.allow === "function") {
+          var rlSignin = window.CasePathAuth.rateLimit.allow("login");
+          if (!rlSignin.ok) {
+            var waitS = rlSignin.retryAfterMs ? Math.ceil(rlSignin.retryAfterMs / 1000) : 60;
+            if (err) {
+              err.textContent = "Too many sign-in attempts. Please wait " + waitS + " seconds and try again.";
+              err.style.display = "";
+            }
+            return;
           }
-          err.style.display = "";
+        }
+        var sb = window.supabaseClient || window.casepathSupabase;
+        if (!sb || !sb.auth) {
+          console.error("[AUTH] doSignIn: Supabase client missing after init");
+          if (err) {
+            err.textContent = "Sign-in is not ready yet. Please refresh the page and try again.";
+            err.style.display = "";
+          }
+          alert("Sign-in is not ready yet. Please refresh the page and try again.");
           return;
         }
+        data = await login(email, password);
+        if (!data) {
+          const authMsg = window.__crLastAuthError || "";
+          if (err) {
+            if (authMsg && authMsg.toLowerCase().includes("email not confirmed")) {
+              err.textContent =
+                "Please confirm your email first. Check your inbox (and spam), then sign in again.";
+            } else {
+              err.textContent = authMsg || "Unable to sign in. Check your details and try again.";
+            }
+            err.style.display = "";
+          }
+          return;
+        }
+        if (data.session && window.CasePathAuth && typeof window.CasePathAuth.applySession === "function") {
+          window.CasePathAuth.applySession(data.session, "SIGNED_IN");
+        }
+        try {
+          window.__crAuthHydrated = true;
+        } catch (eH) {
+          console.warn("[AUTH] doSignIn __crAuthHydrated set failed", eH);
+        }
+      } catch (error) {
+        if (err) {
+          err.textContent = (error && error.message) || "Unable to sign in right now. Please try again.";
+          err.style.display = "";
+        }
+        console.error("[CasePath] doSignIn", error);
+        alert((error && error.message) || "Unable to sign in right now. Please try again.");
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      }
+
+      if (!data) return;
+
+      try {
+        if (typeof crMarkHasAccount === "function") crMarkHasAccount();
+        if (typeof crSetSignedInFlag === "function") crSetSignedInFlag(true);
         await syncUser();
         closeAuth();
         if (typeof updateNav === "function") updateNav();
@@ -3003,20 +3199,17 @@ async function syncUser() {
         if (typeof maybePostLoginPendingFeatureRedirect === "function") {
           maybePostLoginPendingFeatureRedirect();
         }
-        // Force a clean post-login state sync in maintenance mode.
-        if (window.CasePathAuth && window.CasePathAuth.redirect && typeof window.CasePathAuth.redirect.safe === "function") {
-          window.CasePathAuth.redirect.safe("/");
-        } else {
-          window.location.href = "/";
+        if (typeof crConsumePostAuthRedirect === "function" && crConsumePostAuthRedirect()) {
+          return;
         }
-      } catch (error) {
-        err.textContent = (error && error.message) || "Unable to sign in right now. Please try again.";
-        err.style.display = "";
-      } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalText;
+        if (typeof crFlushPendingPageAfterAuth === "function") {
+          crFlushPendingPageAfterAuth();
         }
+      } catch (postErr) {
+        console.error("[CasePath] doSignIn post-login", postErr);
+        alert(
+          (postErr && postErr.message) || "Signed in, but something went wrong finishing setup. Try refreshing the page."
+        );
       }
     };
 
@@ -3160,7 +3353,11 @@ async function syncUser() {
   function wireSupabaseAuthListener() {
     if (!window.__authListenerAttached) {
       window.__authListenerAttached = true;
-
+      if (!window.supabaseClient || !window.supabaseClient.auth) {
+        console.warn("[AUTH] Login listeners not attached: Supabase client missing");
+        return;
+      }
+      console.log("[AUTH] Login listeners attached");
       window.supabaseClient.auth.onAuthStateChange(async (event, session) => {
         if (window.CasePathAuth && typeof window.CasePathAuth.applySession === "function") {
           if (event === "SIGNED_OUT" || !session) {
@@ -3172,7 +3369,7 @@ async function syncUser() {
         try {
           window.__crAuthHydrated = true;
         } catch (e0) {
-          /* ignore */
+          console.warn("[AUTH] onAuthStateChange __crAuthHydrated set failed", e0);
         }
         if (
           event === "TOKEN_REFRESHED" &&

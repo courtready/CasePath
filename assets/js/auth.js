@@ -19,16 +19,37 @@ async function signup(email, password, profile) {
 
 async function login(email, password) {
   window.__crLastAuthError = "";
-  const { data, error } = await window.supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
-  if (error) {
-    console.error(error);
-    window.__crLastAuthError = error.message || "Unable to sign in.";
+  var client = window.supabaseClient || window.casepathSupabase;
+  if (!client || !client.auth || typeof client.auth.signInWithPassword !== "function") {
+    console.error("[AUTH] signInWithPassword failed: Supabase client not available");
+    window.__crLastAuthError = "Service not ready. Please refresh the page and try again.";
     return null;
   }
-  return data;
+  var timeoutMs = 15000;
+  console.log("[AUTH] signInWithPassword starting");
+  try {
+    var result = await Promise.race([
+      client.auth.signInWithPassword({ email, password }),
+      new Promise(function (_, reject) {
+        setTimeout(function () {
+          reject(new Error("Sign-in timed out after " + timeoutMs / 1000 + " seconds. Check your network and try again."));
+        }, timeoutMs);
+      }),
+    ]);
+    var error = result && result.error;
+    var data = result && result.data;
+    if (error) {
+      console.error("[AUTH] signInWithPassword failed", error);
+      window.__crLastAuthError = error.message || "Unable to sign in.";
+      return null;
+    }
+    console.log("[AUTH] signInWithPassword resolved");
+    return data;
+  } catch (e) {
+    console.error("[AUTH] signInWithPassword failed", e);
+    window.__crLastAuthError = (e && e.message) || "Unable to sign in.";
+    return null;
+  }
 }
 
 async function logout() {

@@ -35,7 +35,10 @@ export const SKU_TABLE: Record<string, SkuDefinition> = {
 /** Optional legacy / dashboard alias env names (same Stripe price ID). Checked after primary `priceEnv`. */
 const SKU_PRICE_ENV_ALIASES: Record<string, readonly string[]> = {
   starter_monthly: ["STRIPE_PRICE_STARTER"],
-  pro_monthly: ["STRIPE_PRICE_PRO"],
+  /** Some dashboards name this plural; SKU stays `essential`. */
+  essential: ["STRIPE_PRICE_ESSENTIALS"],
+  /** "Full Access" UI tier; some deployments name the Stripe secret STRIPE_PRICE_FULL_ACCESS */
+  pro_monthly: ["STRIPE_PRICE_PRO", "STRIPE_PRICE_FULL_ACCESS"],
   credits_1: ["STRIPE_PRICE_DOC_SINGLE"],
   parenting_pack: ["STRIPE_PRICE_CASEPACK"],
 };
@@ -81,8 +84,11 @@ export function buildPriceEntitlementMap(): Map<string, PriceEntitlement> {
   regMany(["STRIPE_PRICE_PARENTING_PACK", "STRIPE_PRICE_CASEPACK"], { setPlan: "casepack" });
   reg("STRIPE_PRICE_LAWYER_PORTAL", { setPlan: "lawyer_portal_access" });
   regMany(["STRIPE_PRICE_STARTER_MONTHLY", "STRIPE_PRICE_STARTER"], { setPlan: "starter" });
-  reg("STRIPE_PRICE_ESSENTIAL", { setPlan: "essential" });
-  regMany(["STRIPE_PRICE_PRO_MONTHLY", "STRIPE_PRICE_PRO"], { setPlan: "pro" });
+  regMany(["STRIPE_PRICE_ESSENTIAL", "STRIPE_PRICE_ESSENTIALS"], { setPlan: "essential" });
+  regMany(
+    ["STRIPE_PRICE_PRO_MONTHLY", "STRIPE_PRICE_PRO", "STRIPE_PRICE_FULL_ACCESS"],
+    { setPlan: "pro" },
+  );
   return m;
 }
 

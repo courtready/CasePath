@@ -63,8 +63,50 @@
     }
   }
 
+  /**
+   * Reload the SPA shell without using "/" alone. Many local static servers
+   * (e.g. Live Server) serve the app at /index.html while "/" lists the folder
+   * or returns 404 — after sign-in, replace("/") then looks like "can't sign in".
+   */
+  function stableShellPath() {
+    try {
+      var p = String(global.location.pathname || "/");
+      var h = String(global.location.hostname || "").toLowerCase();
+      var isLocal =
+        h === "localhost" ||
+        h === "127.0.0.1" ||
+        h === "[::1]" ||
+        h === "::1";
+      if (/index\.html$/i.test(p)) return p;
+      if (isLocal && (p === "/" || p === "")) {
+        try {
+          var port = String(global.location.port || "");
+          /* Documented dev server (see app.js file:// gate): http://localhost:3000 — "/" usually serves the SPA */
+          if (h === "localhost" && (port === "3000" || port === "3001")) return "/";
+        } catch (e2) {
+          /* ignore */
+        }
+        return "/index.html";
+      }
+      if (p === "/" || p === "") return "/";
+      var slash = p.lastIndexOf("/");
+      if (slash > 0) {
+        return p.slice(0, slash + 1) + "index.html";
+      }
+    } catch (e) {
+      /* ignore */
+    }
+    return "/index.html";
+  }
+
+  function safeStableShell() {
+    safeRedirect(stableShellPath());
+  }
+
   NS.redirect = NS.redirect || {};
   NS.redirect.safe = safeRedirect;
   NS.redirect.safeAssignHref = safeAssignHref;
   NS.redirect.sanitiseRelativePath = sanitiseRelativePath;
+  NS.redirect.stableShellPath = stableShellPath;
+  NS.redirect.safeStableShell = safeStableShell;
 })(typeof window !== "undefined" ? window : this);

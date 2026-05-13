@@ -1,4 +1,13 @@
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/casepath/public_html
-    - /bin/rsync -av --delete --exclude='.git' --exclude='supabase/' --exclude='supabase/migrations_backup/' --exclude='.cursor/' --exclude='.vscode/' --exclude='*.zip' --exclude='.env' --exclude='.env*' --exclude='auth/' --exclude='*.md' --exclude='family-court-*.jsx' --exclude='New Text Document.txt' ./ $DEPLOYPATH/
+    - export DEPLOYPATH=/home/casepath/public_html/
+
+    - /bin/rsync -av --delete \
+      --exclude '.git' \
+      --exclude '.github' \
+      --exclude '.cursor' \
+      --exclude '.vscode' \
+      --exclude '*.zip' \
+      --exclude 'New Text Document.txt' \
+      --exclude 'supabase/migrations_backup' \
+      ./ $DEPLOYPATH

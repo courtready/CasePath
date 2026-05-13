@@ -441,8 +441,8 @@
         <li class="ppc-dim">✗ High-volume matter tooling &amp; collaboration prep</li>
       </ul>
       <div class="ppc-actions">
-        <!-- TODO(production-gating): enforce starter limits server-side when billing is live -->
-        <button class="ppc-btn ppc-btn-secondary" onclick="if(typeof openPricingCheckout==='function')openPricingCheckout('starter_monthly')">Choose Starter →</button>
+        <!-- SKU-only checkout wiring: data-cp-checkout-sku + app.js delegation → openPricingCheckout (server maps Stripe prices) -->
+        <button type="button" class="ppc-btn ppc-btn-secondary" data-cp-checkout-sku="starter_monthly">Choose Starter →</button>
         <p class="ppc-cancel-note">Cancel any time · No lock-in</p>
       </div>
     </div>
@@ -462,7 +462,7 @@
         <li class="ppc-dim">✗ Highest-tier volume &amp; enterprise-style tooling</li>
       </ul>
       <div class="ppc-actions">
-        <button class="ppc-btn ppc-btn-primary" onclick="if(typeof openPricingCheckout==='function')openPricingCheckout('essential')">Choose Essential →</button>
+        <button type="button" class="ppc-btn ppc-btn-primary" data-cp-checkout-sku="essential">Choose Essential →</button>
         <p class="ppc-cancel-note">Cancel any time · No lock-in</p>
       </div>
     </div>
@@ -481,7 +481,7 @@
         <li>✓ Advanced exports &amp; premium integrations (roadmap)</li>
       </ul>
       <div class="ppc-actions">
-        <button class="ppc-btn ppc-btn-secondary" onclick="if(typeof openPricingCheckout==='function')openPricingCheckout('pro_monthly')">Choose Full Access →</button>
+        <button type="button" class="ppc-btn ppc-btn-secondary" data-cp-checkout-sku="pro_monthly">Choose Full Access →</button>
         <p class="ppc-cancel-note">Cancel any time · No lock-in</p>
       </div>
     </div>
@@ -515,9 +515,9 @@
         <li class="ppc-dim">Does not include the 12-month Parenting Pack engagement</li>
       </ul>
       <div class="ppc-actions">
-        <button class="ppc-btn ppc-btn-secondary" type="button" onclick="if(typeof openPricingCheckout==='function')openPricingCheckout('credits_1')">Buy one credit →</button>
-        <button class="ppc-btn ppc-btn-outline" type="button" onclick="if(typeof openPricingCheckout==='function')openPricingCheckout('credits_5')">Buy 5 credits →</button>
-        <button class="ppc-btn ppc-btn-outline" type="button" onclick="if(typeof openPricingCheckout==='function')openPricingCheckout('credits_10')">Buy 10 credits →</button>
+        <button class="ppc-btn ppc-btn-secondary" type="button" data-cp-checkout-sku="credits_1">Buy one credit →</button>
+        <button class="ppc-btn ppc-btn-outline" type="button" data-cp-checkout-sku="credits_5">Buy 5 credits →</button>
+        <button class="ppc-btn ppc-btn-outline" type="button" data-cp-checkout-sku="credits_10">Buy 10 credits →</button>
       </div>
     </div>
     <div class="pricing-plan-card ppc-onetime-card" id="pricing-parenting-pack" data-onetime="parenting_pack">
@@ -541,7 +541,7 @@
       </ol>
       <div class="ppc-price-wrap"><span class="ppc-amount">From $549</span><span class="ppc-period">fixed fee · confirm at checkout</span></div>
       <div class="ppc-actions">
-        <button class="ppc-btn ppc-btn-secondary" onclick="if(typeof openPricingCheckout==='function')openPricingCheckout('parenting_pack')">Enquire / purchase pack →</button>
+        <button type="button" class="ppc-btn ppc-btn-secondary" data-cp-checkout-sku="parenting_pack">Enquire / purchase pack →</button>
         <button type="button" class="ppc-btn ppc-btn-outline" onclick="if(typeof showPage==='function')showPage('parenting-orders')">Open Parenting Orders →</button>
       </div>
       <h4 class="ppc-parenting-section-title ppc-pack-faq-heading">Common questions</h4>

@@ -48,11 +48,13 @@
     } catch (e2) {
       console.warn("CasePathAuth.session.hardLogout: signOut failed", e2);
     }
-    if (NS.redirect && typeof NS.redirect.safe === "function") {
-      NS.redirect.safe("/");
+    if (NS.redirect && typeof NS.redirect.safeStableShell === "function") {
+      NS.redirect.safeStableShell();
+    } else if (NS.redirect && typeof NS.redirect.safe === "function") {
+      NS.redirect.safe("/index.html");
     } else {
       try {
-        global.location.replace("/");
+        global.location.replace("/index.html");
       } catch (e3) {
         /* ignore */
       }

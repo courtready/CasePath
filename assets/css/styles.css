@@ -795,6 +795,41 @@ header,
   white-space: nowrap;
 }
 
+/* CasePath circular monogram (Case Assistant / Ask a Question avatars) */
+.cp-monogram {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1.5px solid var(--sage, #587458);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Lora', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+  color: var(--sage, #587458);
+  background: rgba(255, 255, 255, 0.92);
+  flex-shrink: 0;
+}
+
+/* Row-aligned sizes (preserve prior .bot-msg-avatar / .qmsg-avatar footprints) */
+.bot-msg:not(.user) > .cp-monogram {
+  width: 26px;
+  height: 26px;
+  font-size: 0.62rem;
+  border-width: 1px;
+}
+
+.qmsg:not(.qmsg-user) > .cp-monogram {
+  width: 32px;
+  height: 32px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-width: 1px;
+}
+
 @keyframes siteChromeMissionPulse {
   0% { background: var(--sage); color: white; }
   50% { background: #c8a96e; color: white; }

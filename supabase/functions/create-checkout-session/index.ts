@@ -129,6 +129,12 @@ serve(async (req) => {
     return json({ error: "Invalid JSON", code: "INVALID_JSON" }, 400, cors);
   }
 
+  const checkoutPayloadLog = {
+    sku: typeof body?.sku === "string" ? body.sku : body?.sku,
+    return_path: typeof body?.return_path === "string" ? body.return_path : body?.return_path,
+  };
+  console.log("[CHECKOUT] incoming payload", checkoutPayloadLog);
+
   if (body && typeof body === "object" && "price" in body) {
     console.warn("[create-checkout-session] Rejected client-supplied Stripe price field.");
     return json(
@@ -143,10 +149,20 @@ serve(async (req) => {
 
   const sku = String(body?.sku ?? "").trim();
   if (!ALLOWED_CHECKOUT_SKUS.has(sku)) {
+    console.log("[CHECKOUT] resolved price id", "(rejected — SKU not whitelisted)");
+    const mappingSummary: Record<string, { configured: boolean; tried: readonly string[] }> = {};
+    for (const s of ALLOWED_CHECKOUT_SKUS) {
+      mappingSummary[s] = {
+        configured: !!resolveSkuToPriceId(s),
+        tried: priceEnvNamesForSku(s),
+      };
+    }
+    console.log("[CHECKOUT] available mappings", mappingSummary);
     return json(
       {
         error: "Unknown or disallowed product",
         code: "UNKNOWN_SKU",
+        sku,
       },
       400,
       cors,
@@ -155,6 +171,16 @@ serve(async (req) => {
 
   const priceId = resolveSkuToPriceId(sku);
   const mode = checkoutModeForSku(sku);
+  const mappingSummary: Record<string, { configured: boolean; tried: readonly string[] }> = {};
+  for (const s of ALLOWED_CHECKOUT_SKUS) {
+    mappingSummary[s] = {
+      configured: !!resolveSkuToPriceId(s),
+      tried: priceEnvNamesForSku(s),
+    };
+  }
+  console.log("[CHECKOUT] resolved price id", priceId ?? "(none — env empty or not price_*)");
+  console.log("[CHECKOUT] available mappings", mappingSummary);
+
   if (!priceId || !mode) {
     const tried = priceEnvNamesForSku(sku);
     console.error(
