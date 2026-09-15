@@ -15,7 +15,7 @@
     --border: rgba(74, 124, 89, 0.15);
   }
   .pricing-root *, .pricing-root *::before, .pricing-root *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  .pricing-root { font-family: "DM Sans", sans-serif; background: var(--cream); color: var(--charcoal); font-size: 16px; line-height: 1.5; }
+  .pricing-root { font-family: var(--cp-font-body); background: var(--cream); color: var(--charcoal); font-size: var(--cp-type-body-lg); line-height: var(--cp-leading-body); }
   .section-wrap { max-width: 1100px; margin: 0 auto; padding: 32px 32px 64px; }
   .pricing-early-access-banner {
     max-width: 1100px;
@@ -27,16 +27,16 @@
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 16px 20px;
-    font-size: 14px;
+    font-size: var(--cp-type-small);
     color: var(--mid);
-    line-height: 1.55;
+    line-height: var(--cp-leading-body);
     box-shadow: 0 4px 18px rgba(14, 20, 35, 0.04);
   }
-  .pricing-early-access-inner strong { color: var(--charcoal); font-weight: 600; }
+  .pricing-early-access-inner strong { color: var(--charcoal); font-weight: var(--cp-weight-semibold); }
   .billing-toggle-row { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 28px; }
-  .billing-label { font-size: 14.5px; font-weight: 600; color: var(--charcoal); }
+  .billing-label { font-size: var(--cp-type-small); font-weight: var(--cp-weight-semibold); color: var(--charcoal); }
   .billing-label.muted { font-weight: 400; color: var(--soft); }
-  .billing-label .save-badge { display: inline-block; background: var(--sage-pale); color: var(--sage); font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 100px; margin-left: 6px; }
+  .billing-label .save-badge { display: inline-block; background: var(--sage-pale); color: var(--sage); font-size: var(--cp-type-caption); font-weight: var(--cp-weight-bold); padding: 2px 8px; border-radius: 100px; margin-left: 6px; }
   .toggle-switch { position: relative; width: 52px; height: 28px; background: var(--sage); border: none; border-radius: 100px; cursor: pointer; padding: 0; transition: background 0.2s; }
   .toggle-switch .knob { position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: left 0.2s; }
   .toggle-switch.annual .knob { left: 28px; }
@@ -50,86 +50,132 @@
     text-align: center;
   }
   .ppc-launch-head {
-    font-size: 13px;
-    font-weight: 700;
+    font-size: var(--cp-type-small);
+    font-weight: var(--cp-weight-bold);
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--sage);
     margin: 0;
   }
   .ppc-launch-hint {
-    font-size: 13px;
+    font-size: var(--cp-type-small);
     font-weight: 500;
     letter-spacing: normal;
     text-transform: none;
     color: var(--mid);
     margin: 0;
     max-width: min(36rem, 100%);
-    line-height: 1.45;
+    line-height: var(--cp-leading-body);
+  }
+  .plans-audience-labels {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 18px;
+    margin: 0 0 12px;
+    align-items: end;
+  }
+  .ppc-audience-label {
+    font-size: var(--cp-type-small);
+    font-weight: var(--cp-weight-bold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin: 0;
+    text-align: center;
+  }
+  .ppc-audience-label-sub {
+    display: block;
+    font-size: var(--cp-type-caption);
+    font-weight: 500;
+    letter-spacing: normal;
+    text-transform: none;
+    color: var(--mid);
+    margin-top: 4px;
   }
   .plans-grid-main { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-bottom: 40px; align-items: stretch; }
   .pricing-plan-card { background: transparent; border: 1px solid var(--gold); border-radius: 20px; padding: 26px 20px; display: flex; flex-direction: column; min-height: 0; min-height: 520px; height: 100%; box-shadow: 0 8px 40px rgba(200, 169, 110, 0.18); }
   .pricing-plan-card--roadmap { min-height: 0; border-style: dashed; opacity: 0.95; }
   .pricing-plan-card.highlight-plan { outline: 3px solid var(--gold); box-shadow: 0 0 0 4px rgba(200, 169, 110, 0.22); transform: scale(1.01); transition: box-shadow 0.2s ease, transform 0.2s ease; }
   .pricing-plan-card.ppc-featured { background: transparent; border: 2px solid var(--sage); box-shadow: 0 10px 36px rgba(74, 124, 89, 0.2); }
-  .ppc-badge { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.65px; text-transform: uppercase; border-radius: 100px; padding: 3px 10px; margin-bottom: 14px; width: fit-content; }
+  .ppc-badge { display: inline-block; font-size: var(--cp-type-caption); font-weight: var(--cp-weight-bold); letter-spacing: 0.65px; text-transform: uppercase; border-radius: 100px; padding: 3px 10px; margin-bottom: 14px; width: fit-content; }
   .ppc-badge.free { background: var(--blue-pale); color: var(--blue); }
   .ppc-badge.account { background: var(--gold); color: #fff; }
   .ppc-badge.popular { background: var(--sage); color: #fff; }
   .ppc-badge.soon { background: #eceae4; color: var(--mid); }
-  .ppc-icon { font-size: 30px; margin-bottom: 8px; }
-  .ppc-name { font-size: 19px; font-weight: 700; color: var(--charcoal); margin-bottom: 6px; }
-  .ppc-desc { font-size: 13.5px; color: var(--mid); line-height: 1.6; margin-bottom: 16px; }
+  .ppc-icon { font-size: var(--cp-type-h2); margin-bottom: 8px; }
+  .ppc-name { font-size: var(--cp-type-h3); font-weight: var(--cp-weight-bold); color: var(--charcoal); margin-bottom: 6px; }
+  .ppc-desc { font-size: var(--cp-type-small); color: var(--mid); line-height: var(--cp-leading-body); margin-bottom: 16px; }
+  .plans-grid-main .pricing-plan-card[data-plan] .ppc-desc { min-height: 132px; }
   .ppc-price-wrap { display: flex; align-items: baseline; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+  .plans-grid-main .pricing-plan-card[data-plan] .ppc-price-wrap:first-of-type { min-height: 38px; }
   .ppc-price-wrap + .ppc-price-wrap { margin-top: -6px; }
-  .ppc-amount { font-size: 34px; font-weight: 700; color: var(--charcoal); line-height: 1; }
-  .ppc-period { font-size: 12.5px; color: var(--soft); }
+  .ppc-amount { font-size: var(--cp-type-h1); font-weight: var(--cp-weight-bold); color: var(--charcoal); line-height: 1; }
+  .ppc-period { font-size: var(--cp-type-caption); color: var(--soft); }
   .ppc-features { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; flex: 1; }
   .pricing-plan-card .ppc-features { min-height: 0; }
-  .ppc-features li { font-size: 13px; color: var(--charcoal); line-height: 1.45; }
+  .ppc-features li { font-size: var(--cp-type-small); color: var(--charcoal); line-height: var(--cp-leading-body); }
   .ppc-features li.ppc-dim { color: var(--soft); }
-  .ppc-btn { display: block; width: 100%; padding: 12px 16px; border: none; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center; transition: opacity 0.15s; }
+  .ppc-btn { display: block; width: 100%; padding: 12px 16px; border: none; border-radius: 10px; font-family: inherit; font-size: var(--cp-type-small); font-weight: var(--cp-weight-semibold); cursor: pointer; text-align: center; transition: opacity 0.15s; }
   .ppc-btn:hover { opacity: 0.88; }
   .ppc-btn:disabled { opacity: 0.45; cursor: not-allowed; }
   .ppc-btn-secondary { background: var(--sage); color: #fff; }
   .ppc-btn-primary { background: var(--sage); color: #fff; }
   .ppc-btn-outline { background: transparent !important; border: 2px solid var(--sage) !important; color: var(--sage) !important; }
-  .ppc-cancel-note { text-align: center; font-size: 11px; color: var(--soft); margin-top: 10px; }
+  .ppc-cancel-note { text-align: center; font-size: var(--cp-type-caption); color: var(--soft); margin-top: 10px; }
+  .ppc-cancel-note a { color: var(--sage); font-weight: 600; text-decoration: underline; text-underline-offset: 0.12em; }
+  .ppc-cancel-note a:hover,
+  .ppc-cancel-note a:focus-visible { color: var(--charcoal, #1e2420); }
+  .ppc-cancel-note a:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
   .ppc-actions { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+  .plans-grid-main .pricing-plan-card[data-plan] .ppc-actions {
+    min-height: 72px;
+    justify-content: flex-start;
+  }
+  .plans-grid-main .pricing-plan-card[data-plan] .ppc-cancel-note {
+    min-height: 16px;
+  }
+  .plans-grid-main .pricing-plan-card[data-plan="free"] .ppc-actions::after {
+    content: "";
+    display: block;
+    min-height: 16px;
+  }
   .ppc-secondary-section { margin-bottom: 44px; padding-top: 8px; border-top: 1px solid var(--border); }
-  .ppc-secondary-head { font-family: "Lora", Georgia, serif; font-size: 22px; font-weight: 700; color: var(--charcoal); text-align: center; margin-bottom: 8px; }
-  .ppc-secondary-lead { text-align: center; font-size: 13.5px; color: var(--mid); max-width: 640px; margin: 0 auto 22px; line-height: 1.6; }
+  .ppc-secondary-head { font-family: var(--cp-font-heading); font-size: var(--cp-type-h3); font-weight: var(--cp-weight-bold); color: var(--charcoal); text-align: center; margin-bottom: 8px; }
+  .ppc-secondary-lead { text-align: center; font-size: var(--cp-type-small); color: var(--mid); max-width: 640px; margin: 0 auto 22px; line-height: var(--cp-leading-body); }
   .plans-grid-secondary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: stretch; }
   .pricing-plan-card.ppc-onetime-card { min-height: 440px; box-shadow: 0 4px 22px rgba(14, 20, 35, 0.06); }
-  .ppc-roadmap-label { text-align: center; font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--soft); margin-bottom: 12px; }
-  .faq-header { font-size: 26px; font-weight: 700; text-align: center; margin-bottom: 22px; font-family: "Lora", Georgia, serif; }
+  .ppc-roadmap-label { text-align: center; font-size: var(--cp-type-caption); font-weight: var(--cp-weight-semibold); letter-spacing: 0.14em; text-transform: uppercase; color: var(--soft); margin-bottom: 12px; }
+  .cp-pricing-roadmap.is-hidden {
+    display: none !important;
+  }
+  .faq-header { font-size: var(--cp-type-h2); font-weight: var(--cp-weight-bold); text-align: center; margin-bottom: 22px; font-family: var(--cp-font-heading); }
   .faq-wrap { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 40px; }
   .pfaq-item + .pfaq-item { border-top: 1px solid var(--border); }
-  .pfaq-q { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 20px; background: #fff; font-size: 14px; font-weight: 600; color: var(--charcoal); cursor: pointer; border: none; width: 100%; text-align: left; font-family: inherit; }
+  .pfaq-q { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 20px; background: #fff; font-size: var(--cp-type-small); font-weight: var(--cp-weight-semibold); color: var(--charcoal); cursor: pointer; border: none; width: 100%; text-align: left; font-family: inherit; }
   .pfaq-q:hover { background: #fafafa; }
-  .pfaq-icon { font-size: 18px; font-weight: 600; color: var(--sage); flex-shrink: 0; transition: transform 0.2s; }
+  .pfaq-icon { font-size: var(--cp-type-body-lg); font-weight: var(--cp-weight-semibold); color: var(--sage); flex-shrink: 0; transition: transform 0.2s; }
   .pfaq-item.open .pfaq-icon { transform: rotate(45deg); }
-  .pfaq-a { display: none; padding: 0 20px 16px; font-size: 13.5px; color: var(--mid); line-height: 1.7; background: #fafafa; }
+  .pfaq-a { display: none; padding: 0 20px 16px; font-size: var(--cp-type-small); color: var(--mid); line-height: 1.7; background: #fafafa; }
   .pfaq-item.open .pfaq-a { display: block; }
   .pricing-cta { border: 1px solid rgba(74, 124, 89, 0.2); border-radius: 20px; padding: 40px 32px; text-align: center; }
-  .pricing-cta .cta-icon { font-size: 32px; margin-bottom: 12px; }
-  .pricing-cta h2 { font-size: 26px; font-weight: 700; color: var(--charcoal); margin-bottom: 8px; max-width: 560px; margin-left: auto; margin-right: auto; font-family: "Lora", Georgia, serif; }
-  .pricing-cta p { font-size: 14.5px; color: var(--mid); margin-bottom: 20px; max-width: 520px; margin-left: auto; margin-right: auto; line-height: 1.65; }
-  .btn-primary { display: inline-block; background: var(--sage); color: #fff; border: none; border-radius: 100px; padding: 14px 29px; font-family: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+  .pricing-cta .cta-icon { font-size: var(--cp-type-h1); margin-bottom: 12px; }
+  .pricing-cta h2 { font-size: var(--cp-type-h2); font-weight: var(--cp-weight-bold); color: var(--charcoal); margin-bottom: 8px; max-width: 560px; margin-left: auto; margin-right: auto; font-family: var(--cp-font-heading); }
+  .pricing-cta p { font-size: var(--cp-type-small); color: var(--mid); margin-bottom: 20px; max-width: 520px; margin-left: auto; margin-right: auto; line-height: var(--cp-leading-body); }
+  .btn-primary { display: inline-block; background: var(--sage); color: #fff; border: none; border-radius: 100px; padding: 14px 29px; font-family: inherit; font-size: var(--cp-type-small); font-weight: var(--cp-weight-semibold); cursor: pointer; transition: opacity 0.15s; }
   .btn-primary:hover { opacity: 0.85; }
-  .legal-disclaimer-bar { background: #f5f5f3; border-top: 1px solid var(--border); text-align: center; font-size: 12.5px; color: var(--soft); padding: 16px 32px; }
-  .ppc-parenting-lead { font-size: 17px; font-weight: 600; color: var(--charcoal); line-height: 1.35; margin-bottom: 12px; }
-  .ppc-parenting-lead-strong { font-weight: 700; display: block; margin-top: 2px; }
+  .legal-disclaimer-bar { background: #f5f5f3; border-top: 1px solid var(--border); text-align: center; font-size: var(--cp-type-caption); color: var(--soft); padding: 16px 32px; }
+  .ppc-parenting-lead { font-size: var(--cp-type-body-lg); font-weight: var(--cp-weight-semibold); color: var(--charcoal); line-height: var(--cp-leading-heading); margin-bottom: 12px; }
+  .ppc-parenting-lead-strong { font-weight: var(--cp-weight-bold); display: block; margin-top: 2px; }
   .ppc-parenting-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(72px, auto); gap: 10px; margin-bottom: 18px; }
   .ppc-parenting-stat { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; min-height: 72px; display: flex; flex-direction: column; justify-content: center; }
-  .ppc-parenting-stat-k { font-size: 12.5px; font-weight: 700; color: var(--charcoal); display: block; margin-bottom: 2px; }
-  .ppc-parenting-stat-v { font-size: 11.5px; color: var(--soft); line-height: 1.35; }
-  .ppc-parenting-section-title { font-size: 12.5px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: var(--sage); margin-bottom: 10px; }
+  .ppc-parenting-stat-k { font-size: var(--cp-type-caption); font-weight: var(--cp-weight-bold); color: var(--charcoal); display: block; margin-bottom: 2px; }
+  .ppc-parenting-stat-v { font-size: var(--cp-type-caption); color: var(--soft); line-height: var(--cp-leading-heading); }
+  .ppc-parenting-section-title { font-size: var(--cp-type-caption); font-weight: var(--cp-weight-bold); letter-spacing: 0.6px; text-transform: uppercase; color: var(--sage); margin-bottom: 10px; }
   .ppc-parenting-inside { list-style-position: outside; padding-left: 1.35em; margin-bottom: 18px; display: flex; flex-direction: column; gap: 10px; }
-  .ppc-parenting-inside li { font-size: 13px; color: var(--charcoal); line-height: 1.5; }
-  .ppc-parenting-inside strong { display: block; font-weight: 700; margin-bottom: 2px; }
+  .ppc-parenting-inside li { font-size: var(--cp-type-small); color: var(--charcoal); line-height: var(--cp-leading-body); }
+  .ppc-parenting-inside strong { display: block; font-weight: var(--cp-weight-bold); margin-bottom: 2px; }
   .ppc-parenting-inside-desc { display: block; font-weight: 400; color: var(--mid); }
-  .ppc-pack-faq-heading { margin-top: 1.1rem; margin-bottom: 0.45rem; text-align: left; font-size: 14px; font-weight: 700; color: var(--charcoal); }
+  .ppc-pack-faq-heading { margin-top: 1.1rem; margin-bottom: 0.45rem; text-align: left; font-size: var(--cp-type-small); font-weight: var(--cp-weight-bold); color: var(--charcoal); }
   .pricing-plan-card .parenting-pack-common-faq.faq-wrap {
     margin-bottom: 0;
     border-radius: 16px 16px 0 0;
@@ -146,18 +192,18 @@
   .pricing-plan-card .parenting-pack-details > .pfaq-item:first-child {
     border-top: 1px solid var(--border);
   }
-  .parenting-pack-details .pfaq-a { font-size: 13px; max-height: min(70vh, 520px); overflow-y: auto; }
+  .parenting-pack-details .pfaq-a { font-size: var(--cp-type-small); max-height: min(70vh, 520px); overflow-y: auto; }
   .pp-agreement-body p { margin-bottom: 10px; }
   .pp-agreement-body p strong { color: var(--charcoal); }
   .pp-agreement-body ol.pp-clauses { padding-left: 1.25em; margin: 8px 0 14px; }
   .pp-agreement-body ol.pp-clauses > li { margin-bottom: 10px; }
-  .pp-agreement-body .pp-agreement-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 12px 0 16px; }
+  .pp-agreement-body .pp-agreement-table { width: 100%; border-collapse: collapse; font-size: var(--cp-type-caption); margin: 12px 0 16px; }
   .pp-agreement-body .pp-agreement-table th,
   .pp-agreement-body .pp-agreement-table td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
-  .pp-agreement-body .pp-agreement-table th { background: var(--sage-pale); font-weight: 600; width: 28%; }
+  .pp-agreement-body .pp-agreement-table th { background: var(--sage-pale); font-weight: var(--cp-weight-semibold); width: 28%; }
   .pp-agreement-body .pp-timeline { border-left: 3px solid var(--gold); padding-left: 14px; margin: 12px 0; }
   .pp-agreement-body .pp-timeline p { margin-bottom: 8px; }
-  .pp-agreement-body ul.pp-agreement-list { margin: 0 0 12px 1.25em; line-height: 1.55; font-size: 13px; }
+  .pp-agreement-body ul.pp-agreement-list { margin: 0 0 12px 1.25em; line-height: var(--cp-leading-body); font-size: var(--cp-type-small); }
 
   /* ── What's included / value comparison ───────────────────────────── */
   .ppc-compare-section {
@@ -166,9 +212,9 @@
     border-top: 1px solid var(--border);
   }
   .ppc-compare-head {
-    font-family: "Lora", Georgia, serif;
-    font-size: clamp(11px, 0.7rem + 3.2vw, 22px);
-    font-weight: 700;
+    font-family: var(--cp-font-heading);
+    font-size: var(--cp-type-h3);
+    font-weight: var(--cp-weight-bold);
     color: var(--charcoal);
     text-align: center;
     margin-bottom: 8px;
@@ -176,11 +222,11 @@
   }
   .ppc-compare-sub {
     text-align: center;
-    font-size: 13px;
+    font-size: var(--cp-type-small);
     color: var(--mid);
     max-width: 680px;
     margin: 0 auto 22px;
-    line-height: 1.6;
+    line-height: var(--cp-leading-body);
   }
   .ppc-compare-strip {
     display: flex;
@@ -197,27 +243,27 @@
     border: 1px solid var(--border);
     border-radius: 14px;
     padding: 12px 14px;
-    font-size: 12.5px;
+    font-size: var(--cp-type-caption);
     color: var(--mid);
-    line-height: 1.45;
+    line-height: var(--cp-leading-body);
     flex: 1 1 200px;
     max-width: 280px;
     box-shadow: 0 2px 12px rgba(14, 20, 35, 0.03);
   }
   .ppc-compare-pill-icon {
-    font-size: 1.15rem;
+    font-size: var(--cp-type-h3);
     line-height: 1;
     flex-shrink: 0;
   }
   .ppc-compare-pill strong {
     display: block;
     color: var(--charcoal);
-    font-weight: 600;
+    font-weight: var(--cp-weight-semibold);
     margin-bottom: 2px;
-    font-size: 12.5px;
+    font-size: var(--cp-type-caption);
   }
   .ppc-compare-early-note {
-    font-size: 12px;
+    font-size: var(--cp-type-caption);
     color: var(--mid);
     text-align: center;
     margin-bottom: 16px;
@@ -225,11 +271,11 @@
     background: var(--sage-pale);
     border: 1px solid rgba(74, 124, 89, 0.2);
     border-radius: 12px;
-    line-height: 1.5;
+    line-height: var(--cp-leading-body);
   }
   .ppc-compare-early-note strong {
     color: var(--charcoal);
-    font-weight: 600;
+    font-weight: var(--cp-weight-semibold);
   }
   .ppc-compare-scroll {
     overflow-x: auto;
@@ -242,42 +288,58 @@
   }
   .ppc-compare-table {
     width: 100%;
-    min-width: 760px;
+    min-width: 720px;
     border-collapse: separate;
     border-spacing: 0;
-    font-size: 12.5px;
-  }
-  .ppc-compare-table caption {
-    caption-side: bottom;
-    padding: 12px 14px 4px;
-    font-size: 11px;
-    color: var(--soft);
-    line-height: 1.5;
-    text-align: left;
+    font-size: var(--cp-type-caption);
   }
   .ppc-compare-table th,
   .ppc-compare-table td {
-    padding: 11px 10px;
+    padding: 12px 11px;
     border-bottom: 1px solid var(--border);
-    vertical-align: middle;
+    vertical-align: top;
     text-align: center;
-    line-height: 1.35;
+    line-height: var(--cp-leading-body);
+    hyphens: auto;
+    overflow-wrap: anywhere;
   }
   .ppc-compare-table th:first-child,
   .ppc-compare-table td:first-child {
     text-align: left;
-    font-weight: 600;
+    font-weight: var(--cp-weight-semibold);
     color: var(--charcoal);
     position: sticky;
     left: 0;
     z-index: 2;
-    min-width: 148px;
-    max-width: 200px;
+    min-width: 156px;
+    max-width: 220px;
     box-shadow: 6px 0 14px rgba(30, 36, 32, 0.06);
+  }
+  .ppc-compare-group-row td.ppc-compare-group-head {
+    text-align: left;
+    font-size: var(--cp-type-caption);
+    font-weight: var(--cp-weight-bold);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--mid);
+    background: var(--cream) !important;
+    padding: 16px 12px 7px;
+    border-bottom: 1px solid var(--border);
+    position: static;
+    box-shadow: none;
+    min-width: 0;
+    max-width: none;
+  }
+  .ppc-compare-group-row:first-child td.ppc-compare-group-head {
+    padding-top: 10px;
+  }
+  .ppc-compare-table tbody tr.ppc-compare-group-row td {
+    background: var(--cream) !important;
+    border-bottom: none;
   }
   .ppc-compare-table thead th {
     background: var(--cream);
-    font-weight: 700;
+    font-weight: var(--cp-weight-bold);
     color: var(--charcoal);
     border-bottom: 2px solid var(--border);
     vertical-align: bottom;
@@ -288,214 +350,480 @@
     background: var(--cream);
     z-index: 3;
   }
-  .ppc-compare-table thead th.ppc-compare-col-featured {
-    background: var(--sage-pale);
-    color: var(--sage);
-    border-left: 1px solid rgba(74, 124, 89, 0.28);
-    border-right: 1px solid rgba(74, 124, 89, 0.28);
-    box-shadow: inset 0 -2px 0 var(--sage);
-  }
-  .ppc-compare-table thead th.ppc-compare-col-lawyer {
+  .ppc-compare-table thead th.ppc-compare-col-practitioner {
     background: var(--blue-pale);
-    color: var(--blue);
-    font-weight: 600;
-    font-size: 11.5px;
-    line-height: 1.35;
-    min-width: 118px;
-    max-width: 140px;
+    color: var(--charcoal);
+    font-weight: var(--cp-weight-bold);
+    border-left: 1px solid rgba(21, 101, 160, 0.28);
+    border-right: 1px solid rgba(21, 101, 160, 0.28);
+    min-width: 128px;
   }
   .ppc-compare-rec {
     display: block;
-    font-size: 9px;
-    font-weight: 700;
+    font-size: var(--cp-type-caption);
+    font-weight: var(--cp-weight-bold);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--sage);
     margin-top: 6px;
   }
-  .ppc-compare-table tbody tr:nth-child(odd) td {
+  .ppc-compare-table tbody tr:not(.ppc-compare-group-row):nth-of-type(odd) td {
     background: #fff;
   }
-  .ppc-compare-table tbody tr:nth-child(even) td {
+  .ppc-compare-table tbody tr:not(.ppc-compare-group-row):nth-of-type(even) td {
     background: #faf9f6;
   }
-  .ppc-compare-table tbody tr:nth-child(odd) td:first-child {
+  .ppc-compare-table tbody tr:not(.ppc-compare-group-row):nth-of-type(odd) td:first-child {
     background: #fff;
   }
-  .ppc-compare-table tbody tr:nth-child(even) td:first-child {
+  .ppc-compare-table tbody tr:not(.ppc-compare-group-row):nth-of-type(even) td:first-child {
     background: #faf9f6;
   }
-  .ppc-compare-table tbody td.ppc-compare-col-featured {
-    background: rgba(232, 240, 235, 0.75) !important;
-    border-left: 1px solid rgba(74, 124, 89, 0.22);
-    border-right: 1px solid rgba(74, 124, 89, 0.22);
-    font-weight: 600;
+  .ppc-compare-table tbody td.ppc-compare-col-practitioner {
+    background: rgba(232, 240, 254, 0.85) !important;
+    border-left: 1px solid rgba(21, 101, 160, 0.22);
+    border-right: 1px solid rgba(21, 101, 160, 0.22);
+    font-weight: var(--cp-weight-semibold);
     color: var(--charcoal);
   }
-  .ppc-compare-table tbody td.ppc-compare-col-lawyer {
-    background: rgba(232, 240, 254, 0.85) !important;
-    color: var(--blue);
-    font-size: 11px;
-    font-weight: 500;
+  .ppc-compare-disclaimer {
+    font-size: var(--cp-type-caption);
+    color: var(--soft);
+    line-height: var(--cp-leading-body);
+    max-width: 900px;
+    margin: 0 auto 12px;
+    text-align: center;
   }
   .ppc-compare-cell-muted {
     color: var(--soft);
     font-weight: 400;
   }
   .ppc-compare-foot {
-    font-size: 11px;
+    font-size: var(--cp-type-caption);
     color: var(--soft);
-    line-height: 1.55;
+    line-height: var(--cp-leading-body);
     max-width: 900px;
     margin: 0 auto;
     text-align: center;
   }
 
+  /* ── Which plan is right for me? ─────────────────────────────────── */
+  .ppc-plan-picker {
+    margin-bottom: 40px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .ppc-plan-picker-head {
+    font-family: var(--cp-font-heading);
+    font-size: var(--cp-type-h3);
+    font-weight: var(--cp-weight-bold);
+    color: var(--charcoal);
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .ppc-plan-picker-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: #fff;
+    box-shadow: 0 4px 22px rgba(14, 20, 35, 0.05);
+  }
+  .ppc-plan-picker-table {
+    width: 100%;
+    min-width: 480px;
+    border-collapse: collapse;
+    font-size: var(--cp-type-small);
+  }
+  .ppc-plan-picker-table th,
+  .ppc-plan-picker-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: var(--cp-leading-body);
+    text-align: left;
+  }
+  .ppc-plan-picker-table thead th {
+    background: var(--cream);
+    font-weight: var(--cp-weight-bold);
+    color: var(--charcoal);
+    border-bottom: 2px solid var(--border);
+  }
+  .ppc-plan-picker-table tbody tr:last-child td,
+  .ppc-plan-picker-table tbody tr:last-child th {
+    border-bottom: none;
+  }
+  .ppc-plan-picker-table tbody tr:nth-of-type(even) td {
+    background: #faf9f6;
+  }
+  .ppc-plan-picker-rec {
+    display: inline-block;
+    font-size: var(--cp-type-caption);
+    font-weight: var(--cp-weight-bold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sage);
+    white-space: nowrap;
+  }
+  .ppc-plan-picker-rec--full {
+    color: var(--charcoal);
+  }
+
+  /* ── Practitioner / plan differentiation callout ─────────────────── */
+  .ppc-plan-callout {
+    background: var(--sage-pale);
+    border: 1px solid rgba(74, 124, 89, 0.22);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: var(--cp-type-caption);
+    color: var(--mid);
+    line-height: var(--cp-leading-body);
+  }
+  .ppc-plan-callout-head {
+    font-size: var(--cp-type-caption);
+    font-weight: var(--cp-weight-bold);
+    color: var(--charcoal);
+    margin-bottom: 6px;
+  }
+  .ppc-plan-callout p {
+    margin: 0 0 8px;
+  }
+  .ppc-plan-callout p:last-child {
+    margin-bottom: 0;
+  }
+
   @media (max-width: 1080px) {
     .plans-grid-main { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .plans-audience-labels { grid-template-columns: 1fr; gap: 6px; margin-bottom: 10px; }
+    .ppc-audience-label { text-align: left; }
     .pricing-plan-card { min-height: 480px; }
   }
   @media (max-width: 900px) {
-    .pricing-root { font-size: 15px; overflow-x: clip; }
+    .pricing-root { font-size: var(--cp-type-body); overflow-x: clip; }
     .section-wrap { padding: 20px 16px 48px; }
     .pricing-early-access-banner { padding: 0 16px 18px; }
     .billing-toggle-row { flex-wrap: wrap; margin-bottom: 22px; gap: 12px; }
     .ppc-launch-row { flex-direction: column; align-items: center; gap: 6px; }
-    .ppc-btn { min-height: 48px; font-size: 15px; }
-    .pfaq-q { min-height: 48px; padding: 14px 16px; font-size: 15px; }
+    .plans-audience-labels { grid-template-columns: 1fr; }
+    .ppc-btn { min-height: 48px; font-size: var(--cp-type-body); }
+    .pfaq-q { min-height: 48px; padding: 14px 16px; font-size: var(--cp-type-body); }
     .pricing-cta { padding: 28px 18px; }
-    .pricing-cta h2 { font-size: 21px; }
-    .faq-header { font-size: 21px; }
+    .pricing-cta h2 { font-size: var(--cp-type-h3); }
+    .faq-header { font-size: var(--cp-type-h3); }
     .parenting-pack-details .pfaq-a { max-height: min(65vh, 480px); }
     .plans-grid-secondary { grid-template-columns: 1fr; }
     .ppc-compare-section { margin-top: 44px; padding-top: 32px; }
     .ppc-compare-pill { max-width: none; }
+    .ppc-plan-picker-scroll {
+      overflow-x: visible;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+    }
+    .ppc-plan-picker-table,
+    .ppc-plan-picker-table tbody {
+      display: block;
+      min-width: 0;
+      width: 100%;
+    }
+    .ppc-plan-picker-table thead {
+      display: none;
+    }
+    .ppc-plan-picker-table tr {
+      display: block;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(14, 20, 35, 0.04);
+    }
+    .ppc-plan-picker-table td {
+      display: block;
+      width: 100%;
+      border: none;
+      padding: 10px 14px;
+    }
+    .ppc-plan-picker-table td:first-child {
+      background: var(--cream);
+      border-bottom: 1px solid var(--border);
+      font-weight: var(--cp-weight-semibold);
+      color: var(--charcoal);
+    }
+    .ppc-plan-picker-table td:last-child::before {
+      content: "Recommended plan";
+      display: block;
+      font-size: var(--cp-type-caption);
+      font-weight: var(--cp-weight-semibold);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 4px;
+    }
+  }
+  @media (max-width: 720px) {
+    .ppc-compare-scroll {
+      overflow-x: visible;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      border-radius: 0;
+    }
+    .ppc-compare-table,
+    .ppc-compare-table tbody {
+      display: block;
+      min-width: 0;
+      width: 100%;
+    }
+    .ppc-compare-table thead {
+      display: none;
+    }
+    .ppc-compare-table tr {
+      display: block;
+    }
+    .ppc-compare-table tr.ppc-compare-group-row {
+      margin-top: 4px;
+    }
+    .ppc-compare-table tr.ppc-compare-group-row td.ppc-compare-group-head {
+      padding: 18px 4px 6px;
+      border: none;
+      background: transparent !important;
+    }
+    .ppc-compare-table tr:not(.ppc-compare-group-row) {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(14, 20, 35, 0.04);
+    }
+    .ppc-compare-table th[scope="row"],
+    .ppc-compare-table td {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: none;
+      padding: 10px 14px;
+      box-shadow: none;
+      position: static;
+      min-width: 0;
+      max-width: none;
+    }
+    .ppc-compare-table th[scope="row"] {
+      background: var(--cream);
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+      font-size: var(--cp-type-small);
+    }
+    .ppc-compare-table td[data-label]::before {
+      content: attr(data-label);
+      display: block;
+      font-size: var(--cp-type-caption);
+      font-weight: var(--cp-weight-semibold);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 4px;
+    }
+    .ppc-compare-table td.ppc-compare-col-practitioner {
+      background: var(--blue-pale) !important;
+      border-top: 1px solid rgba(21, 101, 160, 0.18);
+    }
+    .ppc-compare-disclaimer {
+      text-align: left;
+      padding: 0 2px;
+    }
   }
   @media (max-width: 560px) {
     .plans-grid-main { grid-template-columns: 1fr; }
     .pricing-plan-card { min-height: 0; }
-    .ppc-compare-table { min-width: 640px; font-size: 11.5px; }
-    .ppc-compare-table th,
-    .ppc-compare-table td { padding: 9px 7px; }
+    .ppc-compare-table { font-size: var(--cp-type-caption); }
   }
 </style>
 <div class="pricing-root">
-<div class="page-hero">
-  <div class="page-hero-inner">
-    <span class="page-eyebrow">Plans &amp; Pricing</span>
-    <h1>Structured plans for <em>serious preparation</em></h1>
-    <p>Organise evidence, prepare documents, build chronologies, and approach family law processes in one structured workflow — so your matter is clearer before, during, and alongside legal advice.</p>
-  </div>
-</div>
-<div class="pricing-early-access-banner">
-  <div class="pricing-early-access-inner">
-    <strong>Early access.</strong> All features are currently free during early access development and testing. The amounts below reflect planned launch pricing in Australian dollars — they are not billed until billing goes live, and ongoing access will be by subscription or purchase as shown. CasePath is not a law firm and does not provide legal representation; seek independent legal advice where your situation requires it.
+<div class="cp-page-hero">
+  <div class="cp-page-hero__inner">
+    <div class="cp-page-hero__layout">
+      <div class="cp-page-hero__icon" aria-hidden="true">
+        <span class="cp-icon-badge cp-icon-badge--on-dark cp-icon-badge--grey"><span class="cp-icon cp-icon--wallet"></span></span>
+      </div>
+      <div class="cp-page-hero__content">
+        <div class="cp-page-hero__eyebrow">Plans &amp; pricing</div>
+        <h1><em>Pricing</em></h1>
+        <p class="cp-page-hero__statement">Choose a plan that matches how much you need to organise and prepare.</p>
+        <p class="cp-page-hero__support">Compare what&rsquo;s included across published plans for evidence, documents, and chronology.</p>
+      </div>
+    </div>
   </div>
 </div>
 <div class="section-wrap">
   <div class="ppc-launch-row">
-    <p class="ppc-launch-head">Launch subscriptions</p>
-    <p class="ppc-launch-hint">Have a look down the page for a comparison graphic of the plans.</p>
+    <p class="ppc-launch-head">Individual access — Australia (AUD)</p>
+    <p class="ppc-launch-hint">1, 3, 6 and 12 month options are recurring subscriptions. The 12 month option renews every 12 months.</p>
   </div>
-  <div class="billing-toggle-row">
-    <span class="billing-label" id="label-monthly">Monthly</span>
-    <button class="toggle-switch" id="billing-toggle" aria-label="Toggle billing period" onclick="const root=this.closest('.pricing-root');const annual=!this.classList.contains('annual');this.classList.toggle('annual',annual);const lm=root.querySelector('#label-monthly');const la=root.querySelector('#label-annual');lm.style.fontWeight=annual?'400':'600';lm.style.color=annual?'var(--soft)':'var(--charcoal)';la.style.fontWeight=annual?'600':'400';la.style.color=annual?'var(--charcoal)':'var(--soft)';root.querySelectorAll('[data-monthly]').forEach(el=>el.textContent=annual?el.dataset.annual:el.dataset.monthly);">
-      <span class="knob"></span>
-    </button>
-    <span class="billing-label muted" id="label-annual">Annual <span class="save-badge">Save 20%</span></span>
+  <div class="plans-audience-labels" aria-hidden="false">
+    <p class="ppc-audience-label">Individuals<span class="ppc-audience-label-sub">Same individual access — choose how you pay</span></p>
   </div>
   <div class="plans-grid-main">
-    <div class="pricing-plan-card" data-plan="early_access">
-      <div class="ppc-badge free">Free during early access</div>
-      <div class="ppc-icon">🌱</div>
-      <h3 class="ppc-name">Early access</h3>
-      <p class="ppc-desc">Explore education, wellbeing, and navigation while we complete the platform. Early access is time-limited build-phase access — not a permanent free product tier.</p>
-      <div class="ppc-price-wrap"><span class="ppc-amount">$0</span><span class="ppc-period">during development</span></div>
+    <div class="pricing-plan-card" data-plan="au_individual_1m" data-cp-plan-id="au_individual_1m">
+      <div class="ppc-badge account">Recurring</div>
+      <h3 class="ppc-name">1 Month</h3>
+      <p class="ppc-desc">Recurring subscription. Renews every 1 month.</p>
+      <div class="ppc-price-wrap"><span class="ppc-amount">A$29</span><span class="ppc-period">every 1 month · AUD</span></div>
       <ul class="ppc-features">
-        <li>✓ Our Mission &amp; orientation</li>
-        <li>✓ Glossary</li>
-        <li>✓ Mental Health</li>
-        <li>✓ About the Kids</li>
-        <li>✓ Your Family Team</li>
-        <li>✓ Support Tools</li>
-        <li>✓ Selected previews of live workflows</li>
-        <li class="ppc-dim">Paid workspaces &amp; vault features unlock at launch</li>
+        <li>✓ Recurring every 1 month</li>
+        <li>✓ Full amount billed each period — not weekly instalments</li>
+        <li>✓ Cancel to stop the next renewal</li>
+        <li>✓ Access ordinarily continues through the period already paid for</li>
       </ul>
       <div class="ppc-actions">
-        <button class="ppc-btn ppc-btn-secondary" onclick="if(typeof openAuth==='function')openAuth('signup')">Create free account →</button>
+        <button type="button" class="ppc-btn ppc-btn-secondary" data-cp-checkout-sku="au_individual_1m">Choose 1 month →</button>
+        <p class="ppc-cancel-note">Recurring subscription</p>
       </div>
     </div>
-    <div class="pricing-plan-card" data-plan="starter">
-      <div class="ppc-badge account">Entry subscription</div>
-      <div class="ppc-icon">📋</div>
-      <h3 class="ppc-name">Starter</h3>
-      <p class="ppc-desc">A guided starting point: get your matter organised, follow basic workflows, and begin export-ready preparation without taking on the full litigation workspace.</p>
-      <div class="ppc-price-wrap"><span class="ppc-amount" data-monthly="$24" data-annual="$19">$24</span><span class="ppc-period">/ month · AUD</span></div>
+    <div class="pricing-plan-card" data-plan="au_individual_3m" data-cp-plan-id="au_individual_3m">
+      <div class="ppc-badge account">Recurring</div>
+      <h3 class="ppc-name">3 Months</h3>
+      <p class="ppc-desc">Recurring subscription. Renews every 3 months.</p>
+      <div class="ppc-price-wrap"><span class="ppc-amount">A$69</span><span class="ppc-period">every 3 months · AUD</span></div>
       <ul class="ppc-features">
-        <li>✓ Parenting Orders builder — structured, step-by-step</li>
-        <li>✓ Orientation &amp; basic workflow support (fair-use)</li>
-        <li>✓ Early document drafting &amp; limited exports</li>
-        <li>✓ Starter chronology &amp; evidence uploads</li>
-        <li>✓ Basic case workspace to keep materials in one place</li>
-        <li class="ppc-dim">✗ Full vault &amp; advanced chronology</li>
-        <li class="ppc-dim">✗ High-volume matter tooling &amp; collaboration prep</li>
+        <li>✓ Recurring every 3 months</li>
+        <li>✓ Full amount billed each period — not monthly instalments</li>
+        <li>✓ Cancel to stop the next renewal</li>
+        <li>✓ Access ordinarily continues through the period already paid for</li>
       </ul>
       <div class="ppc-actions">
-        <!-- SKU-only checkout wiring: data-cp-checkout-sku + app.js delegation → openPricingCheckout (server maps Stripe prices) -->
-        <button type="button" class="ppc-btn ppc-btn-secondary" data-cp-checkout-sku="starter_monthly">Choose Starter →</button>
-        <p class="ppc-cancel-note">Cancel any time · No lock-in</p>
+        <button type="button" class="ppc-btn ppc-btn-secondary" data-cp-checkout-sku="au_individual_3m">Choose 3 months →</button>
+        <p class="ppc-cancel-note">Recurring subscription</p>
       </div>
     </div>
-    <div class="pricing-plan-card ppc-featured" data-plan="essential">
-      <div class="ppc-badge popular">Recommended</div>
-      <div class="ppc-icon">⚖️</div>
-      <h3 class="ppc-name">Essential</h3>
-      <p class="ppc-desc">For most self-represented litigants: end-to-end preparation workflows — chronology and evidence in order, affidavit and statement support, and structured drafting toward filing-ready exports.</p>
-      <div class="ppc-price-wrap"><span class="ppc-amount" data-monthly="$79" data-annual="$63">$79</span><span class="ppc-period">/ month · AUD</span></div>
+    <div class="pricing-plan-card" data-plan="au_individual_6m" data-cp-plan-id="au_individual_6m">
+      <div class="ppc-badge account">Recurring</div>
+      <h3 class="ppc-name">6 Months</h3>
+      <p class="ppc-desc">Recurring subscription. Renews every 6 months.</p>
+      <div class="ppc-price-wrap"><span class="ppc-amount">A$129</span><span class="ppc-period">every 6 months · AUD</span></div>
       <ul class="ppc-features">
-        <li>✓ Full Parenting Orders preparation workflows</li>
-        <li>✓ Chronology builder &amp; evidence organisation</li>
-        <li>✓ Affidavit &amp; statement assistance (structured, review-oriented)</li>
-        <li>✓ Expanded document drafting support &amp; export workflows</li>
-        <li>✓ Larger storage for growing files</li>
-        <li>✓ Priority processing &amp; higher document credits</li>
-        <li class="ppc-dim">✗ Highest-tier volume &amp; enterprise-style tooling</li>
+        <li>✓ Recurring every 6 months</li>
+        <li>✓ Full amount billed each period — not monthly instalments</li>
+        <li>✓ Cancel to stop the next renewal</li>
+        <li>✓ Access ordinarily continues through the period already paid for</li>
       </ul>
       <div class="ppc-actions">
-        <button type="button" class="ppc-btn ppc-btn-primary" data-cp-checkout-sku="essential">Choose Essential →</button>
-        <p class="ppc-cancel-note">Cancel any time · No lock-in</p>
+        <button type="button" class="ppc-btn ppc-btn-secondary" data-cp-checkout-sku="au_individual_6m">Choose 6 months →</button>
+        <p class="ppc-cancel-note">Recurring subscription</p>
       </div>
     </div>
-    <div class="pricing-plan-card" data-plan="pro">
-      <div class="ppc-badge account">Full workspace</div>
-      <div class="ppc-icon">🏛️</div>
-      <h3 class="ppc-name">Full Access</h3>
-      <p class="ppc-desc">When the record is large or the matter is complex: advanced workflow support, high-volume evidence and documents, and serious preparation capability — still information and document assistance, not representation.</p>
-      <div class="ppc-price-wrap"><span class="ppc-amount" data-monthly="$149" data-annual="$119">$149</span><span class="ppc-period">/ month · AUD</span></div>
+    <div class="pricing-plan-card ppc-featured" data-plan="au_individual_12m" data-cp-plan-id="au_individual_12m">
+      <div class="ppc-badge popular">Recurring</div>
+      <h3 class="ppc-name">12 Months</h3>
+      <p class="ppc-desc">Recurring subscription. Renews every 12 months.</p>
+      <div class="ppc-price-wrap"><span class="ppc-amount">A$219</span><span class="ppc-period">every 12 months · AUD</span></div>
       <ul class="ppc-features">
-        <li>✓ Advanced chronology &amp; full case workspace (fair-use)</li>
-        <li>✓ High-volume evidence management (AES-256 vault)</li>
-        <li>✓ Heavy document throughput &amp; structured drafting paths</li>
-        <li>✓ Collaboration prep (invites &amp; controlled sharing)</li>
-        <li>✓ Priority generation &amp; higher operational limits</li>
-        <li>✓ Advanced exports &amp; premium integrations (roadmap)</li>
+        <li>✓ Recurring every 12 months</li>
+        <li>✓ Full amount billed each period — not monthly instalments</li>
+        <li>✓ Cancel to stop the next renewal</li>
+        <li>✓ Access ordinarily continues through the period already paid for</li>
       </ul>
       <div class="ppc-actions">
-        <button type="button" class="ppc-btn ppc-btn-secondary" data-cp-checkout-sku="pro_monthly">Choose Full Access →</button>
-        <p class="ppc-cancel-note">Cancel any time · No lock-in</p>
+        <button type="button" class="ppc-btn ppc-btn-primary" data-cp-checkout-sku="au_individual_12m">Choose 12 months →</button>
+        <p class="ppc-cancel-note">Recurring subscription</p>
       </div>
     </div>
   </div>
+  <section class="ppc-secondary-section" aria-labelledby="au-pricing-firms-heading">
+    <h2 id="au-pricing-firms-heading" class="ppc-secondary-head">Business / law firms — Australia</h2>
+    <p class="ppc-secondary-lead">Annual seats. Solo and small-firm pricing is subject to an A$899 per firm minimum. Firm checkout is not enabled in this version — contact CasePath about firm billing. EAP / employer plans are not offered.</p>
+    <div class="plans-grid-secondary au-pricing-business" role="list">
+      <div class="pricing-plan-card" data-plan="au_business_solo_small">
+        <div class="ppc-badge account">Law firm</div>
+        <h3 class="ppc-name">Solo / small firm</h3>
+        <p class="ppc-desc">1–9 seats. Annual recurring.</p>
+        <div class="ppc-price-wrap"><span class="ppc-amount">A$699</span><span class="ppc-period">per seat / year · AUD</span></div>
+        <p class="ppc-minimum"><strong>Minimum:</strong> A$899 per firm / year</p>
+        <ul class="ppc-features">
+          <li>1 seat = A$899 minimum</li>
+          <li>2 seats = A$1,398</li>
+          <li>5 seats = A$3,495</li>
+          <li>9 seats = A$6,291</li>
+        </ul>
+        <div class="ppc-actions">
+          <a class="ppc-btn ppc-btn-secondary" href="/contact.html">Contact about firm pricing →</a>
+          <p class="ppc-cancel-note">Annual · Checkout not enabled for firms</p>
+        </div>
+      </div>
+      <div class="pricing-plan-card" data-plan="au_business_mid">
+        <div class="ppc-badge account">Law firm</div>
+        <h3 class="ppc-name">Mid-market</h3>
+        <p class="ppc-desc">10–49 seats. Annual recurring.</p>
+        <div class="ppc-price-wrap"><span class="ppc-amount">A$949</span><span class="ppc-period">per seat / year · AUD</span></div>
+        <ul class="ppc-features">
+          <li>10 seats = A$9,490/year</li>
+        </ul>
+        <div class="ppc-actions">
+          <a class="ppc-btn ppc-btn-secondary" href="/contact.html">Contact about firm pricing →</a>
+          <p class="ppc-cancel-note">Annual · Checkout not enabled for firms</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div id="casepath-billing-status" class="ppc-secondary-section" hidden></div>
+
+  <section class="ppc-plan-picker" aria-labelledby="ppc-plan-picker-heading">
+    <h2 id="ppc-plan-picker-heading" class="ppc-plan-picker-head">Which plan is right for me?</h2>
+    <div class="ppc-plan-picker-scroll" role="region" aria-label="Plan recommendation by situation" tabindex="0">
+      <table class="ppc-plan-picker-table">
+        <thead>
+          <tr>
+            <th scope="col">Situation</th>
+            <th scope="col">Recommended Plan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Exploring CasePath before committing</td>
+            <td><span class="ppc-plan-picker-rec">See published individual plans below</span></td>
+          </tr>
+          <tr>
+            <td>Want to pay month-to-month</td>
+            <td><span class="ppc-plan-picker-rec">1 month · A$29 recurring</span></td>
+          </tr>
+          <tr>
+            <td>Prefer a shorter prepaid term</td>
+            <td><span class="ppc-plan-picker-rec">3 months · A$69 recurring</span></td>
+          </tr>
+          <tr>
+            <td>Prefer a longer prepaid term</td>
+            <td><span class="ppc-plan-picker-rec">6 months · A$129 recurring</span></td>
+          </tr>
+          <tr>
+            <td>Prefer a 12 month prepaid term</td>
+            <td><span class="ppc-plan-picker-rec">12 months · A$219 recurring</span></td>
+          </tr>
+          <tr>
+            <td>Law firm with 1–9 seats</td>
+            <td><span class="ppc-plan-picker-rec ppc-plan-picker-rec--full">A$699/seat/year · A$899 minimum</span></td>
+          </tr>
+          <tr>
+            <td>Law firm with 10–49 seats</td>
+            <td><span class="ppc-plan-picker-rec ppc-plan-picker-rec--full">A$949/seat/year</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
   <div class="pricing-early-access-banner" style="padding-top:0;">
     <div class="pricing-early-access-inner" style="text-align:left;">
-      <p class="ppc-desc" style="margin-bottom:0.75rem;">Family law matters can become costly and emotionally demanding. CasePath is built to help self-represented litigants <strong>organise evidence</strong>, <strong>prepare documents</strong>, <strong>build chronologies</strong>, and <strong>approach court processes</strong> in a more structured, informed way — with export-ready materials you can discuss with a lawyer.</p>
-      <p class="ppc-desc" style="margin-bottom:0.75rem;">Even a modest amount of traditional legal assistance can represent a significant expense. CasePath is designed to make <strong>workflow and preparation tools</strong> more accessible for people navigating Australian family law — not to replace advice, but to support better organisation and drafting discipline.</p>
-      <p class="ppc-desc" style="margin-bottom:0.75rem;font-weight:600;color:var(--charcoal);">Built for structured preparation — not legal shortcuts.</p>
-      <p class="ppc-desc" style="margin-bottom:0;">Many matters involve substantial legal fees over time. CasePath is designed to support <strong>serious preparation</strong> — chronology building, evidence management, and document assistance you can use <strong>before, during, and alongside</strong> legal advice. It does not predict outcomes and is not a substitute for representation where you need it.</p>
+      <p class="ppc-desc" style="margin-bottom:0.75rem;">Family law matters can be emotionally demanding and administratively complex. CasePath is built to help people — whether self-represented or working with a lawyer — <strong>organise evidence</strong>, <strong>prepare documents</strong>, <strong>build chronologies</strong>, and <strong>approach court processes</strong> in a more structured, informed way — with export-ready materials you can discuss with a lawyer.</p>
+      <p class="ppc-desc" style="margin-bottom:0.75rem;">Better preparation helps you arrive at appointments with clearer information and fewer gaps. CasePath is designed to make <strong>workflow and preparation tools</strong> more accessible for people navigating Australian family law — not to replace advice, but to support better organisation and preparation discipline.</p>
+      <p class="ppc-desc cp-weight-semibold" style="margin-bottom:0.75rem;color:var(--charcoal)">Built for structured preparation — not legal shortcuts.</p>
+      <p class="ppc-desc" style="margin-bottom:0;">Organised preparation can reduce duplicated administrative work and help you make better use of professional legal advice. CasePath is designed to support <strong>serious preparation</strong> — chronology building, evidence management, and document assistance you can use <strong>before, during, and alongside</strong> legal advice. It does not predict outcomes and is not a substitute for representation where you need it.</p>
     </div>
   </div>
 
+  <!-- Hidden June 2026 – roadmap/add-ons temporarily removed, preserve for future reactivation -->
+  <section class="cp-pricing-roadmap is-hidden">
   <p class="ppc-roadmap-label">Add-ons &amp; roadmap</p>
   <div class="ppc-secondary-section">
     <h2 class="ppc-secondary-head">One-off purchases</h2>
@@ -505,9 +833,9 @@
       <div class="ppc-badge account">Document credits</div>
       <div class="ppc-icon">📄</div>
       <h3 class="ppc-name">Single documents &amp; small packs</h3>
-      <p class="ppc-desc">When you need one or a few court-ready documents, credits fund guided drafting, quality checks, and export — without a monthly commitment.</p>
+      <p class="ppc-desc">When you need one or a few draft documents for review, credits fund guided preparation, quality checks, and export — without a monthly commitment.</p>
       <div class="ppc-price-wrap"><span class="ppc-amount">From $59</span><span class="ppc-period">single credit · indicative</span></div>
-      <div class="ppc-price-wrap"><span class="ppc-amount" style="font-size:28px;">From $219</span><span class="ppc-period">5-credit pack · indicative</span></div>
+      <div class="ppc-price-wrap"><span class="ppc-amount" style="font-size: var(--cp-type-h2);">From $219</span><span class="ppc-period">5-credit pack · indicative</span></div>
       <ul class="ppc-features">
         <li>✓ Guided drafting &amp; quality checks</li>
         <li>✓ .docx export &amp; print-ready PDF</li>
@@ -515,9 +843,7 @@
         <li class="ppc-dim">Does not include the 12-month Parenting Pack engagement</li>
       </ul>
       <div class="ppc-actions">
-        <button class="ppc-btn ppc-btn-secondary" type="button" data-cp-checkout-sku="credits_1">Buy one credit →</button>
-        <button class="ppc-btn ppc-btn-outline" type="button" data-cp-checkout-sku="credits_5">Buy 5 credits →</button>
-        <button class="ppc-btn ppc-btn-outline" type="button" data-cp-checkout-sku="credits_10">Buy 10 credits →</button>
+        <button class="ppc-btn ppc-btn-secondary" type="button" disabled>Credit packs are not part of this billing catalogue</button>
       </div>
     </div>
     <div class="pricing-plan-card ppc-onetime-card" id="pricing-parenting-pack" data-onetime="parenting_pack">
@@ -525,7 +851,7 @@
       <div class="ppc-icon">⭐</div>
       <h3 class="ppc-name">Parenting Pack (one-off)</h3>
       <p class="ppc-parenting-lead">A steady hand,<span class="ppc-parenting-lead-strong">for the year that matters most.</span></p>
-      <p class="ppc-desc">Fixed-fee structured support spanning orders, drafting, workspace, and encrypted evidence storage — with an optional monthly path after month twelve.</p>
+      <p class="ppc-desc">Fixed-fee structured support spanning parenting preparation, workspace organisation, and encrypted evidence storage — with an optional monthly path after month twelve.</p>
       <div class="ppc-parenting-stats">
         <div class="ppc-parenting-stat"><span class="ppc-parenting-stat-k">12 months</span><span class="ppc-parenting-stat-v">Initial term</span></div>
         <div class="ppc-parenting-stat"><span class="ppc-parenting-stat-k">Monthly</span><span class="ppc-parenting-stat-v">Optional rollover</span></div>
@@ -534,27 +860,29 @@
       </div>
       <h4 class="ppc-parenting-section-title">What's inside</h4>
       <ol class="ppc-parenting-inside" type="i">
-        <li><strong>Parenting Orders</strong><span class="ppc-parenting-inside-desc">Advice, drafting and filing support</span></li>
-        <li><strong>Output workflows</strong><span class="ppc-parenting-inside-desc">Chronology-informed drafting</span></li>
+        <li><strong>Parenting Arrangements Prep</strong><span class="ppc-parenting-inside-desc">Structured preparation notes and exports for review</span></li>
+        <li><strong>Preparation exports</strong><span class="ppc-parenting-inside-desc">Chronology-informed organisation</span></li>
         <li><strong>Your Case</strong><span class="ppc-parenting-inside-desc">Live matter workspace</span></li>
         <li><strong>Evidence vault</strong><span class="ppc-parenting-inside-desc">Encrypted evidence store</span></li>
       </ol>
       <div class="ppc-price-wrap"><span class="ppc-amount">From $549</span><span class="ppc-period">fixed fee · confirm at checkout</span></div>
       <div class="ppc-actions">
-        <button type="button" class="ppc-btn ppc-btn-secondary" data-cp-checkout-sku="parenting_pack">Enquire / purchase pack →</button>
-        <button type="button" class="ppc-btn ppc-btn-outline" onclick="if(typeof showPage==='function')showPage('parenting-orders')">Open Parenting Orders →</button>
+        <button type="button" class="ppc-btn ppc-btn-secondary" disabled>Parenting Pack is not part of this billing catalogue</button>
+        <a href="/parenting-orders.html" class="ppc-btn ppc-btn-outline" role="button" style="text-decoration:none;">Open Parenting Arrangements Prep →</a>
       </div>
       <h4 class="ppc-parenting-section-title ppc-pack-faq-heading">Common questions</h4>
       <div class="faq-wrap parenting-pack-common-faq">
-        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">Can I really cancel any time?<span class="pfaq-icon">+</span></button><div class="pfaq-a">Yes. Monthly plans can be cancelled at any time — your access continues until the end of your billing period. There are no cancellation fees and no minimum terms.</div></div>
+        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">Can I really cancel at any time?<span class="pfaq-icon">+</span></button><div class="pfaq-a">Yes. Monthly plans can be cancelled at any time — your access continues until the end of your billing period. There are no cancellation fees and no minimum terms. See the <a href="/refund-policy.html">Refund Policy</a> for cancellation steps and Australian Consumer Law rights.</div></div>
         <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">What happens to my data if I cancel?<span class="pfaq-icon">+</span></button><div class="pfaq-a">Your account and all data remain intact for 30 days after cancellation. You can export or download your documents during this window. After 30 days, vault data is securely deleted.</div></div>
+        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">What is your refund policy?<span class="pfaq-icon">+</span></button><div class="pfaq-a">Subscription and purchase refunds, billing disputes, and consumer guarantee rights are explained in the <a href="/refund-policy.html">Refund Policy</a>. Related: <a href="/terms.html">Terms of Use</a>.</div></div>
         <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">Is this legal advice?<span class="pfaq-icon">+</span></button><div class="pfaq-a">No. CasePath provides legal information — plain-English explanations of Australian family law, the court system, and your procedural options. It is not a substitute for a lawyer. For complex matters or where your safety is at risk, please consult a qualified family lawyer.</div></div>
-        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">How does case-connected assistance differ from general information?<span class="pfaq-icon">+</span></button><div class="pfaq-a"><strong>Ask a Question</strong> (including the ⚖️ panel) stays free and general — glossary-led guidance on Australian family law, terminology, and court processes. <strong>Case Assistant</strong> is the preparation layer tied to <strong>Your Case</strong>: chronology, evidence you approve, and workspace context to help structure drafts and next steps. Neither is legal advice.</div></div>
+        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">What is Guided Document Preparation?<span class="pfaq-icon">+</span></button><div class="pfaq-a"><strong>Guided Document Preparation</strong> uses step-by-step Document Assistants to help organise the information you provide into structured document formats. CasePath explains each section in plain English, highlights missing information, and helps you prepare your documents. It does not provide legal advice or invent facts.</div></div>
+        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">What is Ask a Question?<span class="pfaq-icon">+</span></button><div class="pfaq-a"><strong>Ask a Question</strong> is CasePath&rsquo;s information and learning tool &mdash; glossary-led educational content on Australian family law, terminology, and court processes. The compass button (bottom-right) provides general educational guidance. Signed-in access from the menu connects to <strong>Your Case</strong> for organisational context. Neither provides legal advice.</div></div>
         <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">Can my lawyer access my account?<span class="pfaq-icon">+</span></button><div class="pfaq-a">Only if you invite them. When you connect your lawyer, they get read-only access to the vault and case timeline details you choose to share. You can disconnect them at any time. Lawyers cannot access your account without your explicit invitation.</div></div>
         <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">Is my data secure?<span class="pfaq-icon">+</span></button><div class="pfaq-a">All vault documents are encrypted with AES-256. CasePath does not share your data with third parties, does not sell your information, and does not use your case data to train public AI models. Your data is yours.</div></div>
       </div>
       <div class="faq-wrap parenting-pack-details">
-        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">How it works<span class="pfaq-icon">+</span></button><div class="pfaq-a">
+        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">How does CasePath work?<span class="pfaq-icon">+</span></button><div class="pfaq-a">
           <div class="pp-agreement-body">
             <div class="pp-timeline">
               <p><strong>Day 0 → Month 12 — Initial Term.</strong> Full access under the fixed-fee Parenting Pack.</p>
@@ -563,73 +891,18 @@
             </div>
           </div>
         </div></div>
-        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">What's included<span class="pfaq-icon">+</span></button><div class="pfaq-a">
+        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">What is included in each plan?<span class="pfaq-icon">+</span></button><div class="pfaq-a">
           <div class="pp-agreement-body">
-            <p><strong>2.1 Parenting Orders.</strong> Advice, drafting and filing assistance in relation to parenting arrangements under the Family Law Act 1975 (Cth), including initial consultation, drafting of proposed parenting orders or parenting plans, preparation and filing of an Application for Consent Orders (or related court documents) in the Federal Circuit and Family Court of Australia, correspondence with the other party, and one review of any orders made during the term.</p>
-            <p><strong>2.2 Output Workflows.</strong> A guided chronology-informed drafting service for supporting materials: preparation of affidavits, parenting plans and supporting statements; review and editing of documents you prepare; standard correspondence templates; and document checks before filing or service. Excludes contested litigation, court appearances, or matters outside parenting unless added by separate written scope.</p>
-            <p><strong>2.3 Your Case.</strong> A secure online workspace where you can access and manage your matter for the duration of the Term: a real-time view of case status, key dates and next steps; access to your documents, court filings and correspondence; secure messaging with your legal team; a task list; and the ability to upload material directly into your file.</p>
-            <p><strong>2.4 Supporting Evidence Workspace.</strong> AES-256 — A dedicated, encrypted evidence workspace within Your Case for sensitive evidentiary material. Encryption at rest using AES-256; encryption in transit using TLS 1.2+; access restricted to you and authorised members of your legal team; tamper-evident audit trail for every upload, view and download; original-file preservation; and mandatory two-factor authentication. Encryption protects your data against unauthorised access; it does not guarantee admissibility, which depends on the rules of evidence and the court's discretion.</p>
+            <p><strong>Software scope only.</strong> CasePath provides preparation and organisation tools — not legal advice, representation, or filing services.</p>
+            <p><strong>Parenting Arrangements Prep.</strong> Structured notes, checklists, and exports for review before any court step.</p>
+            <p><strong>Preparation exports.</strong> Chronology-informed organisation of your materials — drafts for review before any filing step.</p>
+            <p><strong>Your Case.</strong> A secure workspace for dates, documents, and preparation tasks you enter.</p>
+            <p><strong>Evidence workspace.</strong> Encrypted storage for materials you upload. Encryption does not guarantee admissibility — seek legal advice on evidence.</p>
           </div>
         </div></div>
-        <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">The agreement (full text)<span class="pfaq-icon">+</span></button><div class="pfaq-a">
+        <div class="pfaq-item" data-casepath-disabled="governance-review"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">Legacy agreement text (archived)<span class="pfaq-icon">+</span></button><div class="pfaq-a">
           <div class="pp-agreement-body">
-            <p>The legal services agreement, in full. The same document you'll sign on day one.</p>
-            <table class="pp-agreement-table">
-              <tbody>
-                <tr><th scope="row">Client</th><td>[Client name]</td></tr>
-                <tr><th scope="row">Provider</th><td>[Provider name]</td></tr>
-                <tr><th scope="row">Effective date</th><td>[DD Month YYYY]</td></tr>
-                <tr><th scope="row">Initial Term</th><td>12 months</td></tr>
-              </tbody>
-            </table>
-            <p><strong>1. Parties and engagement</strong></p>
-            <p>This Parenting Pack agreement (the Agreement) is entered into between [Provider name] (we, us, our) and [Client name] (you, your) on the effective date above. By signing, you engage us to provide the Parenting Pack services described below.</p>
-            <p><strong>2. Services included</strong></p>
-            <p>The Parenting Pack consists of four components:</p>
-            <p><strong>2.1 Parenting Orders</strong><br />Advice, drafting and filing assistance in relation to parenting arrangements under the Family Law Act 1975 (Cth), including initial consultation, drafting of proposed parenting orders or parenting plans, preparation and filing of an Application for Consent Orders (or related court documents) in the Federal Circuit and Family Court of Australia, correspondence with the other party, and one review of any orders made during the term.</p>
-            <p><strong>2.2 Output Workflows</strong><br />A guided chronology-informed drafting service for supporting materials: preparation of affidavits, parenting plans and supporting statements; review and editing of documents you prepare; standard correspondence templates; and document checks before filing or service. Excludes contested litigation, court appearances, or matters outside parenting unless added by separate written scope.</p>
-            <p><strong>2.3 Your Case</strong><br />A secure online workspace where you can access and manage your matter for the duration of the Term: a real-time view of case status, key dates and next steps; access to your documents, court filings and correspondence; secure messaging with your legal team; a task list; and the ability to upload material directly into your file.</p>
-            <p><strong>2.4 Supporting Evidence Workspace</strong><br />AES-256 — A dedicated, encrypted evidence workspace within Your Case for sensitive evidentiary material. Encryption at rest using AES-256; encryption in transit using TLS 1.2+; access restricted to you and authorised members of your legal team; tamper-evident audit trail for every upload, view and download; original-file preservation; and mandatory two-factor authentication. Encryption protects your data against unauthorised access; it does not guarantee admissibility, which depends on the rules of evidence and the court's discretion.</p>
-            <p><strong>3. Term</strong></p>
-            <p>This Agreement commences on the effective date and continues for twelve (12) months (the Initial Term), unless terminated earlier in accordance with clause 8 or rolled over to a Monthly Plan in accordance with clause 4.</p>
-            <p><strong>4. Monthly Plan rollover</strong></p>
-            <p>At the end of the Initial Term you may elect to convert to a Monthly Plan that continues full access to all four components on a month-to-month basis.</p>
-            <div class="pp-timeline">
-              <p><strong>Day 0 → Month 12 — Initial Term.</strong> Full access under the fixed-fee Parenting Pack.</p>
-              <p><strong>Month 12 — Choose your path.</strong> Convert to Monthly, renew for another 12 months, or end the engagement.</p>
-              <p><strong>Month 12 + — Monthly Plan.</strong> Full read/write access continues. Cancel any time on 30 days' notice.</p>
-            </div>
-            <p><strong>4.1 What's included</strong></p>
-            <p>The Monthly Plan provides full read/write access to Your Case and supporting evidence workspace, ongoing Output Workflows at a [reduced/standard] rate or fair-use cap of [N] tasks per month, and ad-hoc Parenting Orders advice at the hourly rate per the current fee schedule.</p>
-            <p><strong>4.2 Fee and billing</strong></p>
-            <p>The Monthly Plan fee is [$ amount] per month (incl. GST), billed monthly in advance by direct debit or card on file. The fee may be adjusted on 30 days' written notice; you may cancel without penalty if you do not accept the change.</p>
-            <p><strong>4.3 How to elect</strong></p>
-            <p>We will contact you 45 days before the end of the Initial Term with a Monthly Plan election notice. To convert, you must confirm your election in writing (or via Your Case) before the Initial Term ends. The Monthly Plan does not start automatically — if we do not receive your election, your engagement will move to the Retention Period under clause 7.</p>
-            <p><strong>4.4 Cancellation and pause</strong></p>
-            <p>You may cancel the Monthly Plan at any time on 30 days' written notice; fees for the notice period remain payable. You may request a pause of up to [X] months once per 12-month period; access becomes read-only during a pause and a reduced [$ amount] per month archive fee applies.</p>
-            <p><strong>4.5 Reverting to retention</strong></p>
-            <p>If the Monthly Plan ends — by cancellation, non-payment, or our termination — the Retention Period under clause 7 begins from the date access ends. The 12-month retention clock starts fresh from that date.</p>
-            <p><strong>5. Fees and payment</strong></p>
-            <p>Fees for the Initial Term are [$ amount] (incl. GST), payable as set out in Schedule A. Monthly Plan fees are as set out in clause 4.2. Disbursements (court filing fees, expert reports, etc.) are charged at cost in either model.</p>
-            <p><strong>6. Your responsibilities</strong></p>
-            <ul class="pp-agreement-list">
-              <li>Provide accurate and complete information, including any safety concerns</li>
-              <li>Provide documents and instructions in a timely manner</li>
-              <li>Notify us promptly of changes in circumstances</li>
-              <li>Keep your Your Case and Evidence Vault credentials secure, enable two-factor authentication, and not share them with third parties</li>
-              <li>Only upload material you are lawfully entitled to hold</li>
-              <li>Keep your billing details current if on the Monthly Plan</li>
-              <li>Not use the services to pursue any unlawful or harassing conduct</li>
-            </ul>
-            <p><strong>7. Confidentiality, privacy and data retention</strong></p>
-            <p>We handle your personal information in accordance with the Privacy Act 1988 (Cth) and our Privacy Policy. Communications, including those made through Your Case and material held in the Evidence Vault, are subject to legal professional privilege where applicable. Evidence Vault data is encrypted at rest using AES-256 and in transit using TLS 1.2+.</p>
-            <p>We will retain your file and personal information — including data and documents stored within Your Case and the Evidence Vault — for a period of twelve (12) months after your engagement ends (the Retention Period). Your engagement ends at the conclusion of the Initial Term or, if you have rolled over to a Monthly Plan, at the end of the final paid month.</p>
-            <p>During the Retention Period: Your Case becomes read-only; the Vault remains encrypted and accessible for download only; you may request copies of your file at any time, free of charge for the first request. At the end of the Retention Period we will securely destroy or de-identify your personal information, including any data held within the Vault, except where required by law to retain specific records (for example, trust account records under the relevant Legal Profession Uniform Law). Vault destruction is performed via cryptographic key erasure and verified deletion. We will let you know in writing 30 days before destruction so you can request a final copy.</p>
-            <p><strong>8. Termination</strong></p>
-            <p>Either party may terminate this Agreement on 14 days' written notice during the Initial Term, or 30 days' written notice on the Monthly Plan. We may terminate immediately if you fail to pay fees, instruct us to act unethically, or where a conflict of interest arises. On termination, fees are payable for work completed up to the date of termination, your access to Your Case and the Evidence Vault will move to read-only mode, and the data retention obligations in clause 7 still apply.</p>
-            <p><strong>9. Limitation of liability and dispute resolution</strong></p>
-            <p>Our liability for any loss arising under this Agreement is limited to the fees paid by you in the 12 months preceding the claim, except where liability cannot be limited by law (including under the Australian Consumer Law). If a dispute arises, the parties will first attempt resolution by good-faith discussion; if unresolved within 21 days, the dispute will be referred to mediation before any litigation. This Agreement is governed by the laws of New South Wales.</p>
-            <p><strong>Schedule A — Fees.</strong> Initial Term (12 months): Parenting Orders [$ amount] · Output Workflows [$ amount] · Your Case [included / $ amount] · Supporting Evidence Workspace [included / $ amount] · Total [$ amount] inc. GST. Monthly Plan: [$ amount] / month inc. GST, cancel any time on 30 days' notice. Disbursements at cost in both models.</p>
+            <p>Archived solicitor-style engagement text has been removed from public pricing during governance remediation. CasePath software is offered under platform terms only — not as a law firm service. See <a href="/terms.html">Terms</a> and <a href="/what-casepath-does.html">What CasePath can and cannot do</a>.</p>
           </div>
         </div></div>
       </div>
@@ -640,121 +913,128 @@
   <div class="pricing-plan-card pricing-plan-card--roadmap" id="pricing-lawyer-teaser" style="margin-bottom:40px;">
     <div class="ppc-badge soon">Coming soon</div>
     <div class="ppc-icon">👔</div>
-    <h3 class="ppc-name">Lawyer portal</h3>
-    <p class="ppc-desc">A dedicated channel for practices that want structured intake, shared chronology, and secure collaboration with self-represented clients — pricing will be announced closer to launch.</p>
-    <p class="ppc-desc" style="margin-top:0.5rem;font-size:0.9rem;">Lawyer portal checkout is not enabled on this card until launch; the button below stays disabled until billing is turned on for firms.</p>
+    <h3 class="ppc-name">Practitioner portal</h3>
+    <p class="ppc-desc">A dedicated channel for legal professionals managing multiple clients — structured intake, shared document workspaces, and secure client collaboration. Practitioner plans are priced per Practitioner within an Organisation.</p>
+    <p class="ppc-desc cp-text-md" style="margin-top:0.5rem">Practitioner portal checkout is not enabled on this roadmap card; see the Practitioner plan above for published firm pricing.</p>
     <ul class="ppc-features">
-      <li>✓ Firm-ready workflows (roadmap)</li>
-      <li>✓ Matter dashboards &amp; controlled client sharing</li>
-      <li>✓ Compliance-oriented audit trails</li>
+      <li>✓ Practitioner dashboard &amp; matter management</li>
+      <li>✓ Multiple client workspaces &amp; invitations</li>
+      <li>✓ Individual practitioner login, MFA &amp; audit trail</li>
     </ul>
     <div class="ppc-actions">
-      <!-- TODO(production-gating): replace with waitlist or Stripe when lawyer SKU is final -->
+      <!-- Practitioner portal CTA wiring deferred -->
       <button type="button" class="ppc-btn ppc-btn-outline" disabled aria-disabled="true">Notify me at launch</button>
     </div>
   </div>
+  </section>
 
-  <!-- TODO(production-gating): align comparison cells with live entitlement matrix when billing is enforced server-side -->
+  <!-- Comparison grid: values follow product/billing when launched -->
   <section class="ppc-compare-section" aria-labelledby="ppc-compare-heading">
     <h2 id="ppc-compare-heading" class="ppc-compare-head">What’s included — at a glance</h2>
-    <p class="ppc-compare-sub">Compare planned workflow depth by tier. CasePath focuses on preparation, chronology, evidence organisation, and structured drafting support — so you can brief a lawyer with clearer materials, not replace one.</p>
+    <p class="ppc-compare-sub">Compare planned workflow depth by tier. CasePath focuses on preparation, chronology, evidence organisation, and structured workflow support — so you can brief a lawyer with clearer materials, not replace one.</p>
     <div class="ppc-compare-strip">
-      <div class="ppc-compare-pill"><span class="ppc-compare-pill-icon" aria-hidden="true">📊</span><div><strong>Legal costs add up quickly</strong>Hourly preparation, correspondence, and file administration compound over the life of a matter.</div></div>
-      <div class="ppc-compare-pill"><span class="ppc-compare-pill-icon" aria-hidden="true">🧭</span><div><strong>Structured preparation matters</strong>Organised chronologies and evidence reduce duplication and last-minute gaps.</div></div>
-      <div class="ppc-compare-pill"><span class="ppc-compare-pill-icon" aria-hidden="true">⚖️</span><div><strong>Built for Australian family law</strong>Workflows aligned to FCFCOA-style preparation — information and document assistance, not representation.</div></div>
-      <div class="ppc-compare-pill"><span class="ppc-compare-pill-icon" aria-hidden="true">🗂️</span><div><strong>Stay organised alongside advice</strong>Use CasePath before, during, and alongside your lawyer — especially where self-representation applies.</div></div>
+      <div class="ppc-compare-pill"><span class="cp-icon cp-icon--dot" aria-hidden="true"></span><div><strong>Prepare before appointments</strong>Organised chronologies, evidence, and notes help you and your lawyer use appointment time more effectively.</div></div>
+      <div class="ppc-compare-pill"><span class="cp-icon cp-icon--compass" aria-hidden="true"></span><div><strong>Structured preparation matters</strong>Organised chronologies and evidence reduce duplication and last-minute gaps.</div></div>
+      <div class="ppc-compare-pill"><span class="cp-icon cp-icon--dot" aria-hidden="true"></span><div><strong>Built for Australian family law</strong>Workflows aligned to FCFCOA-style preparation — information and document assistance, not representation.</div></div>
+      <div class="ppc-compare-pill"><span class="cp-icon cp-icon--dot" aria-hidden="true"></span><div><strong>Stay organised alongside advice</strong>Use CasePath before, during, and alongside your lawyer — especially where self-representation applies.</div></div>
     </div>
-    <p class="ppc-compare-early-note"><strong>Early access.</strong> All features are currently free during development and testing. The grid below describes planned differences between tiers at launch — not what is billed today.</p>
+    <p class="ppc-compare-early-note">The comparison below describes included tools by published plan.</p>
     <div class="ppc-compare-scroll" role="region" aria-label="Plan comparison table" tabindex="0">
       <table class="ppc-compare-table">
-        <caption>Typical lawyer cost column shows indicative time or fee ranges for comparable preparation tasks only — not totals for a matter and not a savings guarantee. Independent legal advice remains essential where you need it.</caption>
         <thead>
           <tr>
             <th scope="col">Feature / workflow</th>
-            <th scope="col">Early access</th>
+            <th scope="col">Free</th>
             <th scope="col">Starter</th>
-            <th scope="col" class="ppc-compare-col-featured">Essential<span class="ppc-compare-rec">Recommended</span></th>
-            <th scope="col">Full access</th>
-            <th scope="col" class="ppc-compare-col-lawyer">Typical lawyer cost <span style="font-weight:400;display:block;margin-top:4px;opacity:0.92;">(context only)</span></th>
+            <th scope="col">Essential<span class="ppc-compare-rec">Most Popular</span></th>
+            <th scope="col" class="ppc-compare-col-practitioner">Practitioner</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">Parenting orders</th>
-            <td><span class="ppc-compare-cell-muted">Preview</span></td>
-            <td>Basic</td>
-            <td class="ppc-compare-col-featured">✓ More</td>
-            <td>✓ Maximum</td>
-            <td class="ppc-compare-col-lawyer">Often 2–4 billable hours for comparable initial drafting scope (indicative)</td>
+          <tr class="ppc-compare-group-row">
+            <td colspan="5" class="ppc-compare-group-head">Individuals</td>
           </tr>
           <tr>
-            <th scope="row">Document &amp; affidavit assistance</th>
-            <td><span class="ppc-compare-cell-muted">—</span></td>
-            <td>Limited</td>
-            <td class="ppc-compare-col-featured">✓ More</td>
-            <td>✓ Maximum</td>
-            <td class="ppc-compare-col-lawyer">Many firms quote roughly <strong>$660–$2,200+</strong> AUD for focused affidavit or statement preparation — varies widely</td>
+            <th scope="row">Learning &amp; educational resources</th>
+            <td data-label="Free">Included</td>
+            <td data-label="Starter">Included</td>
+            <td data-label="Essential">Included</td>
+            <td class="ppc-compare-col-practitioner" data-label="Practitioner"><span class="ppc-compare-cell-muted">—</span></td>
           </tr>
           <tr>
-            <th scope="row">Chronology builder</th>
-            <td><span class="ppc-compare-cell-muted">—</span></td>
-            <td>Basic</td>
-            <td class="ppc-compare-col-featured">✓ More</td>
-            <td>✓ Maximum</td>
-            <td class="ppc-compare-col-lawyer">Usually billed hourly (file review &amp; sequencing)</td>
+            <th scope="row">Case workspace</th>
+            <td data-label="Free"><span class="ppc-compare-cell-muted">—</span></td>
+            <td data-label="Starter">Single case</td>
+            <td data-label="Essential">Full case management</td>
+            <td class="ppc-compare-col-practitioner" data-label="Practitioner">Multiple client workspaces</td>
           </tr>
           <tr>
-            <th scope="row">Evidence organisation</th>
-            <td><span class="ppc-compare-cell-muted">—</span></td>
-            <td>Basic</td>
-            <td class="ppc-compare-col-featured">✓ More</td>
-            <td>✓ Maximum</td>
-            <td class="ppc-compare-col-lawyer">Ongoing hourly file management &amp; bundle preparation</td>
+            <th scope="row">Document generation</th>
+            <td data-label="Free">Limited previews</td>
+            <td data-label="Starter">Included</td>
+            <td data-label="Essential">Unlimited</td>
+            <td class="ppc-compare-col-practitioner" data-label="Practitioner">Shared document workspace</td>
           </tr>
           <tr>
-            <th scope="row">Case Assistant</th>
-            <td><span class="ppc-compare-cell-muted">—</span></td>
-            <td><span class="ppc-compare-cell-muted">Preview</span></td>
-            <td class="ppc-compare-col-featured">✓ More</td>
-            <td>✓ Maximum</td>
-            <td class="ppc-compare-col-lawyer">Strategy or scoping discussions often <strong>1–2+</strong> hours each (indicative)</td>
+            <th scope="row">Guided Document Preparation</th>
+            <td data-label="Free">Limited</td>
+            <td data-label="Starter">Core tools</td>
+            <td data-label="Essential">Unlimited</td>
+            <td class="ppc-compare-col-practitioner" data-label="Practitioner">Professional workflows</td>
           </tr>
           <tr>
-            <th scope="row">Export &amp; court-ready pack</th>
-            <td><span class="ppc-compare-cell-muted">Limited</span></td>
-            <td>Basic</td>
-            <td class="ppc-compare-col-featured">✓ More</td>
-            <td>✓ Maximum</td>
-            <td class="ppc-compare-col-lawyer">Draft review commonly <strong>1–3</strong> billable hours per round (indicative)</td>
+            <th scope="row">Secure Vault &amp; calendar</th>
+            <td data-label="Free"><span class="ppc-compare-cell-muted">—</span></td>
+            <td data-label="Starter">Secure workspace</td>
+            <td data-label="Essential">Vault &amp; calendar</td>
+            <td class="ppc-compare-col-practitioner" data-label="Practitioner">Organisation-level collaboration</td>
+          </tr>
+          <tr class="ppc-compare-group-row">
+            <td colspan="5" class="ppc-compare-group-head">Professionals</td>
           </tr>
           <tr>
-            <th scope="row">Lawyer collaboration prep</th>
-            <td><span class="ppc-compare-cell-muted">—</span></td>
-            <td>Limited</td>
-            <td class="ppc-compare-col-featured">✓ Basic</td>
-            <td>✓ More</td>
-            <td class="ppc-compare-col-lawyer">Coordination &amp; instructions typically tracked in <strong>6-minute</strong> units over the file</td>
+            <th scope="row">Practitioner dashboard</th>
+            <td data-label="Free"><span class="ppc-compare-cell-muted">—</span></td>
+            <td data-label="Starter"><span class="ppc-compare-cell-muted">—</span></td>
+            <td data-label="Essential"><span class="ppc-compare-cell-muted">—</span></td>
+            <td class="ppc-compare-col-practitioner" data-label="Practitioner">Included</td>
           </tr>
           <tr>
-            <th scope="row">Storage &amp; workflows</th>
-            <td><span class="ppc-compare-cell-muted">Limited</span></td>
-            <td>Basic</td>
-            <td class="ppc-compare-col-featured">✓ More</td>
-            <td>✓ Maximum</td>
-            <td class="ppc-compare-col-lawyer">Disbursements + professional time for large bundles</td>
+            <th scope="row">Client invitations &amp; progress tracking</th>
+            <td data-label="Free"><span class="ppc-compare-cell-muted">—</span></td>
+            <td data-label="Starter"><span class="ppc-compare-cell-muted">—</span></td>
+            <td data-label="Essential"><span class="ppc-compare-cell-muted">—</span></td>
+            <td class="ppc-compare-col-practitioner" data-label="Practitioner">Included</td>
+          </tr>
+          <tr>
+            <th scope="row">Organisation membership &amp; firm admin</th>
+            <td data-label="Free"><span class="ppc-compare-cell-muted">—</span></td>
+            <td data-label="Starter"><span class="ppc-compare-cell-muted">—</span></td>
+            <td data-label="Essential"><span class="ppc-compare-cell-muted">—</span></td>
+            <td class="ppc-compare-col-practitioner" data-label="Practitioner">Included where applicable</td>
+          </tr>
+          <tr>
+            <th scope="row">Individual login, MFA &amp; audit trail</th>
+            <td data-label="Free"><span class="ppc-compare-cell-muted">—</span></td>
+            <td data-label="Starter"><span class="ppc-compare-cell-muted">—</span></td>
+            <td data-label="Essential"><span class="ppc-compare-cell-muted">—</span></td>
+            <td class="ppc-compare-col-practitioner" data-label="Practitioner">Per Practitioner</td>
           </tr>
         </tbody>
       </table>
     </div>
+    <p class="ppc-compare-disclaimer">Practitioner is a professional product priced per Practitioner. Clients belong to the Organisation, not to a shared practitioner login. CasePath is not a law firm and does not replace legal advice.</p>
     <p class="ppc-compare-foot">Structured preparation can reduce chaos, admin time, and duplication — it does not replace your lawyer where representation or tailored advice is required. CasePath is legal information and document assistance software, not a law practice.</p>
   </section>
 
   <h2 class="faq-header">Common questions</h2>
   <div class="faq-wrap">
-    <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">Can I really cancel any time?<span class="pfaq-icon">+</span></button><div class="pfaq-a">Yes. Monthly plans can be cancelled at any time — your access continues until the end of your billing period. There are no cancellation fees and no minimum terms.</div></div>
+    <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">Can I really cancel at any time?<span class="pfaq-icon">+</span></button><div class="pfaq-a">Yes. Monthly plans can be cancelled at any time — your access continues until the end of your billing period. There are no cancellation fees and no minimum terms. See the <a href="/refund-policy.html">Refund Policy</a> for cancellation steps and Australian Consumer Law rights.</div></div>
     <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">What happens to my data if I cancel?<span class="pfaq-icon">+</span></button><div class="pfaq-a">Your account and all data remain intact for 30 days after cancellation. You can export or download your documents during this window. After 30 days, vault data is securely deleted.</div></div>
+    <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">What is your refund policy?<span class="pfaq-icon">+</span></button><div class="pfaq-a">Subscription and purchase refunds, billing disputes, and consumer guarantee rights are explained in the <a href="/refund-policy.html">Refund Policy</a>. Nothing in our pricing materials excludes rights you may have under the Australian Consumer Law. Related: <a href="/terms.html">Terms of Use</a>.</div></div>
     <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">Is this legal advice?<span class="pfaq-icon">+</span></button><div class="pfaq-a">No. CasePath provides legal information — plain-English explanations of Australian family law, the court system, and your procedural options. It is not a substitute for a lawyer. For complex matters or where your safety is at risk, please consult a qualified family lawyer.</div></div>
-    <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">How does case-connected assistance differ from general information?<span class="pfaq-icon">+</span></button><div class="pfaq-a"><strong>Ask a Question</strong> stays free and general. <strong>Case Assistant</strong> uses workspace context you approve in <strong>Your Case</strong> for preparation workflows. Both remain educational software, not a law practice.</div></div>
+    <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">What is Guided Document Preparation?<span class="pfaq-icon">+</span></button><div class="pfaq-a"><strong>Guided Document Preparation</strong> uses step-by-step Document Assistants to help organise the information you provide into structured document formats. CasePath explains each section in plain English, highlights missing information, and helps you prepare your documents. It does not provide legal advice or invent facts.</div></div>
+    <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">What is Ask a Question?<span class="pfaq-icon">+</span></button><div class="pfaq-a"><strong>Ask a Question</strong> is an information and learning tool. The compass panel provides general educational guidance. Signed-in access can connect to <strong>Your Case</strong> for organisational context. CasePath remains educational software, not a law practice.</div></div>
     <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">Can my lawyer access my account?<span class="pfaq-icon">+</span></button><div class="pfaq-a">Only if you invite them. When you connect your lawyer, they get read-only access to the vault and case timeline details you choose to share. You can disconnect them at any time.</div></div>
     <div class="pfaq-item"><button type="button" class="pfaq-q" onclick="togglePricingFaq(this)">Is my data secure?<span class="pfaq-icon">+</span></button><div class="pfaq-a">Vault documents are encrypted with AES-256. CasePath does not sell your information and does not use your case data to train public AI models.</div></div>
   </div>
@@ -762,18 +1042,10 @@
   <div class="pricing-cta">
     <div class="cta-icon">⚖️</div>
     <h2>Serious tools for one of life's hardest chapters</h2>
-    <p>CasePath supports Australians navigating separation with clarity and care. During early access, everything stays free while we harden the platform; launch pricing above reflects the ongoing value of structured preparation — create an account to explore.</p>
-    <button class="btn-primary" onclick="if(typeof openAuth==='function')openAuth('signup')">Create free account →</button>
+    <p>CasePath supports Australians navigating separation with clarity and care. Published pricing above reflects the ongoing value of structured preparation — create an account to get started.</p>
+    <p class="ppc-cancel-note" style="margin-top:0.75rem;">By purchasing you agree to our <a href="/terms.html">Terms</a>, <a href="/privacy.html">Privacy Policy</a>, and <a href="/refund-policy.html">Refund Policy</a>.</p>
+    <button type="button" class="btn-primary" data-auth="signup">Create account →</button>
   </div>
 </div>
 <div class="legal-disclaimer-bar">CasePath provides legal information and document assistance only — not legal advice, representation, or guaranteed outcomes. Use independent legal advice where appropriate.</div>
 </div>
-<script>
-  function togglePricingFaq(button) {
-    const item = button.closest(".pfaq-item");
-    const wrap = button.closest(".faq-wrap");
-    const wasOpen = item.classList.contains("open");
-    wrap.querySelectorAll(".pfaq-item.open").forEach((el) => el.classList.remove("open"));
-    if (!wasOpen) item.classList.add("open");
-  }
-</script>

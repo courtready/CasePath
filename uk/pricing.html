@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta name="casepath-build" content="20260727iosscroll1">
+<meta charset="UTF-8">
+<base href="/">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="index, follow">
+<meta name="description" content="CasePath UK pricing for England and Wales. Individual subscriptions from £19.99 a month. Not legal advice.">
+<title>Pricing | England &amp; Wales | CasePath</title>
+<link rel="canonical" href="https://casepath.co.uk/pricing.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CasePath">
+<meta property="og:title" content="Pricing | England &amp; Wales | CasePath">
+<meta property="og:description" content="CasePath UK pricing for England and Wales. Individual subscriptions from £19.99 a month. Not legal advice.">
+<meta property="og:url" content="https://casepath.co.uk/pricing.html">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Pricing | England &amp; Wales | CasePath">
+<meta name="twitter:description" content="CasePath UK pricing for England and Wales. Individual subscriptions from £19.99 a month. Not legal advice.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://casepath.co.uk/pricing.html#webpage",
+      "url": "https://casepath.co.uk/pricing.html",
+      "name": "Pricing | England & Wales | CasePath",
+      "description": "CasePath UK pricing for England and Wales. Individual subscriptions from \u00a319.99 a month. Not legal advice.",
+      "isPartOf": {
+        "@id": "https://casepath.co.uk/#website"
+      },
+      "inLanguage": "en-GB",
+      "about": {
+        "@type": "Place",
+        "name": "England and Wales"
+      }
+    }
+  ]
+}
+</script>
+
+<link rel="icon" href="assets/favicon/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/casepath-uk.css?v=20260907ukfaq1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-H3bg8emFi1T7TR1D4DrfZ.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
+</head>
+<body class="public-static-shell uk-shell" data-uk-nav="pricing">
+<div id="uk-header"></div>
+<main id="main-content">
+<div id="uk-pricing-static" class="uk-page uk-page--narrow">
+  <h1>Pricing</h1>
+  <p>England &amp; Wales pricing for individuals and law firms. Amounts are in pounds sterling.</p>
+  <p>Individual: £19.99 every 1 month, £49 every 3 months, £89 every 6 months, and £149 every 12 months (all recurring). Law firm seats start at £480 per seat / year, with a £600 per firm / year minimum for solo and small firms. 10–49 seats are £650 per seat / year.</p>
+  <p>CasePath provides general information and preparation tools for England and Wales. It is not a law firm and does not provide legal advice.</p>
+</div>
+<p id="uk-pricing-load-status">Loading pricing…</p>
+<div id="uk-pricing-mount"></div>
+</main>
+<div id="uk-footer"></div>
+<script src="assets/js/uk-paths.js?v=20260907ukfaq1"></script>
+<script src="assets/js/uk-store.js?v=20260827ukqe1"></script>
+<script src="assets/js/uk-shell.js?v=20260907ukfaq1"></script>
+<script src="assets/js/uk-glossary-app.js?v=20260827ukqe1"></script>
+<script>
+(function () {
+  var status = document.getElementById("uk-pricing-load-status");
+  var mount = document.getElementById("uk-pricing-mount");
+  var tries = 0;
+  function check() {
+    tries += 1;
+    if (mount && mount.querySelector(".uk-pricing-root")) {
+      if (status) status.remove();
+      return;
+    }
+    if (tries < 40) {
+      setTimeout(check, 150);
+      return;
+    }
+    if (status) {
+      status.textContent = "We could not load pricing. Refresh the page, or create a CasePath account from Sign in.";
+    }
+  }
+  check();
+})();
+</script>
+</body>
+</html>
