@@ -136,7 +136,7 @@
       '<p class="modal-sub">Please create a free account to access this section.</p>' +
       '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;">' +
       '<button type="button" class="btn-full" data-casepath-auth="signin" style="flex:1;min-width:8rem;">Sign In</button>' +
-      '<button type="button" class="btn-full" data-casepath-auth="signup" style="flex:1;min-width:8rem;background:#5f7f67;">Create Free Account</button>' +
+      '<button type="button" class="btn-full" data-casepath-auth="signup" style="flex:1;min-width:8rem;background:#5f7f67;">Create Account</button>' +
       "</div>" +
       "</div>";
 

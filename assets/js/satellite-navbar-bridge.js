@@ -164,7 +164,7 @@
       if (!state || !state.user) {
         authArea.innerHTML =
           '<a href="/signin.shtml" onclick="if (typeof openAuth === \'function\') { event.preventDefault(); openAuth(\'signin\'); }">Sign in</a>' +
-          '<a href="/signup.shtml" class="nav-cta cta-primary" onclick="if (typeof openAuth === \'function\') { event.preventDefault(); openAuth(\'signup\'); }">Create free account</a>';
+          '<a href="/signup.shtml" class="nav-cta cta-primary" onclick="if (typeof openAuth === \'function\') { event.preventDefault(); openAuth(\'signup\'); }">Create account</a>';
         return;
       }
 

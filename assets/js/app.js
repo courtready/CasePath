@@ -996,13 +996,13 @@ function ensureEarlyAccessModal() {
   overlay.innerHTML =
     '<div class="casepath-early-access-card" role="dialog" aria-modal="true" aria-labelledby="casepath-early-access-title">' +
     '<button type="button" class="casepath-early-access-close" aria-label="Close">&times;</button>' +
-    '<span class="casepath-early-access-badge">Early Access</span>' +
-    '<h2 id="casepath-early-access-title">Start Free Early Access</h2>' +
-    '<p>Access guided parenting order workflows, chronology tools, secure case workspace features and court-ready document assistance during the Early Access period.</p>' +
-    '<p class="casepath-early-access-secondary">Pricing shown on the site reflects the intended launch structure. Early access users can explore and help shape the platform while development continues.</p>' +
+    '<span class="casepath-early-access-badge">CasePath</span>' +
+    '<h2 id="casepath-early-access-title">Create an account</h2>' +
+    '<p>Access guided parenting order workflows, chronology tools, secure case workspace features and court-ready document assistance.</p>' +
+    '<p class="casepath-early-access-secondary">Published pricing is shown on the Pricing page.</p>' +
     '<div class="casepath-early-access-actions">' +
-    '<button type="button" class="casepath-early-access-primary" data-early-access-action="start">Start Free Early Access</button>' +
-    '<button type="button" class="casepath-early-access-secondary-btn" data-early-access-action="pricing">View Planned Pricing</button>' +
+    '<button type="button" class="casepath-early-access-primary" data-early-access-action="start">Continue</button>' +
+    '<button type="button" class="casepath-early-access-secondary-btn" data-early-access-action="pricing">View pricing</button>' +
     "</div>" +
     '<div id="casepath-early-access-error" role="status" aria-live="polite"></div>' +
     "</div>";
@@ -3344,7 +3344,7 @@ async function syncUser() {
             termsElDone.checked &&
             window.crTermsUnlocked
           );
-          submitBtn.textContent = originalText || "Create Free Account";
+          submitBtn.textContent = originalText || "Create Account";
         }
       }
     };

@@ -3788,7 +3788,7 @@ window.casepathTrack = function(eventName, props = {}) {
       <div id="nav-auth-area" class="header-actions" style="display:flex;align-items:center;gap:0.44rem;">
         <div id="nav-guest-actions" style="display:flex;align-items:center;gap:0.44rem;">
           <a id="nav-signin-btn" onclick="openAuth('signin')" style="font-size:0.92rem;color:var(--mid);cursor:pointer;padding:0.42rem 0.78rem;border-radius:100px;transition:all 0.18s;text-decoration:none;">Sign in</a>
-          <a id="nav-signup-btn" onclick="openAuth('signup')" class="nav-cta cta-primary" style="font-size:0.92rem;cursor:pointer;text-decoration:none;">Create free account</a>
+          <a id="nav-signup-btn" onclick="openAuth('signup')" class="nav-cta cta-primary" style="font-size:0.92rem;cursor:pointer;text-decoration:none;">Create account</a>
         </div>
         <a href="#" id="navSignOutBtn" role="button" style="display:none;font-size:0.92rem;cursor:pointer;text-decoration:none;">Sign out</a>
       </div>
@@ -12579,7 +12579,7 @@ window.casepathTrack = function(eventName, props = {}) {
 <!-- ═══════════════════════════════════════
      TAB 2: DOCUMENT HELPER
 ════════════════════════════════════════ -->
-<div class="gate-wrapper" id="gate-doc-helper"><div class="gate-overlay" id="overlay-doc-helper"><div class="gate-card"><div class="gate-icon">✏️</div><h2>Free account required</h2><p>Create a free account to use chronology-driven Output Workflows.</p><div class="gate-actions"><button class="btn-primary" onclick="openAuth('signup')">Create free account</button><button class="btn-secondary" onclick="openAuth('signin')">Sign in</button></div></div></div>
+<div class="gate-wrapper" id="gate-doc-helper"><div class="gate-overlay" id="overlay-doc-helper"><div class="gate-card"><div class="gate-icon">✏️</div><h2>Account required</h2><p>Create an account to use chronology-driven Output Workflows.</p><div class="gate-actions"><button class="btn-primary" onclick="openAuth('signup')">Create account</button><button class="btn-secondary" onclick="openAuth('signin')">Sign in</button></div></div></div>
 <div class="tab-panel" id="panel-helper">
   <div class="doc-helper-wrap">
 
@@ -14126,7 +14126,7 @@ window.casepathTrack = function(eventName, props = {}) {
 </div><!-- end page-doc-helper -->
 <!-- ════ YOUR FAMILY TEAM ════ -->
 <div class="page" id="page-your-team">
-<div class="gate-wrapper" id="gate-your-team"><div class="gate-overlay" id="overlay-your-team"><div class="gate-card"><div class="gate-icon">👨‍👩‍👧</div><h2>Free account required</h2><p>Create a free account to access your family team resources and personal team tracker.</p><div class="gate-actions"><button class="btn-primary" onclick="openAuth('signup')">Create free account</button><button class="btn-secondary" onclick="openAuth('signin')">Sign in</button></div></div></div>
+<div class="gate-wrapper" id="gate-your-team"><div class="gate-overlay" id="overlay-your-team"><div class="gate-card"><div class="gate-icon">👨‍👩‍👧</div><h2>Account required</h2><p>Create an account to access your family team resources and personal team tracker.</p><div class="gate-actions"><button class="btn-primary" onclick="openAuth('signup')">Create account</button><button class="btn-secondary" onclick="openAuth('signin')">Sign in</button></div></div></div>
   <div class="page-hero"><div class="page-hero-inner"><div class="page-eyebrow" id="eyebrow-your-team" data-default="Support Network">Support Network</div><h1>Your Family <em>Team</em></h1><p>Build the right people around you — professionals, family, and friends — and understand what each person can do.</p></div></div>
   <div class="section-wrap">
 
@@ -15475,7 +15475,7 @@ window.casepathTrack = function(eventName, props = {}) {
             I confirm that I have read and accept these Terms of Use and understand that this website provides general information only and does not provide legal advice.
           </label>
           <div id="signup-error" style="display:none;background:#fef2f2;border:1px solid #fca5a5;color:#b91c1c;font-size:0.8rem;padding:0.6rem 0.9rem;border-radius:8px;margin:0.5rem 0;"></div>
-          <button type="button" class="btn-full" id="signup-submit-btn" onclick="doSignUp()" disabled>Create Free Account</button>
+          <button type="button" class="btn-full" id="signup-submit-btn" onclick="doSignUp()" disabled>Create Account</button>
         </div>
       </div>
       <p style="text-align:center;margin-top:1rem;font-size:0.8rem;color:var(--soft)">Already have an account? <a onclick="switchAuth('signin')" style="color:var(--sage);font-weight:500;cursor:pointer;">Sign in</a></p>
@@ -15764,7 +15764,7 @@ function updatePagePaymentGates() {
       el.style.background = '';
       el.style.color = '';
     } else {
-      el.textContent = 'Free account required';
+      el.textContent = 'Account required';
       el.style.background = 'rgba(185,28,28,0.08)';
       el.style.color = '#b91c1c';
     }
@@ -16638,7 +16638,7 @@ async function doSignUp() {
   } finally {
     if (submitBtn) {
       submitBtn.disabled = !(document.getElementById('signup-terms-check') && document.getElementById('signup-terms-check').checked);
-      submitBtn.textContent = originalText || 'Create Free Account';
+      submitBtn.textContent = originalText || 'Create Account';
     }
   }
 }
@@ -20034,9 +20034,9 @@ function showBotLoginWall() {
   wall.style.cssText = 'background:linear-gradient(135deg,var(--sage-pale),#f0faf0);border:1px solid rgba(74,124,89,0.25);border-radius:14px;padding:1.1rem 1.25rem;margin-top:0.25rem;text-align:center;';
   wall.innerHTML = '<div style="font-size:1.5rem;margin-bottom:0.5rem;">🔒</div>'
     + '<div style="font-weight:700;font-size:0.82rem;color:var(--charcoal);margin-bottom:0.3rem;">Free limit reached</div>'
-    + '<p style="font-size:0.8rem;color:var(--mid);margin:0 0 0.85rem;line-height:1.5;">You\'ve used your 5 free questions. Create a free account to ask unlimited questions.</p>'
+    + '<p style="font-size:0.8rem;color:var(--mid);margin:0 0 0.85rem;line-height:1.5;">You\'ve used your 5 free questions. Create an account to ask unlimited questions.</p>'
     + '<div style="display:flex;flex-direction:column;gap:0.5rem;">'
-    + '<button onclick="closeBot_openAuth(\'signup\')" style="background:var(--sage);color:white;border:none;border-radius:8px;padding:0.3rem 1rem;font-size:0.83rem;font-family:inherit;font-weight:600;cursor:pointer;width:100%;">Create free account →</button>'
+    + '<button onclick="closeBot_openAuth(\'signup\')" style="background:var(--sage);color:white;border:none;border-radius:8px;padding:0.3rem 1rem;font-size:0.83rem;font-family:inherit;font-weight:600;cursor:pointer;width:100%;">Create account →</button>'
     + '<button onclick="closeBot_openAuth(\'signin\')" style="background:white;color:var(--sage);border:1px solid var(--sage);border-radius:8px;padding:0.55rem 1rem;font-size:0.83rem;font-family:inherit;cursor:pointer;width:100%;">Sign in</button>'
     + '</div>'
     + '<p style="font-size:0.7rem;color:var(--soft);margin:0.75rem 0 0;">Free forever · No credit card required</p>';
@@ -20250,7 +20250,7 @@ async function botRunAI() {
       setTimeout(function() {
         var nudge = document.createElement('div');
         nudge.style.cssText = 'text-align:center;font-size:0.73rem;color:var(--soft);padding:0.3rem 0;';
-        nudge.innerHTML = '💡 <a onclick="closeBot_openAuth(\'signup\')" style="color:var(--sage);cursor:pointer;font-weight:600;">Create a free account</a> for unlimited questions';
+        nudge.innerHTML = '💡 <a onclick="closeBot_openAuth(\'signup\')" style="color:var(--sage);cursor:pointer;font-weight:600;">Create an account</a> for unlimited questions';
         msgs.appendChild(nudge);
         msgs.scrollTop = msgs.scrollHeight;
       }, 400);
