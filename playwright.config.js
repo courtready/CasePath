@@ -1,0 +1,29 @@
+const { defineConfig } = require("@playwright/test");
+
+module.exports = defineConfig({
+  testDir: "./tests",
+  timeout: 45000,
+  expect: { timeout: 8000 },
+  fullyParallel: false,
+  retries: 0,
+  reporter: [["list"], ["json", { outputFile: "/tmp/pre-pay-gate-playwright.json" }]],
+  use: {
+    baseURL: "http://127.0.0.1:4173",
+    headless: false,
+    viewport: { width: 1440, height: 900 },
+  },
+  webServer: [
+    {
+      command: "python3 -m http.server 4173 --bind 127.0.0.1",
+      port: 4173,
+      reuseExistingServer: true,
+      cwd: "/workspace",
+    },
+    {
+      command: "python3 -m http.server 4174 --bind 127.0.0.1",
+      port: 4174,
+      reuseExistingServer: true,
+      cwd: "/workspace/uk",
+    },
+  ],
+});
